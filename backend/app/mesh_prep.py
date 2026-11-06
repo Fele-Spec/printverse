@@ -7,12 +7,52 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import trimesh
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def _wall_thickness(mesh: trimesh.Trimesh, samples: int = 64) -> float | None:
+    """Approximate local wall thickness by inward ray casting.
+
+    This is a geometric screening value, not a slicer-calibrated wall test. Open
+    meshes return None rather than a made-up number.
+    """
+    if not mesh.is_watertight or len(mesh.faces) == 0:
+        return None
+    count = min(samples, len(mesh.faces))
+    idx = np.linspace(0, len(mesh.faces) - 1, count).astype(np.int64)
+    distances: list[float] = []
+    for i in idx:
+        origin = mesh.triangles_center[i] - mesh.face_normals[i] * 0.01
+        direction = -mesh.face_normals[i]
+        try:
+            locations, _, _ = mesh.ray.intersects_location(
+                ray_origins=[origin], ray_directions=[direction], multiple_hits=False
+            )
+        except Exception:
+            continue
+        if len(locations):
+            distances.append(float(np.linalg.norm(locations[0] - origin)))
+    if not distances:
+        return None
+    distances = np.asarray(distances, dtype=float)
+    distances = distances[np.isfinite(distances) & (distances > 0.05)]
+    if len(distances) == 0:
+        return None
+    # The 10th percentile avoids a few grazing/edge hits dominating the result.
+    return round(float(np.percentile(distances, 10)), 3)
+
+
 def inspect_mesh(mesh: trimesh.Trimesh) -> dict:
+    min_z = float(mesh.bounds[0][2]) if len(mesh.bounds) else 0.0
+    normals = mesh.face_normals
+    centers = mesh.triangles_center
+    # Exclude the bed-facing bottom; an overhang above the bed is the useful signal.
+    overhang = (normals[:, 2] < -0.7) & (centers[:, 2] > min_z + 1.2)
+    overhang_area = float(mesh.area_faces[overhang].sum()) if len(mesh.faces) else 0.0
+    thickness = _wall_thickness(mesh)
     return {
         "vertices": int(len(mesh.vertices)),
         "faces": int(len(mesh.faces)),
@@ -22,6 +62,11 @@ def inspect_mesh(mesh: trimesh.Trimesh) -> dict:
         "area_mm2": round(float(mesh.area), 2),
         "extents_mm": [round(float(v), 3) for v in mesh.extents],
         "body_count": int(mesh.body_count) if hasattr(mesh, "body_count") else None,
+        "overhang_area_mm2": round(overhang_area, 2),
+        "support_required_approx": bool(overhang_area > max(50.0, float(mesh.area) * 0.02)),
+        "wall_thickness_min_mm": thickness,
+        "wall_method": "inward_ray_10th_percentile" if thickness is not None else "NOT_PERFORMED",
+        "thin_wall_suspect": bool(thickness is not None and thickness < 1.2),
     }
 
 

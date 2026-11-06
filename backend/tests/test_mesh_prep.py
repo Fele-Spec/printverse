@@ -30,4 +30,7 @@ def test_repair_scales_and_preserves_positive_volume():
     assert fixed.is_watertight
     assert fixed.volume > 0
     assert stats["repaired"]["volume_mm3"] > 0
-    assert inspect_mesh(fixed)["winding_consistent"] is True
+    info = inspect_mesh(fixed)
+    assert info["winding_consistent"] is True
+    assert info["wall_thickness_min_mm"] is not None
+    assert info["support_required_approx"] is False

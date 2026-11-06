@@ -19,6 +19,7 @@ from .image3d import router as image3d_router
 from .image3d import store as image3d_store
 from .mesh_router import router as mesh_router
 from .slicer import SliceError, slice_stl
+from .step_import import StepImportError, convert_step
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME = ROOT / "runtime"
@@ -112,8 +113,8 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
     user_id = resolve_user(request)
     name = file.filename or "upload.stl"
     suffix = Path(name).suffix.lower()
-    if suffix not in {".stl", ".3mf", ".obj", ".glb", ".gltf"}:
-        raise HTTPException(415, "当前支持 STL/3MF/OBJ/GLB；STEP 需先转换为网格")
+    if suffix not in {".stl", ".3mf", ".obj", ".glb", ".gltf", ".step", ".stp"}:
+        raise HTTPException(415, "支持 STL/3MF/OBJ/GLB/STEP")
     data = await file.read()
     if len(data) < 84:
         raise HTTPException(422, "模型文件过小")
@@ -124,7 +125,12 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
     job_dir.mkdir(parents=True, exist_ok=True)
     model = job_dir / f"model{suffix}"
     model.write_bytes(data)
-    if suffix in {".3mf", ".obj", ".glb", ".gltf"}:
+    if suffix in {".step", ".stp"}:
+        try:
+            convert_step(model, job_dir / "display.stl")
+        except StepImportError as exc:
+            raise HTTPException(422, f"STEP 无法转换: {exc}")
+    elif suffix in {".3mf", ".obj", ".glb", ".gltf"}:
         try:
             import trimesh
             display = trimesh.load(model, force="mesh", process=True)
@@ -141,7 +147,7 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
             shutil.copy2(source, target)
             db.set_job_color(job_id, str(target.relative_to(ROOT)).replace("\\", "/"))
     try:
-        slice_input = job_dir / "display.stl" if suffix in {".obj", ".glb", ".gltf"} else model
+        slice_input = job_dir / "display.stl" if suffix in {".obj", ".glb", ".gltf", ".step", ".stp"} else model
         sliced = await run_in_threadpool(slice_stl, slice_input, job_dir, job_id)
         mass_mg = max(1, round(sliced["mass_g"] * 1000))
         job = db.set_job_sliced(

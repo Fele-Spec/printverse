@@ -14,7 +14,7 @@
   },
   "acceptance": {
     "1_colour_glb": "PASS",
-    "2_sliceable_stl_3mf": "PASS",
+    "2_sliceable_stl_3mf": "PASS (STL/3MF/STEP)",
     "3_voron_machine": "PASS",
     "4_real_gcode_motion": "PASS",
     "5_layer_deposition": "PASS",
@@ -32,7 +32,8 @@
     "BEFORE_AFTER_SCREENSHOTS/phase5_finished_color.png",
     "BEFORE_AFTER_SCREENSHOTS/phase5_pet.png",
     "docs/reports/image3d_benchmark.json",
-    "docs/reports/triposr_test.json"
+    "docs/reports/triposr_test.json",
+    "docs/reports/phase5_step_test.json"
   ],
   "tests": {
     "pytest": "15 passed",
@@ -46,5 +47,12 @@
     "docker": "docker not installed; compose not built",
     "postgres": "adapter not implemented; SQLite used",
     "orcaslicer_in_container": "not bundled in Linux image"
+  },
+  "mesh": {
+    "inspect": "PASS",
+    "repair": "PASS",
+    "export_glb_stl_3mf_obj": "PASS",
+    "wall_thickness": "APPROX",
+    "support": "APPROX"
   }
 }

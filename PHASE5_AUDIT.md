@@ -11,8 +11,8 @@
 
 | 模块 | 现状 | 证据 / 缺口 |
 |---|---|---|
-| A AI 三维创作 | **PARTIAL** | 图片→网格、TripoSR、Mock、TokenHub/Kimi 适配器已有；**彩色 GLB 不是主资产**，输出仍以 STL 为主，多视角/工程图/STEP 导入未接 |
-| B 模型处理 | **PARTIAL** | trimesh 修复/缩放/水密检查零散存在；无统一 analyze/repair/export 服务，3MF/OBJ 未接 |
+| A AI 三维创作 | **PARTIAL** | 图片→彩色 GLB、TripoSR/Mock、TokenHub/Kimi 适配器；STEP/STL/3MF/OBJ/GLB 导入已接；多视角/工程图仍缺 |
+| B 模型处理 | **PARTIAL** | 统一 analyze/repair/export；近似 ray-cast 壁厚与悬垂面积；支撑仍需切片器标定 |
 | C 数字孪生 | **COMPLETE（有已声明缺陷）** | 4,526 placements、8 个 GLB、真实 CAD 层级、零件选择、PBR、爆炸/模块/高速紧固件；XY 横梁仍静态，WIRING 仅 1 个实体 |
 | D G-code 虚拟打印 | **COMPLETE（有已声明限制）** | 真实 Orca 切片、G-code 解析、CoreXY/Z/E 驱动、逐层沉积、暂停/继续/取消/倍速、完成/脱离；冷却/加速度仍为估算 |
 | E 耗材计量 | **COMPLETE（虚拟边界）** | 真实 G-code 质量、首件免费、预扣/提交/退款、admin 无限、幂等；只记录虚拟额度，不碰实体 |

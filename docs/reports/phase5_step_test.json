@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "input": "runtime/test-cube.step",
+  "conversion": {
+    "engine": "FreeCADCmd 1.1.4 / Part.Shape.read",
+    "output": "runtime/jobs/128d1d1441fa4d248e8fbf17166a576e/display.stl",
+    "stl_bytes": 253884
+  },
+  "slice": {
+    "status": 200,
+    "layers": 100,
+    "mass_g": 3.978,
+    "time_s": 1192.0,
+    "gcode": "runtime/jobs/128d1d1441fa4d248e8fbf17166a576e/model.gcode"
+  },
+  "note": "20 mm STEP cube converted to STL and sliced by real OrcaSlicer."
+}
