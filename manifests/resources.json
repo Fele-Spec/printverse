@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T10:05:12.212964+00:00",
+  "generated_at": "2026-11-06T10:09:04.662552+00:00",
   "resources": [
     {
       "id": "7zr-exe",
@@ -213,6 +213,24 @@
       "sha256": "36d52cae3cd2ae323e19f76b49246db60e6f09c3971f05d5784c4cd47656986a",
       "sha256_matches_download_ledger": true,
       "downloaded_at": "2026-11-06T09:49:26.106Z",
+      "license": "UNKNOWN_LICENSE",
+      "homepage": "",
+      "opens": true
+    },
+    {
+      "id": "config-yaml",
+      "kind": "download",
+      "title": "config.yaml",
+      "path": ".cache/TripoSR/config.yaml",
+      "url": "https://hf-mirror.com/stabilityai/TripoSR/resolve/main/config.yaml",
+      "resolved_url": "https://hf-mirror.com/stabilityai/TripoSR/resolve/main/config.yaml",
+      "repository": "",
+      "version": "",
+      "commit": null,
+      "bytes": 987,
+      "sha256": "74ca708ce086bf68e97709ea6b3d91f14717921c04691e84043f0eb8fcc68e62",
+      "sha256_matches_download_ledger": true,
+      "downloaded_at": "2026-11-06T10:06:50.968Z",
       "license": "UNKNOWN_LICENSE",
       "homepage": "",
       "opens": true

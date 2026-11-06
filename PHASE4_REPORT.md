@@ -51,7 +51,7 @@ A multi-provider Image-to-3D architecture is implemented and runnable without an
 - paid provider requires authorization;
 - unavailable provider is rejected, not silently paid.
 
-Result: **4 passed** (plus the existing accounting suite).
+Result: **13 passed** total (Image-to-3D + accounting + shared quota).
 
 ## 6. Benchmark
 
@@ -77,6 +77,7 @@ LAN/Tailscale/Cloudflare setup. See `SHARING_AND_QUOTA.md`; tests are in `backen
 2. Recharge/rotate Kimi account if analysis is required.
 3. Obtain TokenHub account-specific endpoints and authorize a small budget before any cloud call.
 4. Add password/proxy authentication on top of the opt-in owner/guest quota mode.
+5. Owner-only cloud authorization is enforced for guests; guests retain free Mock access.
 5. Add photographed object benchmark and multi-view tests.
 
 ## 9. Files

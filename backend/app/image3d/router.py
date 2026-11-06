@@ -9,7 +9,7 @@ from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Reque
 from PIL import Image
 
 from .. import db
-from ..access import resolve_user
+from ..access import resolve_user, share_mode
 from . import registry, store
 from .types import GenerationRequest, ProviderError
 
@@ -69,6 +69,8 @@ async def create_job(
             raise HTTPException(404, "unknown provider")
         if info.kind == "analysis":
             raise HTTPException(422, "Kimi analysis is not a mesh provider")
+        if share_mode() and user_id != "owner" and info.kind == "cloud":
+            raise HTTPException(403, "guest members cannot authorize cloud generation; ask the owner")
         if not info.available:
             raise HTTPException(409, info.reason)
         try:

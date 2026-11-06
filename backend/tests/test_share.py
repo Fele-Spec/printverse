@@ -30,3 +30,19 @@ def test_shared_mode_can_require_guest_token(monkeypatch):
         assert r.status_code == 401
         r = remote.get("/api/wallet", headers={"X-PV-Member": "invite-123"})
         assert r.status_code == 200
+
+
+def test_guest_cannot_authorize_cloud(monkeypatch):
+    monkeypatch.setenv("PRINTVERSE_SHARE_MODE", "1")
+    from io import BytesIO
+    from PIL import Image
+    buf = BytesIO()
+    Image.new("RGB", (64, 64), "white").save(buf, format="PNG")
+    with TestClient(app, client=("192.168.1.22", 50003)) as remote:
+        r = remote.post(
+            "/api/image3d/jobs",
+            files={"file": ("test.png", buf.getvalue(), "image/png")},
+            data={"provider": "tripo_cloud", "prompt": "x", "authorized": "true", "budget_cny": "10"},
+        )
+        assert r.status_code == 403
+        assert "guest" in r.text.lower()

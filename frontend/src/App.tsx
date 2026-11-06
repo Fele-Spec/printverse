@@ -249,9 +249,9 @@ export default function App() {
         </div>
         <button className="image3d-launch" onClick={() => setImage3DOpen(true)} data-testid="open-image3d">IMAGE → 3D</button>
         <div className="wallet-pill" data-testid="wallet-balance">
-          <span>VIRTUAL FILAMENT</span>
+          <span>VIRTUAL FILAMENT{wallet?.role === 'admin' ? ' · OWNER' : ''}</span>
           <b>{wallet ? `${wallet.balance_g.toFixed(2)} g` : '—'}</b>
-          <em>{wallet?.first_print_available ? 'first print free' : 'first print used'}</em>
+          <em>{wallet?.role === 'admin' ? 'unlimited owner' : wallet?.first_print_available ? 'first print free' : 'first print used'}</em>
         </div>
       </header>
 

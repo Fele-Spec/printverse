@@ -47,7 +47,7 @@ Behavior in shared mode:
 Set `PRINTVERSE_SHARE_MODE=0` (default) to return to the original demo identity.
 
 Tests: `backend/tests/test_share.py` verifies owner/guest selection, 20 g guest wallet, disabled
-first-free, and optional member-token rejection. Full backend suite: **12 passed**.
+first-free, optional member-token rejection, and guest cloud rejection. Full backend suite: **13 passed**.
 
 ## 3. Security boundaries
 
@@ -71,4 +71,4 @@ localhost URL as a public share link**.
 
 The Image → 3D studio calls the same backend identity resolver. Provider keys live only in
 `.env.local` on the server. Cloud generation still requires explicit per-request authorization
-and a positive CNY budget; guests cannot silently trigger paid calls.
+and a positive CNY budget. In shared mode, **only owner can authorize a cloud provider**; guests receive 403 and can still use free local Mock.
