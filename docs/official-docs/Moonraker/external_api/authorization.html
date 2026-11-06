@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Authorization · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/authorization/">https://moonraker.readthedocs.io/en/latest/external_api/authorization/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Authorization and Authentication</h1>
+<p>The Authorization endpoints provide access to the various methods
+used to authorize connections to Moonraker.  This includes user
+authentication, API Key authentication, Temporary access via
+&quot;oneshot tokens&quot;, and IP and/or domain based authentication
+(&quot;ie: trusted clients).</p>
+<p>Untrusted clients must use either a JSON Web Token or an API key to access
+Moonraker's HTTP APIs.  JWTs should be included in the <code>Authorization</code>
+header as a <code>Bearer</code> type for each HTTP request.  If using an API Key it
+should be included in the <code>X-Api-Key</code> header for each HTTP Request.</p>
+<p>Websocket authentication can be achieved via the request itself or
+post connection.  Unlike HTTP requests it is not necessary to pass a
+token and/or API Key to each request.  The
+<a href="./server.md#identify-connection">identify connection</a> endpoint takes optional
+<code>access_token</code> and <code>api_key</code> parameters that may be used to authenticate
+a user already logged in, otherwise the <code>login</code> API may be used for
+authentication.  Websocket connections will stay authenticated until
+the connection is closed or the user logs out.</p>
+<p>User authentication can be performed using a choice sources.  Moonraker
+currently supports the following authentication sources:</p>
+<table>
+<thead>
+<tr>
+<th>Source Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>moonraker</code></td>
+<td>Authentication is performed using credentials stored in</td>
+</tr>
+<tr>
+<td></td>
+<td>Moonraker's database.</td>
+</tr>
+<tr>
+<td><code>ldap</code></td>
+<td>Authentication is performed through a connected LDAP provider.</td>
+</tr>
+<tr>
+<td></td>
+<td>Requires a valid <code>[LDAP]</code> configuration.</td>
+</tr>
+<tr>
+<td>{ #auth-source-desc } Authentication Source</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>/// note
+ECMAScript imposes limitations on certain requests that prohibit the
+developer from modifying the HTTP headers (ie: Requests to open a
+websocket, &quot;download&quot; requests that open a user dialog).  In these cases
+it is recommended for the developer to request a <code>oneshot_token</code>, then
+send the result via the <code>token</code> query string argument in the desired
+request.
+///</p>
+<p>/// warning
+It is strongly recommended that arguments for the below APIs are
+passed in the request's body.
+///</p>
+<h2>Login User</h2>
+<pre><code class="language-{.http">POST /access/login
+Content-Type: application/json
+
+{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;password&quot;: &quot;my_password&quot;,
+    &quot;source&quot;: &quot;moonraker&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.login&quot;,
+    &quot;params&quot;: {
+        &quot;username&quot;: &quot;my_user&quot;,
+        &quot;password&quot;: &quot;my_password&quot;,
+        &quot;source&quot;: &quot;moonraker&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user login name.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user password.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>Set by configuration</td>
+<td>A valid <a href="#auth-source-desc">authentication source</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4NzY4MDAuNDgxNjU1LCAiZXhwIjogMTYxODg4MDQwMC40ODE2NTUsICJ1c2VybmFtZSI6ICJteV91c2VyIiwgInRva2VuX3R5cGUiOiAiYXV0aCJ9.QdieeEskrU0FrH7rXKuPDSZxscM54kV_vH60uJqdU9g&quot;,
+    &quot;refresh_token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4NzY4MDAuNDgxNzUxNCwgImV4cCI6IDE2MjY2NTI4MDAuNDgxNzUxNCwgInVzZXJuYW1lIjogIm15X3VzZXIiLCAidG9rZW5fdHlwZSI6ICJyZWZyZXNoIn0.btJF0LJfymInhGJQ2xvPwkp2dFUqwgcw4OA_wE-EcCM&quot;,
+    &quot;action&quot;: &quot;user_logged_in&quot;,
+    &quot;source&quot;: &quot;moonraker&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the logged in user.</td>
+</tr>
+<tr>
+<td><code>token</code></td>
+<td style="text-align:center">string</td>
+<td>A JSON Web Token (JWT) used to authenticate requests, also commonly</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>referred to as an <code>access token</code>.  HTTP requests should include this</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>token in the <code>Authorization</code> header as a <code>Bearer</code> type.  This token</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>expires after 1 hour.</td>
+</tr>
+<tr>
+<td><code>refresh_token</code></td>
+<td style="text-align:center">string</td>
+<td>A JWT that should be used to generate new access tokens after they</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>expire.  See the <a href="#refresh-json-web-token">refresh token section</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>for details.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken by the auth manager.  Will always be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>&quot;user_logged_in&quot;.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#auth-source-desc">authentication source</a> used.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// note
+This endpoint may be accessed without prior authentication.  A 401 will
+only be returned if the authentication fails.
+///</p>
+<h2>Logout Current User</h2>
+<pre><code class="language-{.http">POST /access/logout
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.logout&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;action&quot;: &quot;user_logged_out&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the logged out user.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken by the auth manager.  Will always be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>&quot;user_logged_out&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Get Current User</h2>
+<pre><code class="language-{.http">GET /access/user
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.get_user&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>Returns: An object containing the currently logged in user name, the source and
+the date on which the user was created (in unix time).
+/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;source&quot;: &quot;moonraker&quot;,
+    &quot;created_on&quot;: 1618876783.8896716
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the logged in user.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#auth-source-desc">source</a> used to authenticate</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the user.</td>
+</tr>
+<tr>
+<td><code>created_on</code></td>
+<td style="text-align:center">float</td>
+<td>The date, in unix time, the user entry was created.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Create User</h2>
+<p>Creates a new local user and logs them in.</p>
+<pre><code class="language-{.http">POST /access/user
+Content-Type: application/json
+
+{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;password&quot;: &quot;my_password&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.post_user&quot;,
+    &quot;params&quot;: {
+        &quot;username&quot;: &quot;my_user&quot;,
+        &quot;password&quot;: &quot;my_password&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user login name.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user password.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4NzY3ODMuODkxNjE5LCAiZXhwIjogMTYxODg4MDM4My44OTE2MTksICJ1c2VybmFtZSI6ICJteV91c2VyIiwgInRva2VuX3R5cGUiOiAiYXV0aCJ9.oH0IShTL7mdlVs4kcx3BIs_-1j0Oe-qXezJKjo-9Xgo&quot;,
+    &quot;refresh_token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4NzY3ODMuODkxNzAyNCwgImV4cCI6IDE2MjY2NTI3ODMuODkxNzAyNCwgInVzZXJuYW1lIjogIm15X3VzZXIiLCAidG9rZW5fdHlwZSI6ICJyZWZyZXNoIn0.a6ZeRjk8RQQJDDH0JV-qGY_d_HIgfI3XpsqUlUaFT7c&quot;,
+    &quot;source&quot;: &quot;moonraker&quot;,
+    &quot;action&quot;: &quot;user_created&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the created user.</td>
+</tr>
+<tr>
+<td><code>token</code></td>
+<td style="text-align:center">string</td>
+<td>A JSON Web Token (JWT) used to authenticate requests, also commonly</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>referred to as an <code>access token</code>.  HTTP requests should include this</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>token in the <code>Authorization</code> header as a <code>Bearer</code> type.  This token</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>expires after 1 hour.</td>
+</tr>
+<tr>
+<td><code>refresh_token</code></td>
+<td style="text-align:center">string</td>
+<td>A JWT that should be used to generate new access tokens after they</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>expire.  See the <a href="#refresh-json-web-token">refresh token section</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>for details.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken by the auth manager.  Will always be &quot;user_created&quot;.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#auth-source-desc">authentication source</a> used.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// note
+Unlike <code>/access/login</code>, <code>/access/user</code> is a protected endpoint.  To
+create a new user a client must either be trusted, use the API Key,
+or be logged in as another user.
+///</p>
+<h2>Delete User</h2>
+<p>/// note
+A request to delete a user MUST come from an authorized login
+other than the account to be deleted.  This can be a &quot;trusted user&quot;,
+the &quot;api key user&quot;, or any other user account.
+///</p>
+<pre><code class="language-{.http">DELETE /access/user
+Content-Type: application/json
+
+{
+    &quot;username&quot;: &quot;my_username&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.delete_user&quot;,
+    &quot;params&quot;: {
+        &quot;username&quot;: &quot;my_username&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">str</td>
+<td><strong>REQUIRED</strong></td>
+<td>The username of the entry to delete.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;action&quot;: &quot;user_deleted&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The username of the deleted entry.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken by the auth manager. Will always</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be &quot;user_deleted&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>List Available Users</h2>
+<pre><code class="language-{.http">GET /access/users/list
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.users.list&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;users&quot;: [
+        {
+            &quot;username&quot;: &quot;testuser&quot;,
+            &quot;source&quot;: &quot;moonraker&quot;,
+            &quot;created_on&quot;: 1618771331.1685035
+        },
+        {
+            &quot;username&quot;: &quot;testuser2&quot;,
+            &quot;source&quot;: &quot;ldap&quot;,
+            &quot;created_on&quot;: 1620943153.0191233
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <code>User Info</code> objects.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#user-info-spec</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The username of the entry.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#auth-source-desc">source</a> that must be used to</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>authenticate the user.</td>
+</tr>
+<tr>
+<td><code>created_on</code></td>
+<td style="text-align:center">float</td>
+<td>The date, in unix time, the user entry was created.</td>
+</tr>
+<tr>
+<td>{ #user-info-spec } User Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Reset User Password</h2>
+<pre><code class="language-{.http">POST /access/user/password
+Content-Type: application/json
+
+{
+    &quot;password&quot;: &quot;my_current_password&quot;,
+    &quot;new_password&quot;: &quot;my_new_pass&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.user.password&quot;,
+    &quot;params&quot;: {
+        &quot;password&quot;: &quot;my_current_password&quot;,
+        &quot;new_password&quot;: &quot;my_new_pass&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user's current password.</td>
+</tr>
+<tr>
+<td><code>new_password</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The user's new password.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;action&quot;: &quot;user_password_reset&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The username of the entry whose password was reset.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>Action taken by the Auth manager.  Will always be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>&quot;user_password_reset&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Refresh JSON Web Token</h2>
+<p>This endpoint can be used to refresh an expired access token.  If this
+request returns an error then the refresh token is no longer valid and
+the user must login with their credentials.</p>
+<pre><code class="language-{.http">POST /access/refresh_jwt
+Content-Type: application/json
+
+{
+    &quot;refresh_token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4Nzc0ODUuNzcyMjg5OCwgImV4cCI6IDE2MjY2NTM0ODUuNzcyMjg5OCwgInVzZXJuYW1lIjogInRlc3R1c2VyIiwgInRva2VuX3R5cGUiOiAicmVmcmVzaCJ9.Y5YxGuYSzwJN2WlunxlR7XNa2Y3GWK-2kt-MzHvLbP8&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.refresh_jwt&quot;,
+    &quot;params&quot;: {
+        &quot;refresh_token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4Nzc0ODUuNzcyMjg5OCwgImV4cCI6IDE2MjY2NTM0ODUuNzcyMjg5OCwgInVzZXJuYW1lIjogInRlc3R1c2VyIiwgInRva2VuX3R5cGUiOiAicmVmcmVzaCJ9.Y5YxGuYSzwJN2WlunxlR7XNa2Y3GWK-2kt-MzHvLbP8&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>refresh_token</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>A valid <code>refresh_token</code> for the user.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;username&quot;: &quot;my_user&quot;,
+    &quot;token&quot;: &quot;eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiTW9vbnJha2VyIiwgImlhdCI6IDE2MTg4NzgyNDMuNTE2Nzc5MiwgImV4cCI6IDE2MTg4ODE4NDMuNTE2Nzc5MiwgInVzZXJuYW1lIjogInRlc3R1c2VyIiwgInRva2VuX3R5cGUiOiAiYXV0aCJ9.Ia_X_pf20RR4RAEXcxalZIOzOBOs2OwearWHfRnTSGU&quot;,
+    &quot;source&quot;: &quot;moonraker&quot;,
+    &quot;action&quot;: &quot;user_jwt_refresh&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The username of the entry whose access token ws refreshed.</td>
+</tr>
+<tr>
+<td><code>token</code></td>
+<td style="text-align:center">string</td>
+<td>A JSON Web Token (JWT) used to authenticate requests, also commonly</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>referred to as an <code>access token</code>.  HTTP requests should include this</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>token in the <code>Authorization</code> header as a <code>Bearer</code> type.  This token</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>expires after 1 hour.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#auth-source-desc">authentication source</a> of the user entry.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken by the Auth Manager.  Will always be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>&quot;user_jwt_refresh&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// note
+This endpoint may be accessed by unauthorized clients.  A 401 will
+only be returned if the refresh token is invalid.
+///</p>
+<h2>Generate a Oneshot Token</h2>
+<p>Javascript is not capable of modifying the headers for some HTTP requests
+(for example, the <code>websocket</code>), which is a requirement to apply JWT or API Key
+authorization.  To work around this clients may request a Oneshot Token and
+pass it via the query string for these requests.  Tokens expire in 5 seconds
+and may only be used once, making them relatively safe for inclusion in the
+query string.</p>
+<pre><code class="language-{.http">GET /access/oneshot_token
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.oneshot_token&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<pre><code class="language-{.json">&quot;APDBEGHUTBUD6SOAYBPF3KE5BRMO7YSL&quot;
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The response is a string value containing the oneshot token. It may
+added to a request's query string for access to any API endpoint.  The query
+string should be added in the form of:</p>
+<pre><code>?token={base32_random_token}
+</code></pre>
+<p>///</p>
+<h2>Get authorization module info</h2>
+<pre><code class="language-{.http">GET /access/info
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.info&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;default_source&quot;: &quot;moonraker&quot;,
+    &quot;available_sources&quot;: [
+        &quot;moonraker&quot;,
+        &quot;ldap&quot;
+    ],
+    &quot;login_required&quot;: false,
+    &quot;trusted&quot;: true
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default_source</code></td>
+<td style="text-align:center">string</td>
+<td>The configured default</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td><a href="#auth-source-desc">authentication source</a>.</td>
+</tr>
+<tr>
+<td><code>available_sources</code></td>
+<td style="text-align:center">[string]</td>
+<td>An array of available authentication sources.</td>
+</tr>
+<tr>
+<td><code>login_required</code></td>
+<td style="text-align:center">bool</td>
+<td>Set to <code>true</code> when <code>force_logins</code> is enabled via the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>configuration at least one user has been created.</td>
+</tr>
+<tr>
+<td><code>trusted</code></td>
+<td style="text-align:center">bool</td>
+<td>Set to <code>true</code> when the connection making the info</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>request is a trusted connection.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// note
+This endpoint may be accessed by unauthorized clients.
+///</p>
+<h2>Get the Current API Key</h2>
+<pre><code class="language-{.http">GET /access/api_key
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.get_api_key&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<pre><code class="language-{.json">e514851f37b94c779d955212b6906f95
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The response string value containing the current API key.</p>
+<p>///</p>
+<h2>Generate a New API Key</h2>
+<pre><code class="language-{.http">POST /access/api_key
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;access.post_api_key&quot;,
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<pre><code class="language-{.json">e514851f37b94c779d955212b6906f95
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The response string value containing the new API key.</p>
+<p>///</p>
+<p>/// note
+After this request executes the API key change is applied immediately.
+All subsequent HTTP requests from untrusted clients must use the new key.
+Changing the API Key will not affect open websockets authenticated using
+the previous API Key.
+///</p>
+
+</main></body></html>

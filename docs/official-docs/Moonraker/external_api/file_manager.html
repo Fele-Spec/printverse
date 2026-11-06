@@ -1,0 +1,2434 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>File manager API · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/file_manager/">https://moonraker.readthedocs.io/en/latest/external_api/file_manager/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>File Management</h1>
+<p>Most file operations are available over both HTTP and JSON-RPC APIs,
+however file transfers (upload and download) are exclusive to the HTTP
+API.</p>
+<p>Moonraker organizes local directories into &quot;roots&quot;.  For example,
+<code>gcodes</code> are located at <code>http://host/server/files/gcodes/*</code>, otherwise known
+as the &quot;gcodes&quot; root.  The following default roots are generally available:</p>
+<ul>
+<li>gcodes</li>
+<li>config</li>
+<li>logs (read-only)</li>
+<li>config_examples (Klipper Configuration Examples, read-only)</li>
+<li>docs (Klipper Documentation, read-only)</li>
+</ul>
+<p>Write operations (upload, delete, make directory, remove directory) are
+only available on the <code>gcodes</code> and <code>config</code> roots, however it is possible
+for users to configure the <code>config</code> root to be read-only.</p>
+<p>Many endpoints return permission information on files and/or folders.
+Permissions are represented as a string value in the following format:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&quot;r&quot;</code></td>
+<td>Item is read-only.</td>
+</tr>
+<tr>
+<td><code>&quot;rw&quot;</code></td>
+<td>Item has read and write permissions.</td>
+</tr>
+<tr>
+<td><code>&quot;&quot;</code></td>
+<td>Item is not accessible.</td>
+</tr>
+<tr>
+<td>{ #file-permissions-desc } Permissions</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>List available files</h2>
+<p>Walks through a directory and fetches all detected files.
+File names include a path relative to the specified <code>root</code>.</p>
+<p>/// Tip
+In most scenarios it will likely be preferable to request files
+by <a href="#get-directory-information">directory</a> as opposed to listing
+the entire root.
+///</p>
+<pre><code class="language-{.http">GET /server/files/list?root=config
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.list&quot;,
+    &quot;params&quot;: {
+        &quot;root&quot;: &quot;config&quot;
+    },
+    &quot;id&quot;: 4644
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td><code>gcodes</code></td>
+<td>The name of the <code>root</code> from which a file list</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>should be returned.</td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+The <code>gcodes</code> root will only return files with valid gcode file extensions.
+////
+///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">[
+    {
+        &quot;path&quot;: &quot;3DBenchy_0.15mm_PLA_MK3S_2h6m.gcode&quot;,
+        &quot;modified&quot;: 1615077020.2025201,
+        &quot;size&quot;: 4926481,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;path&quot;: &quot;Shape-Box_0.2mm_PLA_Ender2_20m.gcode&quot;,
+        &quot;modified&quot;: 1614910966.946807,
+        &quot;size&quot;: 324236,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;path&quot;: &quot;test_dir/A-Wing.gcode&quot;,
+        &quot;modified&quot;: 1605202259,
+        &quot;size&quot;: 1687387,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;path&quot;: &quot;test_dir/CE2_CubeTest.gcode&quot;,
+        &quot;modified&quot;: 1614644445.4025,
+        &quot;size&quot;: 1467339,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;path&quot;: &quot;test_dir/V350_Engine_Block_-_2_-_Scaled.gcode&quot;,
+        &quot;modified&quot;: 1615768477.5133543,
+        &quot;size&quot;: 189713016,
+        &quot;permissions&quot;: &quot;rw&quot;
+    }
+]
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>The result is an array of <code>File Info</code> objects:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the file, relative to the requested root.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the file.</td>
+</tr>
+<tr>
+<td>{ #file-info-spec} File Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>List registered roots</h2>
+<p>Reports information about &quot;root&quot; directories registered with Moonraker.</p>
+<pre><code class="language-{.http">GET /server/files/roots
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.roots&quot;,
+    &quot;id&quot;: 4644
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">[
+    {
+        &quot;name&quot;: &quot;config&quot;,
+        &quot;path&quot;: &quot;/home/pi/printer_data/config&quot;,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;name&quot;: &quot;logs&quot;,
+        &quot;path&quot;: &quot;/home/pi/printer_data/logs&quot;,
+        &quot;permissions&quot;: &quot;r&quot;
+    },
+    {
+        &quot;name&quot;: &quot;gcodes&quot;,
+        &quot;path&quot;: &quot;/home/pi/printer_data/gcodes&quot;,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    {
+        &quot;name&quot;: &quot;config_examples&quot;,
+        &quot;path&quot;: &quot;/home/pi/klipper/config&quot;,
+        &quot;permissions&quot;: &quot;r&quot;
+    },
+    {
+        &quot;name&quot;: &quot;docs&quot;,
+        &quot;path&quot;: &quot;/home/pi/klipper/docs&quot;,
+        &quot;permissions&quot;: &quot;r&quot;
+    }
+]
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>The result is an array of <code>Root Info</code> objects:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the registered root.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The absolute path on disk of the registered root.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td><a href="#file-permissions-desc">Permissions</a> available on the root.</td>
+</tr>
+<tr>
+<td>{ #root-info-spec } Root Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Get GCode Metadata</h2>
+<p>Get metadata for a specified gcode file.</p>
+<pre><code class="language-{.http">GET /server/files/metadata?filename=tools/drill.gcode
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.metadata&quot;,
+    &quot;params&quot;: {
+        &quot;filename&quot;: &quot;tools/drill.gcode&quot;
+    },
+    &quot;id&quot;: 3545
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">str</td>
+<td><strong>REQUIRED</strong></td>
+<td>The path to the gcode file, relative to the <code>gcodes</code> root.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;size&quot;: 1629418,
+    &quot;modified&quot;: 1706359465.4947228,
+    &quot;uuid&quot;: &quot;473a41d2-15f4-434b-aeb4-ab96eb122bbf&quot;,
+    &quot;file_processors&quot;: [],
+    &quot;slicer&quot;: &quot;PrusaSlicer&quot;,
+    &quot;slicer_version&quot;: &quot;2.7.1+win64&quot;,
+    &quot;gcode_start_byte&quot;: 87410,
+    &quot;gcode_end_byte&quot;: 1618468,
+    &quot;object_height&quot;: 8,
+    &quot;estimated_time&quot;: 5947,
+    &quot;nozzle_diameter&quot;: 0.4,
+    &quot;layer_height&quot;: 0.2,
+    &quot;first_layer_height&quot;: 0.2,
+    &quot;first_layer_extr_temp&quot;: 215,
+    &quot;first_layer_bed_temp&quot;: 60,
+    &quot;chamber_temp&quot;: 50,
+    &quot;filament_name&quot;: &quot;Generic PLA Brown&quot;,
+    &quot;filament_type&quot;: &quot;PLA&quot;,
+    &quot;filament_total&quot;: 9159.55,
+    &quot;filament_weight_total&quot;: 27.32,
+    &quot;thumbnails&quot;: [
+        {
+            &quot;width&quot;: 32,
+            &quot;height&quot;: 32,
+            &quot;size&quot;: 1078,
+            &quot;relative_path&quot;: &quot;.thumbs/hook_x4_0.2mm_PLA_MK3S_1h39m-32x32.png&quot;
+        },
+        {
+            &quot;width&quot;: 400,
+            &quot;height&quot;: 300,
+            &quot;size&quot;: 61576,
+            &quot;relative_path&quot;: &quot;.thumbs/hook_x4_0.2mm_PLA_MK3S_1h39m-400x300.png&quot;
+        }
+    ],
+    &quot;print_start_time&quot;: 1706359466.722097,
+    &quot;job_id&quot;: &quot;0000BF&quot;,
+    &quot;filename&quot;: &quot;hook_x4_0.2mm_PLA_MK3S_1h39m.gcode&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The gcode file size in bytes.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>uuid</code></td>
+<td style="text-align:center">string</td>
+<td>A unique identifier for the metadata object.</td>
+</tr>
+<tr>
+<td><code>file_processors</code></td>
+<td style="text-align:center">[string]</td>
+<td>An array of <code>File Processors</code> that have processed</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>and modified the file.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#file-processor-app-desc</td>
+</tr>
+<tr>
+<td><code>slicer</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the slicer software used to slice the file.</td>
+</tr>
+<tr>
+<td><code>slicer_version</code></td>
+<td style="text-align:center">string</td>
+<td>The version of the slicer software.</td>
+</tr>
+<tr>
+<td><code>gcode_start_byte</code></td>
+<td style="text-align:center">int</td>
+<td>The byte offset in the file where the first gcode command</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>is detected.</td>
+</tr>
+<tr>
+<td><code>gcode_int_byte</code></td>
+<td style="text-align:center">int</td>
+<td>The byte offset in the file where the last gcode command</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>is detected.</td>
+</tr>
+<tr>
+<td><code>object_height</code></td>
+<td style="text-align:center">float</td>
+<td>The height (in mm) of the tallest object in the file.</td>
+</tr>
+<tr>
+<td><code>estimated_time</code></td>
+<td style="text-align:center">float</td>
+<td>The estimated time to complete the print, in seconds.</td>
+</tr>
+<tr>
+<td><code>nozzle_diameter</code></td>
+<td style="text-align:center">float</td>
+<td>The configured nozzle diameter, in mm.</td>
+</tr>
+<tr>
+<td><code>layer_height</code></td>
+<td style="text-align:center">float</td>
+<td>The configured layer height, in mm.</td>
+</tr>
+<tr>
+<td><code>first_layer_height</code></td>
+<td style="text-align:center">float</td>
+<td>The configured first layer height in mm.</td>
+</tr>
+<tr>
+<td><code>first_layer_extr_temp</code></td>
+<td style="text-align:center">float</td>
+<td>The configured first layer extruder temperature, in Celsius.</td>
+</tr>
+<tr>
+<td><code>first_layer_bed_temp</code></td>
+<td style="text-align:center">float</td>
+<td>The configured first layer bed temperature, in Celsius.</td>
+</tr>
+<tr>
+<td><code>chamber_temp</code></td>
+<td style="text-align:center">float</td>
+<td>The configured chamber temperature, in Celsius.</td>
+</tr>
+<tr>
+<td><code>filament_name</code></td>
+<td style="text-align:center">string</td>
+<td>The name(s) of the filaments contained in print.</td>
+</tr>
+<tr>
+<td><code>filament_colors</code></td>
+<td style="text-align:center">[string]</td>
+<td>List of filament colors used in #RRGGBB format.</td>
+</tr>
+<tr>
+<td><code>extruder_colors</code></td>
+<td style="text-align:center">[string]</td>
+<td>List of  slicer defined extruder colors for the print.</td>
+</tr>
+<tr>
+<td><code>filament_temps</code></td>
+<td style="text-align:center">[int]</td>
+<td>List of base temperatures for filaments, in Celsius.</td>
+</tr>
+<tr>
+<td><code>filament_type</code></td>
+<td style="text-align:center">string</td>
+<td>The type(s) of filament used, ie: <code>PLA</code>.</td>
+</tr>
+<tr>
+<td><code>filament_total</code></td>
+<td style="text-align:center">float</td>
+<td>The total length filament used in mm.</td>
+</tr>
+<tr>
+<td><code>filament_change_count</code></td>
+<td style="text-align:center">int</td>
+<td>The number of filament changes in the print.</td>
+</tr>
+<tr>
+<td><code>filament_weight_total</code></td>
+<td style="text-align:center">float</td>
+<td>The total weight of filament used in grams.</td>
+</tr>
+<tr>
+<td><code>filament_weights</code></td>
+<td style="text-align:center">[float]</td>
+<td>List of weights in grams used by each tool in the print.</td>
+</tr>
+<tr>
+<td><code>printer_vendor</code></td>
+<td style="text-align:center">string</td>
+<td>The vendor name of the associated printer.</td>
+</tr>
+<tr>
+<td><code>printer_model</code></td>
+<td style="text-align:center">string</td>
+<td>The model of the associated printer.</td>
+</tr>
+<tr>
+<td><code>printer_variant</code></td>
+<td style="text-align:center">string</td>
+<td>The variant of the associated printer.</td>
+</tr>
+<tr>
+<td><code>profile_version</code></td>
+<td style="text-align:center">string</td>
+<td>The version of the profile configured in the slicer.</td>
+</tr>
+<tr>
+<td><code>mmu_print</code></td>
+<td style="text-align:center">int</td>
+<td>Identifies a multimaterial print with single extruder.</td>
+</tr>
+<tr>
+<td><code>referenced_tools</code></td>
+<td style="text-align:center">[int]</td>
+<td>List of tool numbers used in the print.</td>
+</tr>
+<tr>
+<td><code>thumbnails</code></td>
+<td style="text-align:center">[object]</td>
+<td>A list of <code>Thumbnail Info</code> objects.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#thumbnail-info-spec</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td style="text-align:center">string?</td>
+<td>The last <code>history</code> job ID associated with the gcode.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>Will be <code>null</code> if no job has been associated with the file.</td>
+</tr>
+<tr>
+<td><code>print_start_time</code></td>
+<td style="text-align:center">float</td>
+<td>The most recent start time the gcode file was printed. Will</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be <code>null</code> if the file has yet to be printed.</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td>Path to the gcode file, relative to the <code>gcodes</code> root.</td>
+</tr>
+<tr>
+<td>{ #gcode-metadata-spec }</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>width</code></td>
+<td style="text-align:center">int</td>
+<td>The width of the thumbnail in pixels.</td>
+</tr>
+<tr>
+<td><code>height</code></td>
+<td style="text-align:center">int</td>
+<td>The height of the thumbnail in pixels.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the thumbnail in bytes.</td>
+</tr>
+<tr>
+<td><code>relative_path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the thumbnail, relative to the gcode file's parent.</td>
+</tr>
+<tr>
+<td>{ #thumbnail-info-spec } Thumbnail Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Application</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>preprocess_cancellation</code></td>
+<td>Converts &quot;object identifiers&quot; generated by the slicer into</td>
+</tr>
+<tr>
+<td></td>
+<td>GCode commands for use with Klipper's <code>[exclude_object]</code> module.</td>
+</tr>
+<tr>
+<td><code>klipper_estimator</code></td>
+<td>Performs a time analysis on the gcode file, replacing the</td>
+</tr>
+<tr>
+<td></td>
+<td>time estimates in the file with the result.  Also updates M73</td>
+</tr>
+<tr>
+<td></td>
+<td>commands.  The <a href="../configuration.md#analysis">analysis</a></td>
+</tr>
+<tr>
+<td></td>
+<td>component must be loaded for the metadata processor to detect if</td>
+</tr>
+<tr>
+<td></td>
+<td>a file has been processed by <code>klipper_estimator</code>.</td>
+</tr>
+<tr>
+<td>{ #file-processor-app-desc } File Processors</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+Metadata field availability depends on the Slicer application and its
+configuration.  If a field cannot be parsed from the slicer it will
+be omitted.
+////</p>
+<p>///</p>
+<h2>Scan GCode Metadata</h2>
+<p>Initiate a metadata scan for a selected file.  If the file has already
+been scanned the endpoint will force a re-scan.</p>
+<pre><code class="language-{.http">POST /server/files/metascan?filename={filename}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.metascan&quot;,
+    &quot;params&quot;: {
+        &quot;filename&quot;: &quot;{filename}&quot;
+    },
+    &quot;id&quot;: 3545
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">str</td>
+<td><strong>REQUIRED</strong></td>
+<td>The path to the gcode file, relative to the <code>gcodes</code> root.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>For an example response refer to the
+<a href="#metadata-example-response">Metadata Example Response</a>.</p>
+<p>/// api-response-spec
+open: True
+The response spec is identical to the
+<a href="#gcode-metadata-spec">Metadata Request Specification</a>
+///</p>
+<h2>Get GCode Thumbnail Details</h2>
+<p>Returns thumbnail information for a supplied gcode file.</p>
+<pre><code class="language-{.http">GET /server/files/thumbnails?filename=tools/drill.gcode
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.thumbnails&quot;,
+    &quot;params&quot;: {
+        &quot;filename&quot;: &quot;{filename}&quot;
+    },
+    &quot;id&quot;: 3545
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">str</td>
+<td><strong>REQUIRED</strong></td>
+<td>The path to the gcode file, relative to the <code>gcodes</code> root.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">[
+    {
+        &quot;width&quot;: 32,
+        &quot;height&quot;: 32,
+        &quot;size&quot;: 1551,
+        &quot;thumbnail_path&quot;: &quot;test/.thumbs/CE2_FanCover-120mm-Mesh-32x32.png&quot;
+    },
+    {
+        &quot;width&quot;: 300,
+        &quot;height&quot;: 300,
+        &quot;size&quot;: 31819,
+        &quot;thumbnail_path&quot;: &quot;test/.thumbs/CE2_FanCover-120mm-Mesh.png&quot;
+    }
+]
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>The result is an array of <code>Thumbnail Details</code> objects.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>width</code></td>
+<td style="text-align:center">int</td>
+<td>The width of the thumbnail in pixels.</td>
+</tr>
+<tr>
+<td><code>height</code></td>
+<td style="text-align:center">int</td>
+<td>The height of the thumbnail in pixels.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the thumbnail in bytes.</td>
+</tr>
+<tr>
+<td><code>thumbnail_path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the thumbnail, relative to the <code>gcodes</code> root.</td>
+</tr>
+<tr>
+<td>{ #thumbnail-details-spec } Thumbnail Details</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+The <code>Thumbnails Details</code> spec is nearly identical to the
+<a href="#thumbnail-info-spec">Thumbnail Info</a> spec reported in
+a <a href="#get-gcode-metadata">metadata request</a>, with one exception.
+The <code>thumbnail_path</code> field in the result above contains a
+path relative to the <code>gcodes</code> root, whereas the <code>relative_path</code>
+field reported in the <code>Thumbnail Info</code> is relative to the gcode
+file's parent folder.
+////</p>
+<p>///</p>
+<h2>Get directory information</h2>
+<p>Returns a list of files and subdirectories given a supplied path.
+Unlike <code>/server/files/list</code>, this command does not walk through
+subdirectories.  This request will return all files in a directory,
+including files in the <code>gcodes</code> root that do not have a valid gcode
+extension.</p>
+<pre><code class="language-{.http">GET /server/files/directory?path=gcodes/my_subdir&amp;extended=true
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.get_directory&quot;,
+    &quot;params&quot;: {
+        &quot;path&quot;: &quot;gcodes/my_subdir&quot;,
+        &quot;extended&quot;: true
+    },
+    &quot;id&quot;: 5644
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td><code>gcodes</code></td>
+<td>Path to the directory.  The first part must be a</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>registered root.</td>
+</tr>
+<tr>
+<td><code>extended</code></td>
+<td style="text-align:center">bool</td>
+<td><code>false</code></td>
+<td>When set to <code>true</code> metadata will be included in the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>response for gcode file.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;dirs&quot;: [
+        {
+            &quot;modified&quot;: 1615768162.0412788,
+            &quot;size&quot;: 4096,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;dirname&quot;: &quot;test&quot;
+        },
+        {
+            &quot;modified&quot;: 1613569827.489749,
+            &quot;size&quot;: 4096,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;dirname&quot;: &quot;Cura&quot;
+        },
+        {
+            &quot;modified&quot;: 1615767459.6265886,
+            &quot;size&quot;: 4096,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;dirname&quot;: &quot;thumbs&quot;
+        }
+    ],
+    &quot;files&quot;: [
+        {
+            &quot;modified&quot;: 1615578004.9639666,
+            &quot;size&quot;: 7300692,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;filename&quot;: &quot;Funnel_0.2mm_PLA_Ender2_2h4m.gcode&quot;
+        },
+        {
+            &quot;modified&quot;: 1589156863.9726968,
+            &quot;size&quot;: 4214831,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;filename&quot;: &quot;CE2_Pi3_A+_CaseLID.gcode&quot;
+        },
+        {
+            &quot;modified&quot;: 1615030592.7722695,
+            &quot;size&quot;: 2388774,
+            &quot;permissions&quot;: &quot;rw&quot;,
+            &quot;filename&quot;: &quot;CE2_calicat.gcode&quot;
+        }
+    ],
+    &quot;disk_usage&quot;: {
+        &quot;total&quot;: 7522213888,
+        &quot;used&quot;: 4280369152,
+        &quot;free&quot;: 2903625728
+    },
+    &quot;root_info&quot;: {
+        &quot;name&quot;: &quot;gcodes&quot;,
+        &quot;permissions&quot;: &quot;rw&quot;
+    }
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dirs</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <code>Directory Info</code> objects.  Will be empty if</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>no sub-directories are found.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#directory-info-spec</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <code>File Info</code> objects.  Will be empty if no</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>files are found.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#dir-req-file-info-spec</td>
+</tr>
+<tr>
+<td><code>disk_usage</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Disk Usage</code> object. This provides disk usage details</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>about the underlying storage media containing the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>requested directory.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#disk-usage-spec</td>
+</tr>
+<tr>
+<td><code>root_info</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Root Info</code> object. Provides details about the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory's root parent.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#root-info-spec</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the directory.</td>
+</tr>
+<tr>
+<td><code>dirname</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the directory.</td>
+</tr>
+<tr>
+<td>{ #directory-info-spec } Directory Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the directory.</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the file.</td>
+</tr>
+<tr>
+<td><em>metadata-fields</em></td>
+<td style="text-align:center"><em>any</em></td>
+<td>When the <code>extended</code> parameter is set to true all available metadata</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>fields are included in the object.  See the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td><a href="#gcode-metadata-spec">metadata response spec</a> for details.  Note that</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the <code>filename</code> in the metadata spec, which is a relative path, will</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>not overwrite the <code>filename</code> above, which is not a path.</td>
+</tr>
+<tr>
+<td>{ #dir-req-file-info-spec } File Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>free</code></td>
+<td style="text-align:center">int</td>
+<td>The amount of free space in bytes.</td>
+</tr>
+<tr>
+<td><code>used</code></td>
+<td style="text-align:center">int</td>
+<td>The amount of used data in bytes.</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td style="text-align:center">int</td>
+<td>The total capacity of the disk in bytes.</td>
+</tr>
+<tr>
+<td>{ #disk-usage-spec } Disk Usage</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the root node for the requested directory.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>root node.</td>
+</tr>
+<tr>
+<td>{ #root-info-spec } Root Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Create directory</h2>
+<p>Creates a directory at the specified path.</p>
+<pre><code class="language-{.http">POST /server/files/directory
+Content-Type: application/json
+
+{
+    &quot;path&quot;: &quot;gcodes/my_new_dir&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.post_directory&quot;,
+    &quot;params&quot;: {
+        &quot;path&quot;: &quot;gcodes/my_new_dir&quot;
+    },
+    &quot;id&quot;: 6548
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The path to the directory to create, including its <code>root</code>.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>Note that the parent directory must exist.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;path&quot;: &quot;my_new_dir&quot;,
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;modified&quot;: 1676983427.3732708,
+        &quot;size&quot;: 4096,
+        &quot;permissions&quot;: &quot;rw&quot;
+
+    },
+    &quot;action&quot;: &quot;create_dir&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>An <code>Item Details</code> object describing the directory created.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#create-dir-item-details-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>A description of the action taken by the host.  Will always</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be <code>create_dir</code> for this request.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the new directory, relative to the root.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node the directory was created under.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the directory.  Will generally be 4096.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>Permissions available on the new directory.</td>
+</tr>
+<tr>
+<td>{ #create-dir-item-details-spec } Item Details</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Delete directory</h2>
+<p>Deletes a directory at the specified path.</p>
+<pre><code class="language-{.http">DELETE /server/files/directory?path=gcodes/my_subdir&amp;force=false
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.delete_directory&quot;,
+    &quot;params&quot;: {
+        &quot;path&quot;: &quot;gcodes/my_subdir&quot;,
+        &quot;force&quot;: false
+    },
+    &quot;id&quot;: 6545
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The path to the directory to delete, including its <code>root</code>.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>Note that the directory must be empty if <code>force</code> is <code>false</code></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td style="text-align:center">bool</td>
+<td><code>false</code></td>
+<td>When set to <code>true</code> the directory and all of its contents</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>will be deleted.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;path&quot;: &quot;my_subdir&quot;,
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;modified&quot;: 0,
+        &quot;size&quot;: 0,
+        &quot;permissions&quot;: &quot;&quot;
+
+    },
+    &quot;action&quot;: &quot;delete_dir&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>An <code>Item Details</code> object describing the directory deleted.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#delete-dir-item-details-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>A description of the action taken by the host.  Will always</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be <code>delete_dir</code> for this request.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the deleted directory, relative to the root.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node the directory existed under prior to removal.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).  Should be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>0 if the delete was successful.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the removed directory.  Should be 0 if the delete</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>was successful.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>Permissions available on the removed directory.  Should be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>an empty string if the delete was successful.</td>
+</tr>
+<tr>
+<td>{ #delete-dir-item-details-spec } Item Details</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Move a file or directory</h2>
+<p>Moves a file or directory from one location to another. The following
+conditions must be met for a move successful move:</p>
+<ul>
+<li>The source item must exist.</li>
+<li>The user that owns the Moonraker process must have the appropriate
+file permissions.</li>
+<li>Neither the source nor destination can be loaded by Klipper's <code>virtual_sdcard</code>.
+If the source is a directory, it must not contain a file loaded by the
+<code>virtual_sdcard</code>.</li>
+</ul>
+<p>When specifying the <code>source</code> and <code>dest</code>, the <code>root</code> directory should be
+prefixed. Currently the only supported roots for <code>dest</code> are <code>gcodes</code>&quot;
+and <code>config</code>&quot;.</p>
+<p>This endpoint may also be used to rename a file or directory.   Be aware that an
+attempt to rename a directory to a directory that exists with the same name will
+<em>move</em> the source directory into the destination directory.  Also be aware
+that renaming a file to a file that already exists will overwrite the existing
+file.</p>
+<pre><code class="language-{.http">POST /server/files/move
+Content-Type: application/json
+
+{
+    &quot;source&quot;: &quot;gcodes/orig_dir/my_file.gcode&quot;,
+    &quot;dest&quot;: &quot;gcodes/new_dir/my_file.gcode&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.move&quot;,
+    &quot;params&quot;: {
+        &quot;source&quot;: &quot;gcodes/orig_dir/my_file.gcode&quot;,
+        &quot;dest&quot;: &quot;gcodes/new_dir/my_file.gcode&quot;
+    },
+    &quot;id&quot;: 5664
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The source file or directory to move.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>This is a path that must start with the root node.</td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The destination path.  The path must start with the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>root node.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;path&quot;: &quot;subdir/my_file.gcode&quot;,
+        &quot;modified&quot;: 1676940082.8595376,
+        &quot;size&quot;: 384096,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    &quot;source_item&quot;: {
+        &quot;path&quot;: &quot;testdir/my_file.gcode&quot;,
+        &quot;root&quot;: &quot;gcodes&quot;
+    },
+    &quot;action&quot;: &quot;move_file&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Destination Item</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#move-dest-item-spec</td>
+</tr>
+<tr>
+<td><code>source_item</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Source Item</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#move-source-item-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>A description of the action taken.  Will be <code>move_file</code></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>if a file was moved or <code>move_dir</code> if a directory was</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>moved.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path, relative to the root node, of the destination</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>file or directory.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time of the destination file or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory.  This is expressed in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size, in bytes, of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The permissions available on the destination file or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory.</td>
+</tr>
+<tr>
+<td>{ #move-dest-item-spec } Destination Item</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the source file or directory that was moved.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path, relative to the root node, of the source file or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory that was moved.</td>
+</tr>
+<tr>
+<td>{ #move-source-item-spec } Source Item</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Copy a file or directory</h2>
+<p>Copies a file or directory from one location to another.  A successful copy has
+the same prerequisites as a move with one exception, a copy may complete if the
+source file or directory is loaded by the <code>virtual_sdcard</code>.</p>
+<pre><code class="language-{.http">POST /server/files/copy
+Content-Type: application/json
+
+{
+    &quot;source&quot;: &quot;gcodes/my_file.gcode&quot;,
+    &quot;dest&quot;: &quot;gcodes/new_dir/my_file.gcode&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.copy&quot;,
+    &quot;params&quot;: {
+        &quot;source&quot;: &quot;gcodes/my_file.gcode&quot;,
+        &quot;dest&quot;: &quot;gcodes/new_dir/my_file.gcode&quot;
+    },
+    &quot;id&quot;: 5623
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The source file or directory to copy.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>This is a path that must start with the root node.</td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The destination path.  The path must start with the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>root node.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;path&quot;: &quot;subdir/my_file.gcode&quot;,
+        &quot;modified&quot;: 1676940082.8595376,
+        &quot;size&quot;: 384096,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    &quot;action&quot;: &quot;create_file&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Destination Item</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#copy-dest-item-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>A description of the action taken.  Expand for details.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#copy-action-desc</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path, relative to the root node, of the destination</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>file or directory.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time of the destination file or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory.  This is expressed in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size, in bytes, of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The permissions available on the destination file or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>directory.</td>
+</tr>
+<tr>
+<td>{ #copy-dest-item-spec } Destination Item</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>create_file</code></td>
+<td>A new file was created by the copy operation.</td>
+</tr>
+<tr>
+<td><code>modify_file</code></td>
+<td>An existing file was modified (overwritten) by the copy</td>
+</tr>
+<tr>
+<td></td>
+<td>operation.</td>
+</tr>
+<tr>
+<td><code>create_dir</code></td>
+<td>A new directory was created by the copy operation.  In</td>
+</tr>
+<tr>
+<td></td>
+<td>addition, children files and directories may have been</td>
+</tr>
+<tr>
+<td></td>
+<td>created.</td>
+</tr>
+<tr>
+<td>{ #copy-action-desc }</td>
+<td></td>
+</tr>
+<tr>
+<td>///</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Create a ZIP archive</h2>
+<p>Creates a <code>zip</code> file consisting of one or more files.</p>
+<pre><code class="language-{.http">POST /server/files/zip
+Content-Type: application/json
+
+{
+    &quot;dest&quot;: &quot;config/error_logs.zip&quot;,
+    &quot;items&quot;: [
+        &quot;config/printer.cfg&quot;,
+        &quot;logs&quot;,
+        &quot;gcodes/subfolder&quot;
+    ],
+    &quot;store_only&quot;: false
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.zip&quot;,
+    &quot;params&quot;: {
+        &quot;dest&quot;: &quot;config/error_logs.zip&quot;,
+        &quot;items&quot;: [
+            &quot;config/printer.cfg&quot;,
+            &quot;logs&quot;,
+            &quot;gcodes/subfolder&quot;
+        ],
+        &quot;store_only&quot;: false
+    },
+    &quot;id&quot;: 5623
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dest</code></td>
+<td style="text-align:center">string</td>
+<td><code>config/collection-{timestamp}.zip</code></td>
+<td>Path to the destination archive file.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>The path must begin with a valid &quot;root&quot;</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>that has write permission.</td>
+</tr>
+<tr>
+<td><code>items</code></td>
+<td style="text-align:center">[string]</td>
+<td><strong>REQUIRED</strong></td>
+<td>An array of paths indicating the items</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>to be included in the archive.  Each</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>path must start with a valid root. An</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>item may be a file or directory.</td>
+</tr>
+<tr>
+<td><code>store_only</code></td>
+<td style="text-align:center">bool</td>
+<td><code>false</code></td>
+<td>When set to <code>true</code> the contents of the zip</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>archive are not compressed.  Otherwise the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td><code>deflation</code> algorithm will be used to</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>compress the contents.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;destination&quot;: {
+        &quot;root&quot;: &quot;config&quot;,
+        &quot;path&quot;: &quot;error_logs.zip&quot;,
+        &quot;modified&quot;: 1676984423.8892415,
+        &quot;size&quot;: 420,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    &quot;action&quot;: &quot;zip_files&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>destination</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Zip Destination</code> object containing details about the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>archived file.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#zip-destination-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The action taken be the file manager. Will be <code>zip_files</code>.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the zip archive, relative to the <code>root</code>.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time in unix time.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the archive.</td>
+</tr>
+<tr>
+<td>{ #zip-destination-spec } Zip Destination</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>File download</h2>
+<p>Retrieves file <code>filename</code> at root <code>root</code>.  The <code>filename</code> must include
+the relative path if it is not in the root folder.</p>
+<pre><code class="language-{.http">GET /server/files/{root}/{filename}
+</code></pre>
+<pre><code class="language-{.json">Not Available
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The body of the response contains the contents of the requested file.</p>
+<p>///</p>
+<h2>File upload</h2>
+<p>Upload a file.  Currently files may be uploaded to the <code>gcodes</code> or <code>config</code>
+roots, with <code>gcodes</code> being the default.  If one wishes to upload
+to a subdirectory, the path may be added to the upload's file name
+(relative to the root). If the directory does not exist an error will be
+returned.  Alternatively, the <code>path</code> form argument may be set, as explained
+below.</p>
+<pre><code class="language-{.http">POST /server/files/upload`
+Content-Type: multipart/form-data
+
+------FormBoundaryemap3PkuvKX0B3HH
+Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;myfile.gcode&quot;
+Content-Type: application/octet-stream
+
+&lt;binary data&gt;
+------FormBoundaryemap3PkuvKX0B3HH--
+</code></pre>
+<pre><code class="language-{.json">Not Available
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<p>The file data must be included in the request's body as <code>multipart/form-data</code>
+(ie: <code>&lt;input type=&quot;file&quot;&gt;</code>).  The following <em>optional</em> arguments may also be
+added to the form-data:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td><code>gcodes</code></td>
+<td>The root location in which to upload the file.  Currently</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>this may only be <code>gcodes</code> or <code>config</code>.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td></td>
+<td>An optional path, relative to the <code>root</code>, indicating a</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>subfolder in which to save the file.  If the subfolder does</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>not exist it will be created.</td>
+</tr>
+<tr>
+<td><code>checksum</code></td>
+<td style="text-align:center">string</td>
+<td></td>
+<td>An optional SHA256 hex digest calculated by the client for</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>the uploaded file.  If this argument is supplied the server</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>will compare it to its own checksum calculation after the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>upload has completed.  A checksum mismatch will result in a</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>422 error.</td>
+</tr>
+<tr>
+<td><code>print</code></td>
+<td style="text-align:center">string</td>
+<td><code>false</code></td>
+<td>Available only for files uploaded to the <code>gcodes</code> root.  When</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>set to <code>true</code> Moonraker will command Klippy to start the print</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>after the upload has successfully completed.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;path&quot;: &quot;Lock Body Shim 1mm_0.2mm_FLEX_MK3S_2h30m.gcode&quot;,
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;modified&quot;: 1676984527.636818,
+        &quot;size&quot;: 71973,
+        &quot;permissions&quot;: &quot;rw&quot;
+    },
+    &quot;print_started&quot;: false,
+    &quot;print_queued&quot;: false,
+    &quot;action&quot;: &quot;create_file&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>An <code>Uploaded Item</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#uploaded-item-spec</td>
+</tr>
+<tr>
+<td><code>print_started</code></td>
+<td style="text-align:center">bool</td>
+<td>Set to <code>true</code> if the uploaded file has successfully started printing.</td>
+</tr>
+<tr>
+<td><code>print_queued </code></td>
+<td style="text-align:center">bool</td>
+<td>Set to <code>true</code> if the uploaded file has been queued for printing</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>at a later time.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>Action taken by the file manager. Will always be &quot;create_file&quot;.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the uploaded file, relative to the <code>root</code>.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the destination file or directory.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time in unix time.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the archive.</td>
+</tr>
+<tr>
+<td>{ #uploaded-item-spec } Uploaded Item</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>In addition to the above returned object, all successful uploads will respond with
+a 201 response code and set the <code>Location</code> response header to the full path of
+the uploaded file.
+///</p>
+<h2>File delete</h2>
+<p>Delete a file in the requested root.  If the file exists in a subdirectory,
+its relative path must be part of the <code>{filename}</code> argument.</p>
+<pre><code class="language-{.http">DELETE /server/files/{root}/{filename}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.delete_file&quot;,
+    &quot;params&quot;: {
+        &quot;path&quot;: &quot;{root}/{filename}&quot;
+    },
+    &quot;id&quot;: 1323
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;item&quot;: {
+        &quot;path&quot;: &quot;Lock Body Shim 1mm_0.2mm_FLEX_MK3S_2h30m.gcode&quot;,
+        &quot;root&quot;: &quot;gcodes&quot;,
+        &quot;size&quot;: 0,
+        &quot;modified&quot;: 0,
+        &quot;permissions&quot;: &quot;&quot;
+    },
+    &quot;action&quot;: &quot;delete_file&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Deleted Item</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#deleted-item-spec</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>Action taken by the file manager. Will always be &quot;delete_file&quot;.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the deleted file, relative to the <code>root</code>.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the deleted file or directory.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified time in unix time.  Should always be 0 as the file</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>no longer exists.</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the file in bytes. Should always be 0 as the file no</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>longer exits.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>The available <a href="#file-permissions-desc">permissions</a> of the archive.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>should always be an empty string as the file no longer exists.</td>
+</tr>
+<tr>
+<td>{ #deleted-item-spec } Deleted Item</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Download klippy.log</h2>
+<p>/// Note
+Logs are now available in the <code>logs</code> root.  Front ends should consider
+presenting all available logs using &quot;file manager&quot; type of UI.  That said,
+If Klipper has not been configured to write logs in the <code>logs</code> root then
+this endpoint is available as a fallback.
+///</p>
+<pre><code class="language-{.http">GET /server/files/klippy.log
+</code></pre>
+<pre><code class="language-{.json">Not Available
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The body of the response contains contents of <code>klippy.log</code>.</p>
+<p>///</p>
+<h2>Download moonraker.log</h2>
+<p>/// Note
+Logs are now available in the <code>logs</code> root.  Front ends should consider
+presenting all available logs using &quot;file manager&quot; type of UI.  That said,
+If Moonraker has not been configured to write logs in the <code>logs</code> root then
+this endpoint is available as a fallback.
+///</p>
+<pre><code class="language-{.http">GET /server/files/moonraker.log
+</code></pre>
+<pre><code class="language-{.json">Not Available
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<p>The body of the response contains the contents of <code>moonraker.log</code>.</p>
+<p>///</p>
+
+</main></body></html>

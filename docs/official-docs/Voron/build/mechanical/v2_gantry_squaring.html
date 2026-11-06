@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V2 gantry squaring · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Voron · source: <a href="https://docs.vorondesign.com/build/mechanical/v2_gantry_squaring.html">https://docs.vorondesign.com/build/mechanical/v2_gantry_squaring.html</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<hr />
+<h2>layout: default
+title: V2 Gantry Squaring
+nav_order: 1
+parent: Mechanical Assembly
+grand_parent: The Build</h2>
+<h1>V2 Gantry Squaring</h1>
+<p>Poor gantry squaring can cause a number of problems, such as:</p>
+<ul>
+<li>First Layer issues</li>
+<li>Z belts rubbing against the gantry's printed parts</li>
+<li>X axis to be &quot;racked&quot; at the front but not the back (or vice versa)</li>
+</ul>
+<p>Steps 14-16 of the instructions below can also help with gantry stability.</p>
+<h2>Demonstration</h2>
+<p>Notice that the idlers get &quot;pinched&quot; when moving the X extrusion back/forth (this is shown with loose Z joints).</p>
+<video width="640" height="360" preload="auto" controls>
+    <source src="https://user-images.githubusercontent.com/34943186/154356504-b3870f34-32a3-4c2a-a424-7d48def0f834.mp4" type="video/mp4">
+    <!-- Fallback -->
+    <p style="color:red; font-weight: bold;">Your browser doesn't support embedded videos. Click <a href="https://user-images.githubusercontent.com/34943186/154356504-b3870f34-32a3-4c2a-a424-7d48def0f834.mp4" alt="Idlers video">here</a> to view directly.</p>
+</video>
+<h2>Method</h2>
+<p><strong>Note:</strong> Some have found <a href="https://github.com/VoronDesign/VoronUsers/tree/master/printer_mods/tallman5/z-locks/">Z Locks</a> to be useful for this procedure. They are not required, however.</p>
+<ol>
+<li>
+<p>Raise the stepper driver timeout with this g-code: <code>SET_IDLE_TIMEOUT TIMEOUT=99999</code><br />
+This arbitrarily high timeout just gives us time to work. We need the Z motors to be energized and holding the gantry for the whole process.</p>
+</li>
+<li>
+<p>Home the printer with <code>G28</code>,<br />
+Then level the gantry with <code>QUAD_GANTRY_LEVEL</code>.</p>
+</li>
+<li>
+<p>Jog your gantry to the center of the build volume using the LCD or web interface.<br />
+This will give you space to work. You need easy access to both the bottom and top of your gantry.</p>
+</li>
+<li>
+<p>Turn off ONLY your A/B motors using these g-codes:</p>
+<p><code>SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=0</code><br />
+<code>SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=0</code></p>
+</li>
+<li>
+<p>Loosen your A/B belt tension fully.<br />
+This prevents the A/B belt tension from pulling the gantry out of alignment while you work on it.</p>
+<p>Your belts should be fully disengaged. If there is still remaining tension with the idlers fully backed off, you may need to release the belt ends from the X carriage.</p>
+<p><img src="./images/v2_gantry_squaring/Gantry-ABTension.png" alt="Loosen the A/B tensioners" /></p>
+</li>
+<li>
+<p>Take off your side panels.</p>
+</li>
+<li>
+<p>Unscrew and drop your lower Z joints.<br />
+Your gantry will now be floating on just the belts.</p>
+<p>{: .note }</p>
+<blockquote>
+<p>Make sure your printer is on a (fairly) level surface. Unlevel surfaces could cause your gantry to swing too much to one side.<br />
+It doesn't have to be perfectly level; Just don't do it on a hill!</p>
+</blockquote>
+<p><img src="./images/v2_gantry_squaring/ZJoint-Lowered.png" alt="Z joint lowered/removed" /> -- <img src="./images/v2_gantry_squaring/ZJoints-Lowered.png" alt="All Z joints lowered/removed" /></p>
+</li>
+<li>
+<p><strong>PARTIALLY</strong> loosen all connections to the extrusions.</p>
+<p>You need all of these bolts to be loose enough to freely adjust against the printed part on the extrusions.</p>
+<p>{: .warning }</p>
+<blockquote>
+<p>Where there are Z belt clamps, ensure that you do not loosen the bolts to the point of the Z-belts releasing.<br />
+<strong>Only loosen enough to allow for adjustments</strong></p>
+</blockquote>
+<ol>
+<li>
+<p>X/Y joints (repeat for both sides)</p>
+<ul>
+<li>Top:<br />
+<img src="./images/v2_gantry_squaring/XYLoosen-Top.png" alt="Loosen XY joint (top)" /></li>
+<li>Bottom:<br />
+<img src="./images/v2_gantry_squaring/XYLoosen-Bottom.png" alt="Loosen XY joint (bottom)" /></li>
+</ul>
+</li>
+<li>
+<p>A/B joints (repeat for both sides):</p>
+<ul>
+<li>Top:<br />
+<em>Don't overdo the belt clamps!</em><br />
+<img src="./images/v2_gantry_squaring/ABLoosen-Top.png" alt="Loosen AB joint (top)" /></li>
+<li>Bottom:<br />
+<em>Don't overdo the belt clamps!</em><br />
+<img src="./images/v2_gantry_squaring/ABLoosen-Bottom.png" alt="Loosen AB joint (bottom)" /></li>
+</ul>
+</li>
+<li>
+<p>Front idlers (repeat for both sides):</p>
+<ul>
+<li>Top:<br />
+<em>Don't overdo the belt clamps!</em><br />
+<img src="./images/v2_gantry_squaring/IdlersLoosen-Top.png" alt="Loosen front idlers (top)" /></li>
+<li>Bottom:<br />
+<em>Don't overdo it!</em><br />
+<img src="./images/v2_gantry_squaring/IdlersLoosen-Bottom.png" alt="Loosen front idlers (top)" /></li>
+</ul>
+</li>
+</ol>
+<p><strong>And now, what we have been preparing for...</strong></p>
+</li>
+<li>
+<p>Level your gantry with the Z joints</p>
+<ol>
+<li>
+<p>Adjust your gantry so that it sits perfectly on top of the lower Z joints.<br />
+This involves moving gantry components further apart or closer together along the extrusions:</p>
+<ul>
+<li>Rear:<br />
+<img src="./images/v2_gantry_squaring/XAdjust.png" alt="Adjust X components" /></li>
+<li>Sides:<br />
+<img src="./images/v2_gantry_squaring/YAdjust.png" alt="Adjust y components" /></li>
+</ul>
+<p>Your gantry should align so that:</p>
+<ol>
+<li>The Z joints feel perfectly flush along the side, and</li>
+<li>When raising and lowering your lower Z joint by hand, the bolt slides in perfectly without hitting the sides.</li>
+</ol>
+<p><img src="./images/v2_gantry_squaring/Alignment-Side.png" alt="Align flush with the side" title="Align flush with the side" /> -- <img src="./images/v2_gantry_squaring/Alignment-Hole.png" alt="Alignment hole" title="Alignment hole" /></p>
+</li>
+<li>
+<p>Ensure that you do not inadvertently rotate your A/B joints during this process.</p>
+<p><img src="./images/v2_gantry_squaring/Alignment-AB-Good.png" alt="Good AB alignment" /> <img src="./images/v2_gantry_squaring/Alignment-AB-Bad.png" alt="Bad AB alignment" /></p>
+</li>
+</ol>
+</li>
+<li>
+<p>Tighten every extrusion bolt again, <em>except</em> those in the X/Y joints. (you will tighten those during step 12)<br />
+Ensure that your Z joints still align properly. Sometimes, tightening can move things around.</p>
+</li>
+<li>
+<p>Re-install your lower Z joints and <em>lightly</em> tighten the M5 bolts.<br />
+Don't fully tighten them down yet - just lightly. The joint should still be able to articulate freely.</p>
+</li>
+<li>
+<p>Eliminate any racking in the gantry.<br />
+Follow the <a href="https://www.youtube.com/watch?v=cOn6u9kXvy0">Nero3D's de-racking video</a> for help with this.</p>
+<p>{: .note }</p>
+<blockquote>
+<p>Make sure to come back here afterwards! The following steps are still important.</p>
+</blockquote>
+</li>
+<li>
+<p>Re-tension your A/B belts<br />
+The recommended amount of trension amounts to 110hz over a <strong>15cm span</strong></p>
+<p>Steps for tensioning your A/B belts are outlined in the <a href="/tuning/secondary_printer_tuning.html#ab-belts">Belt tension: A/B Belts</a> guide.</p>
+</li>
+<li>
+<p>Reinstall your panels and fully heatsoak your printer for <strong>1½ - 2 hours minimum.</strong></p>
+</li>
+<li>
+<p>Run a gantry level using <code>QUAD_GANTRY_LEVEL</code>.<br />
+Do this 3-5 times to &quot;settle in&quot; the gantry (and level it for the next step).</p>
+<p>If you are getting new tolerance or retry errors, you may have left your Z joints a bit <em>too</em> loose. Try tightening them up just a bit more.</p>
+</li>
+<li>
+<p>Open the front door and fully tighten the M5 bolts in your Z joints while it's still hot.</p>
+<p>This does two things:</p>
+<ol>
+<li>
+<p>Somewhat &quot;locks in&quot; your QGL at its state in full thermal expansion.<br />
+<em>This can help with first layer issues</em></p>
+</li>
+<li>
+<p>Stabilizes your gantry.<br />
+<em>This can help with ringing and layer consistency</em></p>
+</li>
+</ol>
+<p>If you have your Z joints too loose, you might notice that your gantry displaces back &amp; forth a bit while printing.</p>
+</li>
+<li>
+<p>Restart your printer with <code>RESTART</code>. This will reset the idle timeout we set in step 1.</p>
+</li>
+</ol>
+
+</main></body></html>

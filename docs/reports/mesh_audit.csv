@@ -1,0 +1,6 @@
+﻿file,vertices,faces,watertight,winding_consistent,is_volume,nonmanifold_edges,boundary_edges,degenerate_faces,duplicate_face_pairs,extents_x_mm,extents_y_mm,extents_z_mm,volume_mm3,print_preflight_pass
+assets/test-models/cube.stl,8,12,True,True,True,0,0,0,0,20.0,20.0,20.0,8000.0,True
+assets/source/voron-v2.4r2-300/STLs/Test_Prints/Filament_Card.stl,401,802,True,True,True,0,0,0,0,60.0,34.0,2.0,2929.9168,True
+assets/source/voron-v2.4r2-300/STLs/Tools/MGN9_rail_guide_x2.stl,312,620,True,True,True,0,0,0,0,26.0,20.5,10.0,2604.262,True
+assets/source/voron-v2.4r2-300/STLs/Gantry/X_Axis/X_Carriage/Printheads/Dragonfly_BMS/printhead_front_dragonfly_bms.stl,54167,108358,True,True,True,0,0,0,0,62.2536,60.5802,38.5243,27432.8752,True
+tools/OrcaSlicer-2.4.2/resources/profiles/Voron/Voron_300_build_plate.stl,173,338,True,True,True,0,0,0,0,305.0,315.0,11.75,1046959.4328,True

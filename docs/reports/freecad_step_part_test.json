@@ -1,0 +1,41 @@
+{
+  "freecad_version": [
+    "1",
+    "1",
+    "4",
+    "20260928 (Git shallow)",
+    "Unknown",
+    "2026/09/28 13:46:34",
+    "(HEAD detached at 4fd3bf320)",
+    "4fd3bf320d9566a27e60069fc8387448aaa3a094"
+  ],
+  "python": "3.11.14 | packaged by conda-forge | (main, Oct 13 2025, 14:00:26) [MSC v.1944 64 bit (AMD64)]",
+  "cwd": "C:\\Users\\someb\\Desktop\\printverse",
+  "imports": [
+    {
+      "path": "C:\\Users\\someb\\Desktop\\printverse\\assets\\source\\voron-v2.4r2-300\\DXF\\Build_Plate\\MIC6_Bed_V2_300.step",
+      "bytes": 27660,
+      "label": "step",
+      "elapsed_s": 0.186,
+      "object_count": 1,
+      "part_feature_count": 1,
+      "mesh_feature_count": 0,
+      "solid_count": 1,
+      "face_count": 20,
+      "volume_mm3": 721126.835,
+      "bbox_mm": {
+        "valid": true,
+        "xmin": -1.0,
+        "ymin": -25.5,
+        "zmin": 1.18,
+        "xmax": 304.0,
+        "ymax": 279.5,
+        "zmax": 8.94,
+        "dx": 305.0,
+        "dy": 305.0,
+        "dz": 7.76
+      },
+      "ok": true
+    }
+  ]
+}

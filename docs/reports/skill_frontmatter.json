@@ -1,0 +1,94 @@
+{
+  "skills": [
+    {
+      "dir": "printverse-cad-audit",
+      "file": ".dsh/skills/printverse-cad-audit/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-cad-audit",
+      "description_len": 284,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 3232
+    },
+    {
+      "dir": "printverse-filament-accounting",
+      "file": ".dsh/skills/printverse-filament-accounting/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-filament-accounting",
+      "description_len": 275,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 3479
+    },
+    {
+      "dir": "printverse-gcode-simulation",
+      "file": ".dsh/skills/printverse-gcode-simulation/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-gcode-simulation",
+      "description_len": 289,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 3371
+    },
+    {
+      "dir": "printverse-mesh-preflight",
+      "file": ".dsh/skills/printverse-mesh-preflight/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-mesh-preflight",
+      "description_len": 219,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 2789
+    },
+    {
+      "dir": "printverse-moonraker-safety",
+      "file": ".dsh/skills/printverse-moonraker-safety/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-moonraker-safety",
+      "description_len": 259,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 3125
+    },
+    {
+      "dir": "printverse-orchestrator",
+      "file": ".dsh/skills/printverse-orchestrator/SKILL.md",
+      "frontmatter": true,
+      "name": "printverse-orchestrator",
+      "description_len": 295,
+      "errors": [],
+      "keys": [
+        "name",
+        "description",
+        "whenToUse",
+        "metadata"
+      ],
+      "body_bytes": 3834
+    }
+  ]
+}

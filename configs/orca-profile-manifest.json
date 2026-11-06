@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "machine",
+    "name": "Voron 2.4 300 0.4 nozzle",
+    "output": "configs/machine/voron-v2.4r2-300-0.4.json",
+    "source_root": "tools/OrcaSlicer-2.4.2/resources/profiles",
+    "orca_version": "2.4.2",
+    "verification": "UNVERIFIED_AGAINST_PHYSICAL_MACHINE",
+    "note": "Values are the official OrcaSlicer Voron preset values, not measured on a real printer.",
+    "key_count": 65
+  },
+  {
+    "kind": "process",
+    "name": "0.20mm Standard @Voron",
+    "output": "configs/process/voron-0.20mm-standard.json",
+    "source_root": "tools/OrcaSlicer-2.4.2/resources/profiles",
+    "orca_version": "2.4.2",
+    "verification": "UNVERIFIED_AGAINST_PHYSICAL_MACHINE",
+    "note": "Values are the official OrcaSlicer Voron preset values, not measured on a real printer.",
+    "key_count": 116
+  },
+  {
+    "kind": "filament",
+    "name": "Generic PLA @System",
+    "output": "configs/filament/generic-pla.json",
+    "source_root": "tools/OrcaSlicer-2.4.2/resources/profiles",
+    "orca_version": "2.4.2",
+    "verification": "UNVERIFIED_AGAINST_PHYSICAL_MACHINE",
+    "note": "Values are the official OrcaSlicer Voron preset values, not measured on a real printer.",
+    "key_count": 64
+  }
+]

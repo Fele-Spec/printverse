@@ -1,0 +1,20 @@
+# Large acquired binaries are kept on disk but not committed without Git LFS.
+assets/source/
+tools/
+logs/
+.cache/
+.venv/
+frontend/node_modules/
+frontend/dist/
+frontend/vite.config.js
+frontend/vite.config.d.ts
+*.tsbuildinfo
+__pycache__/
+*.pyc
+docs/official-docs/Voron-Documentation-main/
+docs/official-docs/*.zip
+
+# Local editor / OS noise
+Thumbs.db
+.DS_Store
+*.log

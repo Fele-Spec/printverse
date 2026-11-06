@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job queue API · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/job_queue/">https://moonraker.readthedocs.io/en/latest/external_api/job_queue/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Job Queue Management</h1>
+<p>The following endpoints may be used to manage Moonraker's job queue.
+Note that Moonraker's Job Queue is implemented as a FIFO queue and it may
+contain multiple references to the same job.</p>
+<p>The queue maintains an internal state attribute, which will always be one
+of the following:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ready</code></td>
+<td>The queue is active and will load the next queued job upon</td>
+</tr>
+<tr>
+<td></td>
+<td>completion of the current job.</td>
+</tr>
+<tr>
+<td><code>loading</code></td>
+<td>The queue is currently loading the next job.  If the</td>
+</tr>
+<tr>
+<td></td>
+<td><code>job_queue</code> configuration specifies a <code>job_transition_delay</code></td>
+</tr>
+<tr>
+<td></td>
+<td>and/or a <code>job_transition_gcode</code> the queue will remain in the</td>
+</tr>
+<tr>
+<td></td>
+<td><code>loading</code> state until both are completed.</td>
+</tr>
+<tr>
+<td><code>starting</code></td>
+<td>The state reported while the Job Queue is requesting Klipper</td>
+</tr>
+<tr>
+<td></td>
+<td>to start the print.</td>
+</tr>
+<tr>
+<td><code>paused</code></td>
+<td>When the queue is <code>paused</code> it will not load the next queued</td>
+</tr>
+<tr>
+<td></td>
+<td>job after a working job has completed.  The queue will enter</td>
+</tr>
+<tr>
+<td></td>
+<td>this state if a pause is requested through the &quot;pause&quot; endpoint,</td>
+</tr>
+<tr>
+<td></td>
+<td>an error is encountered during the startup or loading phases, or</td>
+</tr>
+<tr>
+<td></td>
+<td>after completion of a job when the <code>job_queue</code> configuration</td>
+</tr>
+<tr>
+<td></td>
+<td>specifies that <code>automatic_transition</code> is set to false.</td>
+</tr>
+<tr>
+<td>{ #queue-state-desc } Queue State</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>/// note
+All filenames provided to and returned by these endpoints are relative to
+the <code>gcodes</code> root.
+///</p>
+<h2>Get job queue status</h2>
+<p>Retrieves the current state of the job queue.</p>
+<pre><code class="language-{.http">GET /server/job_queue/status
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.status&quot;,
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 21.89680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;job2.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D991F0&quot;,
+            &quot;time_added&quot;: 1636151050.7766452,
+            &quot;time_in_queue&quot;: 21.88680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;subdir/job3.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99D80&quot;,
+            &quot;time_added&quot;: 1636151050.7866452,
+            &quot;time_in_queue&quot;: 21.90680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;ready&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queued_jobs</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <code>Queued Job</code> objects.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#queued-job-spec</td>
+</tr>
+<tr>
+<td><code>queue_state</code></td>
+<td style="text-align:center">string</td>
+<td>The current <a href="#queue-state-desc">state</a> of the job queue.</td>
+</tr>
+<tr>
+<td>{ #job-queue-status-response-spec }</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the gcode file queued.</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td style="text-align:center">string</td>
+<td>A unique ID assigned to the queued job.</td>
+</tr>
+<tr>
+<td><code>time_added</code></td>
+<td style="text-align:center">float</td>
+<td>The time (in Unix Time) the job was added to the queue.</td>
+</tr>
+<tr>
+<td><code>time_in_queue</code></td>
+<td style="text-align:center">float</td>
+<td>The cumulative amount of time, in seconds, the job has</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>been pending in the queue.</td>
+</tr>
+<tr>
+<td>{ #queued-job-spec } Queued Job</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Enqueue a job</h2>
+<p>Adds a job, or an array of jobs, to the end of the job queue.  The same
+filename may be specified multiple times to queue a job that repeats.
+When multiple jobs are specified they will be enqueued in the order they
+are received.</p>
+<p>/// note
+The request will be aborted and return an error if any of the supplied
+files do not exist.
+///</p>
+<pre><code class="language-{.http">POST /server/job_queue/job
+Content-Type: application/json
+
+{
+    &quot;filenames&quot;: [
+        &quot;job1.gcode&quot;,
+        &quot;job2.gcode&quot;,
+        &quot;subdir/job3.gcode&quot;
+    ],
+    &quot;reset&quot;: false
+}
+
+</code></pre>
+<p>/// tip
+If it isn't possible for your client to pass parameters in the body
+of the request as a json object, they can be added to the query string
+as shown below:</p>
+<pre><code class="language-{.http">POST /server/job_queue/job?filenames=job1.gcode,job2.gcode,subdir/job3.gcode
+</code></pre>
+<p>Multiple jobs should be comma separated as shown above.
+///</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.post_job&quot;,
+    &quot;params&quot;: {
+        &quot;filenames&quot;: [
+            &quot;job1.gcode&quot;,
+            &quot;job2.gcode&quot;,
+            &quot;subdir/job3.gcode&quot;
+        ],
+        &quot;reset&quot;: false
+    },
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filenames</code></td>
+<td style="text-align:center">[string]</td>
+<td><strong>REQUIRED</strong></td>
+<td>An array of filenames of jobs to add to the queue.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>The file names should be paths relative to the <code>gcodes</code></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>root.  All of the specified files must exist, otherwise</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>the request will return with an error.</td>
+</tr>
+<tr>
+<td><code>reset</code></td>
+<td style="text-align:center">bool</td>
+<td>false</td>
+<td>When set to <code>true</code> the job queue will be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>cleared prior to adding the requested jobs.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 0.01680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;job2.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D991F0&quot;,
+            &quot;time_added&quot;: 1636151050.7766452,
+            &quot;time_in_queue&quot;: 0.01480004119873
+        },
+        {
+            &quot;filename&quot;: &quot;subdir/job3.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99D80&quot;,
+            &quot;time_added&quot;: 1636151050.7866452,
+            &quot;time_in_queue&quot;: 0.010680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;ready&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>See the <a href="#job-queue-status-response-spec">Job Queue Status</a>
+Response Specification.</p>
+<p>///</p>
+<h2>Remove a Job</h2>
+<p>Removes one or more jobs from the queue.</p>
+<p>/// Note
+Unlike the POST version of this method, it is not necessary that
+all job ids exist.  If any supplied job id does not exist in the
+queue it will be silently ignored.  Clients can verify the contents
+of the queue via the return value.
+///</p>
+<pre><code class="language-{.http">DELETE /server/job_queue/job?job_ids=0000000066D991F0,0000000066D99D80
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.delete_job&quot;,
+    &quot;params&quot;: {
+        &quot;job_ids&quot;: [
+            &quot;0000000066D991F0&quot;,
+            &quot;0000000066D99D80&quot;
+        ]
+    },
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>job_ids</code></td>
+<td style="text-align:center">[string]</td>
+<td><strong>REQUIRED</strong></td>
+<td>An array of <code>job_ids</code> to remove from the queue.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>if <code>all==false</code></td>
+<td>Any job ids that do not exist will be ignored.</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td style="text-align:center">bool</td>
+<td>false</td>
+<td>When set to <code>true</code> all jobs will be removed</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>from the queue. In this case it is not necessary</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>to set the <code>job_ids</code> parameter.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 21.89680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;ready&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>See the <a href="#job-queue-status-response-spec">Job Queue Status</a>
+Response Specification.</p>
+<p>///</p>
+<h2>Pause the job queue</h2>
+<p>Sets the job queue state to &quot;pause&quot;, which prevents the next job
+in the queue from loading after an job in progress is complete.
+If the queue is paused while the queue is in the <code>loading</code> state
+the load will be aborted.</p>
+<pre><code class="language-{.http">POST /server/job_queue/pause
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.pause&quot;,
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 21.89680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;job2.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D991F0&quot;,
+            &quot;time_added&quot;: 1636151050.7766452,
+            &quot;time_in_queue&quot;: 21.88680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;subdir/job3.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99D80&quot;,
+            &quot;time_added&quot;: 1636151050.7866452,
+            &quot;time_in_queue&quot;: 21.90680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;paused&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>See the <a href="#job-queue-status-response-spec">Job Queue Status</a>
+Response Specification.</p>
+<p>///</p>
+<h2>Start the job queue</h2>
+<p>Starts the job queue.  If Klipper is ready to start a print the next
+job in the queue will be loaded.  Otherwise the queue will be put
+into the &quot;ready&quot; state, where the job will be loaded after the current
+job completes.</p>
+<pre><code class="language-{.http">POST /server/job_queue/start
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.start&quot;,
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 21.89680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;job2.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D991F0&quot;,
+            &quot;time_added&quot;: 1636151050.7766452,
+            &quot;time_in_queue&quot;: 21.88680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;subdir/job3.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99D80&quot;,
+            &quot;time_added&quot;: 1636151050.7866452,
+            &quot;time_in_queue&quot;: 21.90680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;loading&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>See the <a href="#job-queue-status-response-spec">Job Queue Status</a>
+Response Specification.</p>
+<p>///</p>
+<h2>Perform a Queue Jump</h2>
+<p>Jumps a job to the front of the queue.</p>
+<pre><code class="language-{.http">POST /server/job_queue/jump?job_id=0000000066D991F0
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.job_queue.jump&quot;,
+    &quot;params&quot;: {
+        &quot;job_id&quot;: &quot;0000000066D991F0&quot;
+    },
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>job_id</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The <code>job_id</code> of the job to jump to the.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>front of the queue.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;queued_jobs&quot;: [
+        {
+            &quot;filename&quot;: &quot;job2.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D991F0&quot;,
+            &quot;time_added&quot;: 1636151050.7766452,
+            &quot;time_in_queue&quot;: 21.88680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;job1.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99C90&quot;,
+            &quot;time_added&quot;: 1636151050.7666452,
+            &quot;time_in_queue&quot;: 21.89680004119873
+        },
+        {
+            &quot;filename&quot;: &quot;subdir/job3.gcode&quot;,
+            &quot;job_id&quot;: &quot;0000000066D99D80&quot;,
+            &quot;time_added&quot;: 1636151050.7866452,
+            &quot;time_in_queue&quot;: 21.90680004119873
+        }
+    ],
+    &quot;queue_state&quot;: &quot;loading&quot;
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<p>See the <a href="#job-queue-status-response-spec">Job Queue Status</a>
+Response Specification.</p>
+<p>///</p>
+
+</main></body></html>

@@ -1,0 +1,2438 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JSON-RPC notifications · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/jsonrpc_notifications/">https://moonraker.readthedocs.io/en/latest/external_api/jsonrpc_notifications/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>JSON-RPC notifications</h1>
+<p>Persistent connections to Moonraker (websocket, unix socket) will
+receive asynchronous via JSON-RPC notifications. A &quot;notification&quot;
+in JSON-RPC is a method call without an <code>id</code> parameter, for example:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;{notification method name}&quot;
+}
+</code></pre>
+<p>OR with parameters:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;{notification method name}&quot;,
+    &quot;params&quot;: [true, &quot;pos_param_2&quot;, {&quot;obj&quot;: &quot;stuff&quot;}]
+}
+</code></pre>
+<p>To keep consistency Moonraker always sends parameters as positional
+arguments.  Specifically, the <code>params</code> field will always contain
+an array.  This can often lead to a somewhat strange format where
+the <code>params</code> field contains a single element array, where the element
+is an object.</p>
+<p>All of the notifications sent by Moonraker are outlined in this document.</p>
+<h2>Gcode Responses</h2>
+<p>Gcode Responses received from Klipper are broadcast to all persistent connections.
+All of Klippy's gcode responses are forwarded over the websocket.</p>
+<pre><code class="language-{.text">notify_gcode_response
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_gcode_response&quot;,
+    &quot;params&quot;: [&quot;response message&quot;]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">string</td>
+<td>The gcode response message.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Subscription Updates</h2>
+<p>Klipper object subscription data received as a result of invoking the
+<a href="./printer.md#subscribe-to-printer-object-status-updates">subscribe endpoint</a>.</p>
+<pre><code class="language-{.text">notify_status_update
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_status_update&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;gcode_move&quot;: {
+                &quot;speed&quot;: 1500,
+            },
+            &quot;toolhead&quot;: {
+                &quot;status&quot;: &quot;Ready&quot;
+            }
+        },
+        578243.57824499
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An object containing changes to subscribed</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>Klipper objects.  Each key is the name of a</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>printer object, each value will be an object</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>containing fields that have changed since</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the last update.</td>
+</tr>
+<tr>
+<td>1</td>
+<td style="text-align:center">float</td>
+<td>A timestamp indicating the time the subscription</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>data was sent.  This time is relative to the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>monotonic clock used by Klipper.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// Tip
+See Klipper's <a href="https://www.klipper3d.org/Status_Reference.html">status reference</a>
+for details on printer objects and the fields they report.
+///</p>
+<h2>Klippy Ready</h2>
+<p>Indicates that the Klippy Host has entered the <code>ready</code> state.</p>
+<pre><code class="language-{.text">notify_klippy_ready
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_klippy_ready&quot;
+}
+</code></pre>
+<h2>Klippy Shutdown</h2>
+<p>Indicates that the Klippy Host has entered the <code>shutdown</code> state.</p>
+<pre><code class="language-{.text">notify_klippy_shutdown
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_klippy_shutdown&quot;
+}
+</code></pre>
+<h2>Klippy Disconnected</h2>
+<p>Indicates that Moonraker's connection to Klippy has terminated.</p>
+<pre><code class="language-{.text">notify_klippy_disconnected
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_klippy_disconnected&quot;
+}
+</code></pre>
+<h2>File List Changed</h2>
+<p>Moonraker's <code>file_manager</code> will emit notifications when a change
+to one of its watched <code>root</code> directories is detected.  This includes
+changes to files and subdirectories within the root.</p>
+<pre><code class="language-{.text">notify_filelist_changed
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_filelist_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;item&quot;: {
+                &quot;root&quot;: &quot;gcodes&quot;,
+                &quot;path&quot;: &quot;subdir/my_file.gcode&quot;,
+                &quot;modified&quot;: 1676940082.8595376,
+                &quot;size&quot;: 384096,
+                &quot;permissions&quot;: &quot;rw&quot;
+            },
+            &quot;source_item&quot;: {
+                &quot;path&quot;: &quot;testdir/my_file.gcode&quot;,
+                &quot;root&quot;: &quot;gcodes&quot;
+            },
+            &quot;action&quot;: &quot;move_file&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#fileinfo-changed-spec">Changed Item Info</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#filelist-changed-action-desc">action</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>that caused the notification.</td>
+</tr>
+<tr>
+<td><code>item</code></td>
+<td style="text-align:center">object</td>
+<td>The <code>destination item</code> affected by the change.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#dest-item-info-spec</td>
+</tr>
+<tr>
+<td><code>source_item</code></td>
+<td style="text-align:center">object</td>
+<td>The <code>source item</code> affected by the change.  Only</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>present for <code>move_file</code> and <code>move_dir</code> actions.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#source-item-info-spec</td>
+</tr>
+<tr>
+<td>{ #fileinfo-changed-spec } Changed Item Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the destination item relative to</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the root directory.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the destination item.</td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td style="text-align:center">float</td>
+<td>The last modified date in Unix Time (seconds).</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td style="text-align:center">int</td>
+<td>The size of the destination item.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td style="text-align:center">string</td>
+<td>Permissions available on the changed item</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>(if applicable).</td>
+</tr>
+<tr>
+<td>{ #dest-item-info-spec } Destination Item Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td style="text-align:center">string</td>
+<td>The path of the source item relative to</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the root directory.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td style="text-align:center">string</td>
+<td>The root node of the source item.</td>
+</tr>
+<tr>
+<td>{ #source-item-info-spec } Source Item Info</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>create_file</code></td>
+<td>A file has been created within the watched root.</td>
+</tr>
+<tr>
+<td><code>create_dir</code></td>
+<td>A subdirectory has been created within the watched root.</td>
+</tr>
+<tr>
+<td><code>delete_file</code></td>
+<td>A file has been deleted within the watched root.</td>
+</tr>
+<tr>
+<td><code>delete_dir</code></td>
+<td>A subdirectory has been deleted within the watched root.</td>
+</tr>
+<tr>
+<td><code>move_file</code></td>
+<td>A file in a watched root has been moved.</td>
+</tr>
+<tr>
+<td><code>move_dir</code></td>
+<td>A subdirectory in a watched root has been moved.</td>
+</tr>
+<tr>
+<td><code>modify_file</code></td>
+<td>A file in a watched root has been modified.</td>
+</tr>
+<tr>
+<td><code>root_update</code></td>
+<td>A root folder's location on disk has changed.</td>
+</tr>
+<tr>
+<td>{ #filelist-changed-action-desc } Filelist Changed Action</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// tip
+Notifications are bundled where applicable.  For example, when a
+directory containing children is deleted a single <code>delete_dir</code>
+notification is pushed.  Likewise, when a directory is moved or copied,
+a single <code>move_dir</code> or <code>create_dir</code> notification is pushed.  Children
+that are moved, copied, or deleted as a result of a parent's action will
+not receive individual notifications.
+///</p>
+<h2>Update Manager Response</h2>
+<p>While the <code>update_manager</code> is in the process of updating one or more
+registered software items, it will emit notifications containing information
+about the current status of the update.</p>
+<pre><code class="language-{.text">notify_update_response
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_update_response&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;application&quot;: &quot;{app_name}&quot;,
+            &quot;proc_id&quot;: 446461,
+            &quot;message&quot;: &quot;Update Response Message&quot;,
+            &quot;complete&quot;: false
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An update manager notification status object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>application</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the software currently updating.</td>
+</tr>
+<tr>
+<td><code>proc_id</code></td>
+<td style="text-align:center">int</td>
+<td>A unique ID associated with the current update.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td style="text-align:center">message</td>
+<td>A message containing status and/or information</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>about the current update.</td>
+</tr>
+<tr>
+<td><code>complete</code></td>
+<td style="text-align:center">bool</td>
+<td>When set to <code>true</code> it indicates that the update</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>has finished and this will be the last status</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>response notification sent for this update.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Update Manager Refreshed</h2>
+<p>After the update manager has performed a refresh of the
+registered software update state it will send a notification
+to all connections containing the complete current status.</p>
+<pre><code class="language-{.text">notify_update_refreshed
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_update_refreshed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;busy&quot;: false,
+            &quot;github_rate_limit&quot;: 60,
+            &quot;github_requests_remaining&quot;: 57,
+            &quot;github_limit_reset_time&quot;: 1615836932,
+            &quot;version_info&quot;: {
+                &quot;system&quot;: {
+                    &quot;name&quot;: &quot;system&quot;,
+                    &quot;configured_type&quot;: &quot;system&quot;,
+                    &quot;package_count&quot;: 4,
+                    &quot;package_list&quot;: [
+                        &quot;libtiff5&quot;,
+                        &quot;raspberrypi-sys-mods&quot;,
+                        &quot;rpi-eeprom-images&quot;,
+                        &quot;rpi-eeprom&quot;
+                    ]
+                },
+                &quot;moonraker&quot;: {
+                    &quot;channel&quot;: &quot;dev&quot;,
+                    &quot;debug_enabled&quot;: true,
+                    &quot;is_valid&quot;: true,
+                    &quot;configured_type&quot;: &quot;git_repo&quot;,
+                    &quot;corrupt&quot;: false,
+                    &quot;info_tags&quot;: [],
+                    &quot;detected_type&quot;: &quot;git_repo&quot;,
+                    &quot;name&quot;: &quot;moonraker&quot;,
+                    &quot;remote_alias&quot;: &quot;arksine&quot;,
+                    &quot;branch&quot;: &quot;master&quot;,
+                    &quot;owner&quot;: &quot;arksine&quot;,
+                    &quot;repo_name&quot;: &quot;moonraker&quot;,
+                    &quot;version&quot;: &quot;v0.7.1-364&quot;,
+                    &quot;remote_version&quot;: &quot;v0.7.1-364&quot;,
+                    &quot;rollback_version&quot;: &quot;v0.7.1-360&quot;,
+                    &quot;current_hash&quot;: &quot;ecfad5cff15fff1d82cb9bdc64d6b548ed53dfaf&quot;,
+                    &quot;remote_hash&quot;: &quot;ecfad5cff15fff1d82cb9bdc64d6b548ed53dfaf&quot;,
+                    &quot;is_dirty&quot;: false,
+                    &quot;detached&quot;: true,
+                    &quot;commits_behind&quot;: [],
+                    &quot;git_messages&quot;: [],
+                    &quot;full_version_string&quot;: &quot;v0.7.1-364-gecfad5c&quot;,
+                    &quot;pristine&quot;: true,
+                    &quot;recovery_url&quot;: &quot;https://github.com/Arksine/moonraker.git&quot;,
+                    &quot;remote_url&quot;: &quot;https://github.com/Arksine/moonraker.git&quot;,
+                    &quot;warnings&quot;: [],
+                    &quot;anomalies&quot;: [
+                        &quot;Unofficial remote url: https://github.com/Arksine/moonraker-fork.git&quot;,
+                        &quot;Repo not on official remote/branch, expected: origin/master, detected: altremote/altbranch&quot;,
+                        &quot;Detached HEAD detected&quot;
+                    ]
+                },
+                &quot;mainsail&quot;: {
+                    &quot;name&quot;: &quot;mainsail&quot;,
+                    &quot;owner&quot;: &quot;mainsail-crew&quot;,
+                    &quot;version&quot;: &quot;v2.1.1&quot;,
+                    &quot;remote_version&quot;: &quot;v2.1.1&quot;,
+                    &quot;rollback_version&quot;: &quot;v2.0.0&quot;,
+                    &quot;configured_type&quot;: &quot;web&quot;,
+                    &quot;channel&quot;: &quot;stable&quot;,
+                    &quot;info_tags&quot;: [
+                        &quot;desc=Mainsail Web Client&quot;,
+                        &quot;action=some_action&quot;
+                    ],
+                    &quot;warnings&quot;: [],
+                    &quot;anomalies&quot;: [],
+                    &quot;is_valid&quot;: true
+                },
+                &quot;fluidd&quot;: {
+                    &quot;name&quot;: &quot;fluidd&quot;,
+                    &quot;owner&quot;: &quot;fluidd-core&quot;,
+                    &quot;version&quot;: &quot;v1.16.2&quot;,
+                    &quot;remote_version&quot;: &quot;v1.16.2&quot;,
+                    &quot;rollback_version&quot;: &quot;v1.15.0&quot;,
+                    &quot;configured_type&quot;: &quot;web&quot;,
+                    &quot;channel&quot;: &quot;beta&quot;,
+                    &quot;info_tags&quot;: [],
+                    &quot;warnings&quot;: [],
+                    &quot;anomalies&quot;: [],
+                    &quot;is_valid&quot;: true
+                },
+                &quot;klipper&quot;: {
+                    &quot;channel&quot;: &quot;dev&quot;,
+                    &quot;debug_enabled&quot;: true,
+                    &quot;is_valid&quot;: true,
+                    &quot;configured_type&quot;: &quot;git_repo&quot;,
+                    &quot;corrupt&quot;: false,
+                    &quot;info_tags&quot;: [],
+                    &quot;detected_type&quot;: &quot;git_repo&quot;,
+                    &quot;name&quot;: &quot;klipper&quot;,
+                    &quot;remote_alias&quot;: &quot;origin&quot;,
+                    &quot;branch&quot;: &quot;master&quot;,
+                    &quot;owner&quot;: &quot;Klipper3d&quot;,
+                    &quot;repo_name&quot;: &quot;klipper&quot;,
+                    &quot;version&quot;: &quot;v0.10.0-1&quot;,
+                    &quot;remote_version&quot;: &quot;v0.10.0-41&quot;,
+                    &quot;rollback_version&quot;: &quot;v0.9.1-340&quot;,
+                    &quot;current_hash&quot;: &quot;4c8d24ae03eadf3fc5a28efb1209ce810251d02d&quot;,
+                    &quot;remote_hash&quot;: &quot;e3cbe7ea3663a8cd10207a9aecc4e5458aeb1f1f&quot;,
+                    &quot;is_dirty&quot;: false,
+                    &quot;detached&quot;: false,
+                    &quot;commits_behind&quot;: [
+                        {
+                            &quot;sha&quot;: &quot;e3cbe7ea3663a8cd10207a9aecc4e5458aeb1f1f&quot;,
+                            &quot;author&quot;: &quot;Kevin O'Connor&quot;,
+                            &quot;date&quot;: &quot;1644534721&quot;,
+                            &quot;subject&quot;: &quot;stm32: Clear SPE flag on a change to SPI CR1 register&quot;,
+                            &quot;message&quot;: &quot;The stm32 specs indicate that the SPE bit must be cleared before\nchanging the CPHA or CPOL bits.\n\nReported by @cbc02009 and @bigtreetech.\n\nSigned-off-by: Kevin O'Connor &lt;kevin@koconnor.net&gt;&quot;,
+                            &quot;tag&quot;: null
+                        },
+                        {
+                            &quot;sha&quot;: &quot;99d55185a21703611b862f6ce4b80bba70a9c4b5&quot;,
+                            &quot;author&quot;: &quot;Kevin O'Connor&quot;,
+                            &quot;date&quot;: &quot;1644532075&quot;,
+                            &quot;subject&quot;: &quot;stm32: Wait for transmission to complete before returning from spi_transfer()&quot;,
+                            &quot;message&quot;: &quot;It's possible for the SCLK pin to still be updating even after the\nlast byte of data has been read from the receive pin.  (In particular\nin spi mode 0 and 1.)  Exiting early from spi_transfer() in this case\ncould result in the CS pin being raised before the final updates to\nSCLK pin.\n\nAdd an additional wait at the end of spi_transfer() to avoid this\nissue.\n\nSigned-off-by: Kevin O'Connor &lt;kevin@koconnor.net&gt;&quot;,
+                            &quot;tag&quot;: null
+                        }
+                    ],
+                    &quot;git_messages&quot;: [],
+                    &quot;full_version_string&quot;: &quot;v0.10.0-1-g4c8d24ae-shallow&quot;,
+                    &quot;pristine&quot;: true,
+                    &quot;recovery_url&quot;: &quot;https://github.com/Klipper3d/klipper.git&quot;,
+                    &quot;remote_url&quot;: &quot;https://github.com/Klipper3d/klipper.git&quot;,
+                    &quot;warnings&quot;: [],
+                    &quot;anomalies&quot;: []
+                }
+            }
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="./update_manager.md#update-status-spec">Update Status Info</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>CPU Throttled</h2>
+<p>If the system supports CPU monitoring via <code>vcgencmd</code> Moonraker will emit
+notifications when the CPU's throttled state changes.</p>
+<pre><code class="language-{.text">notify_cpu_throttled
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_cpu_throttled&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;bits&quot;: 0,
+            &quot;flags&quot;: []
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#throttled-state-spec">CPU Throttled State</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bits</code></td>
+<td style="text-align:center">int</td>
+<td>The current throttled state as an integer.  A bitwise AND</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>can be performed against this value to generate custom flag</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>descriptions.</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of <code>Throttled Flags</code> describing the current state.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#throttled-flags-desc</td>
+</tr>
+<tr>
+<td>{ #throttled-state-spec } Throttled State</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th style="text-align:center">Bit Offset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Under-Voltage Detected</td>
+<td style="text-align:center"><code>1 &lt;&lt; 0</code></td>
+</tr>
+<tr>
+<td>Frequency Capped</td>
+<td style="text-align:center"><code>1 &lt;&lt; 1</code></td>
+</tr>
+<tr>
+<td>Currently Throttled</td>
+<td style="text-align:center"><code>1 &lt;&lt; 2</code></td>
+</tr>
+<tr>
+<td>Temperature Limit Active</td>
+<td style="text-align:center"><code>1 &lt;&lt; 3</code></td>
+</tr>
+<tr>
+<td>Previously Under-Volted</td>
+<td style="text-align:center"><code>1 &lt;&lt; 16</code></td>
+</tr>
+<tr>
+<td>Previously Frequency Capped</td>
+<td style="text-align:center"><code>1 &lt;&lt; 17</code></td>
+</tr>
+<tr>
+<td>Previously Throttled</td>
+<td style="text-align:center"><code>1 &lt;&lt; 18</code></td>
+</tr>
+<tr>
+<td>Previously Temperature Limited</td>
+<td style="text-align:center"><code>1 &lt;&lt; 16</code></td>
+</tr>
+<tr>
+<td>{ #throttled-flags-desc } Throttled Flags</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>/// note
+It is possible for clients to receive this notification multiple times
+if the system repeatedly transitions between an active and inactive throttled
+condition.
+///</p>
+<h2>Moonraker Process Statistic Update</h2>
+<p>Moonraker performs live monitoring of host machine data and periodically
+emits a notification with the most recent statistics.</p>
+<pre><code class="language-{.text">notify_proc_stat_update
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_proc_stat_update&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;moonraker_stats&quot;: {
+                &quot;time&quot;: 1615837812.0894408,
+                &quot;cpu_usage&quot;: 1.99,
+                &quot;memory&quot;: 23636,
+                &quot;mem_units&quot;: &quot;kB&quot;
+            },
+            &quot;cpu_temp&quot;: 44.008,
+            &quot;network&quot;: {
+                &quot;lo&quot;: {
+                    &quot;rx_bytes&quot;: 114555457,
+                    &quot;tx_bytes&quot;: 114555457,
+                    &quot;bandwidth&quot;: 2911.49
+                },
+                &quot;wlan0&quot;: {
+                    &quot;rx_bytes&quot;: 48773134,
+                    &quot;tx_bytes&quot;: 115035939,
+                    &quot;bandwidth&quot;: 3458.77
+                }
+            },
+            &quot;system_cpu_usage&quot;: {
+                &quot;cpu&quot;: 2.53,
+                &quot;cpu0&quot;: 3.03,
+                &quot;cpu1&quot;: 5.1,
+                &quot;cpu2&quot;: 1.02,
+                &quot;cpu3&quot;: 1
+            },
+            &quot;websocket_connections&quot;: 2
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="./machine.md#proc-stats-response-spec">proc stats response</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.  The <code>throttled_state</code> and <code>system_uptime</code> fields are</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>omitted from the notification.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>History Changed</h2>
+<p>When Moonraker's <code>[history]</code> component detects a new or completed
+job a notification will be emitted.</p>
+<pre><code class="language-{.text">notify_history_changed
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_history_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;action&quot;: &quot;added&quot;,
+            &quot;job&quot;: {
+                &quot;end_time&quot;: null,
+                &quot;filament_used&quot;: 20.09796999999998,
+                &quot;filename&quot;: &quot;calicat_0.3mm_PLA_MK3S_33m.gcode&quot;,
+                &quot;metadata&quot;: {
+                    &quot;size&quot;: 538254,
+                    &quot;modified&quot;: 1646770808,
+                    &quot;uuid&quot;: &quot;4022d6bd-e5f5-45d7-84af-f38bcc57a5d3&quot;,
+                    &quot;file processors&quot;: [],
+                    &quot;slicer&quot;: &quot;PrusaSlicer&quot;,
+                    &quot;slicer_version&quot;: &quot;2.4.0+linux-x64-GTK3&quot;,
+                    &quot;gcode_start_byte&quot;: 51238,
+                    &quot;gcode_end_byte&quot;: 528796,
+                    &quot;object_height&quot;: 34.4,
+                    &quot;estimated_time&quot;: 1954,
+                    &quot;nozzle_diameter&quot;: 0.4,
+                    &quot;layer_height&quot;: 0.3,
+                    &quot;first_layer_height&quot;: 0.2,
+                    &quot;first_layer_extr_temp&quot;: 225,
+                    &quot;first_layer_bed_temp&quot;: 60,
+                    &quot;filament_name&quot;: &quot;Fusion PLA Carbon Rod Black&quot;,
+                    &quot;filament_type&quot;: &quot;PLA&quot;,
+                    &quot;filament_total&quot;: 1754.96,
+                    &quot;filament_weight_total&quot;: 5.23,
+                    &quot;thumbnails&quot;: [
+                        {
+                            &quot;width&quot;: 32,
+                            &quot;height&quot;: 24,
+                            &quot;size&quot;: 1829,
+                            &quot;relative_path&quot;: &quot;.thumbs/calicat_0.3mm_PLA_MK3S_33m-32x32.png&quot;
+                        },
+                        {
+                            &quot;width&quot;: 400,
+                            &quot;height&quot;: 300,
+                            &quot;size&quot;: 36586,
+                            &quot;relative_path&quot;: &quot;.thumbs/calicat_0.3mm_PLA_MK3S_33m-400x300.png&quot;
+                        }
+                    ]
+                },
+                &quot;print_duration&quot;: 0.911540990229696,
+                &quot;status&quot;: &quot;in_progress&quot;,
+                &quot;start_time&quot;: 1738671939.433274,
+                &quot;total_duration&quot;: 0.911540990229696,
+                &quot;auxiliary_data&quot;: [
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;power_consumption&quot;,
+                        &quot;value&quot;: 0,
+                        &quot;description&quot;: &quot;Printer Power Consumption&quot;,
+                        &quot;units&quot;: &quot;kWh&quot;
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;max_current&quot;,
+                        &quot;value&quot;: 0,
+                        &quot;description&quot;: &quot;Maximum current draw&quot;,
+                        &quot;units&quot;: &quot;A&quot;
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;min_current&quot;,
+                        &quot;value&quot;: 0,
+                        &quot;description&quot;: &quot;Maximum current draw&quot;,
+                        &quot;units&quot;: &quot;A&quot;
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;avg_current&quot;,
+                        &quot;value&quot;: 0,
+                        &quot;description&quot;: &quot;Maximum current draw&quot;,
+                        &quot;units&quot;: &quot;A&quot;
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;status&quot;,
+                        &quot;value&quot;: null,
+                        &quot;description&quot;: &quot;Power Switch State&quot;,
+                        &quot;units&quot;: null
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;id&quot;,
+                        &quot;value&quot;: [],
+                        &quot;description&quot;: &quot;Test ID&quot;,
+                        &quot;units&quot;: null
+                    },
+                    {
+                        &quot;provider&quot;: &quot;sensor hist_test&quot;,
+                        &quot;name&quot;: &quot;filament&quot;,
+                        &quot;value&quot;: 0,
+                        &quot;description&quot;: &quot;filament tracker&quot;,
+                        &quot;units&quot;: &quot;mm&quot;
+                    },
+                    {
+                        &quot;provider&quot;: &quot;spoolman&quot;,
+                        &quot;name&quot;: &quot;spool_ids&quot;,
+                        &quot;value&quot;: [
+                            1
+                        ],
+                        &quot;description&quot;: &quot;Spool IDs used&quot;,
+                        &quot;units&quot;: null
+                    }
+                ],
+                &quot;user&quot;: &quot;testuser&quot;,
+                &quot;exists&quot;: true,
+                &quot;job_id&quot;: &quot;000027&quot;
+            }
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#job-hist-notify-spec">Job History Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The <code>action</code> that triggered the notification.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#job-hist-notify-action</td>
+</tr>
+<tr>
+<td><code>job</code></td>
+<td style="text-align:center">string</td>
+<td>A <a href="./history.md#job-history-entry-spec">Job History Entry</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+<tr>
+<td>{ #job-hist-notify-spec } Job History Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>added</code></td>
+<td>A new job was added to the job history.</td>
+</tr>
+<tr>
+<td><code>finished</code></td>
+<td>A running job was completed.  This includes</td>
+</tr>
+<tr>
+<td></td>
+<td>jobs successfully completed, cancelled jobs,</td>
+</tr>
+<tr>
+<td></td>
+<td>and jobs that encountered an error.</td>
+</tr>
+<tr>
+<td>{ #job-hist-notify-action } Job History Notify Action</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Authorized User Created</h2>
+<p>Moonraker's <code>[authorization]</code> component will emit a notification when
+a new user entry has been created.</p>
+<pre><code class="language-{.text">notify_user_created
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_user_created&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;username&quot;: &quot;Eric&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#auth-notification-spec">Auth Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td style="text-align:center">string</td>
+<td>The username of the user entry associated with</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the notification.</td>
+</tr>
+<tr>
+<td>{ #auth-notification-spec } Auth Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Authorized User Deleted</h2>
+<p>Moonraker's <code>[authorization]</code> component will emit a notification when
+an existing user entry has been deleted.</p>
+<pre><code class="language-{.text">notify_user_deleted
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_user_deleted&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;username&quot;: &quot;Eric&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#auth-notification-spec">Auth Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Authorized User Logged Out</h2>
+<p>Moonraker's <code>[authorization]</code> component will emit a notification when
+a user has logged out.</p>
+<pre><code class="language-{.text">notify_user_logged_out
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_user_logged_out&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;username&quot;: &quot;Eric&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#auth-notification-spec">Auth Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Service State Changed</h2>
+<p>If Moonraker's <code>[machine]</code> component is configured with its <code>systemd</code>
+integration enabled it will monitor the state of various systemd services.
+When a change is detected in service state Moonraker will emit a
+notification.</p>
+<pre><code class="language-{.text">notify_service_state_changed
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_service_state_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;klipper&quot;: {
+                &quot;active_state&quot;: &quot;inactive&quot;,
+                &quot;sub_state&quot;: &quot;dead&quot;
+            }
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#service-state-notify-spec">Service State Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>service_name</em></td>
+<td style="text-align:center">object</td>
+<td>A <a href="#unit-status-spec">Unit Status</a> object.  The key</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>for this field is the service name.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#unit-status-spec</td>
+</tr>
+<tr>
+<td>{ #service-state-notify-spec } Service State Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>active_state</code></td>
+<td style="text-align:center">string</td>
+<td>The new <code>ACTIVE</code> state reported by the provider for the service.</td>
+</tr>
+<tr>
+<td><code>sub_state</code></td>
+<td style="text-align:center">string</td>
+<td>The new <code>SUB</code> state reported by the provider for the service.</td>
+</tr>
+<tr>
+<td>{ #unit-status-spec } Unit Status</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Job Queue Changed</h2>
+<p>Moonraker's <code>[job_queue]</code> component emits a notification when the job
+queue state changes and when the queue is modified.</p>
+<pre><code class="language-{.text">notify_job_queue_changed
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_job_queue_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;action&quot;: &quot;state_changed&quot;,
+            &quot;updated_queue&quot;: null,
+            &quot;queue_state&quot;: &quot;paused&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#job-queue-notification-spec">Job Queue Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>action</code></td>
+<td style="text-align:center">string</td>
+<td>The <a href="#job-queue-notify-action">action</a> that</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>triggered the notification.</td>
+</tr>
+<tr>
+<td><code>queue_state</code></td>
+<td style="text-align:center">string</td>
+<td>The current queue</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td><a href="./job_queue.md#queue-state-desc">state</a>.</td>
+</tr>
+<tr>
+<td><code>updated_queue</code></td>
+<td style="text-align:center">[object] | null</td>
+<td>An array of <code>Queued Job</code> objects reflecting</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>the updated queue.  Will be <code>null</code> if the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>queue has not changed.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#queued-job-spec</td>
+</tr>
+<tr>
+<td>{ #job-queue-notification-spec }</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the gcode file queued.</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td style="text-align:center">string</td>
+<td>A unique ID assigned to the queued job.</td>
+</tr>
+<tr>
+<td><code>time_added</code></td>
+<td style="text-align:center">float</td>
+<td>The time (in Unix Time) the job was added to the queue.</td>
+</tr>
+<tr>
+<td><code>time_in_queue</code></td>
+<td style="text-align:center">float</td>
+<td>The cumulative amount of time, in seconds, the job has</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>been pending in the queue.</td>
+</tr>
+<tr>
+<td>{ #queued-job-spec } Queued Job</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state_changed</code></td>
+<td>The internal job queue state has changed.</td>
+</tr>
+<tr>
+<td><code>jobs_added</code></td>
+<td>One or more jobs have been added to the queue.</td>
+</tr>
+<tr>
+<td><code>jobs_removed</code></td>
+<td>One or more jobs have been removed from the queue.</td>
+</tr>
+<tr>
+<td><code>job_loaded</code></td>
+<td>A job has been popped from the queue and successfully</td>
+</tr>
+<tr>
+<td></td>
+<td>started.</td>
+</tr>
+<tr>
+<td>{ #job-queue-notify-action } Job Queue Notification Action</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Button Event</h2>
+<p>Moonraker <code>[button]</code> component supports optional notifications
+sent when a button is pressed and/or released.</p>
+<pre><code class="language-{.text">notify_button_event
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_button_event&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;name&quot;: &quot;my_button&quot;,
+            &quot;type&quot;: &quot;gpio&quot;,
+            &quot;event&quot;: {
+                &quot;elapsed_time&quot;: 0.09323832602240145,
+                &quot;received_time&quot;: 698614.214597004,
+                &quot;render_time&quot;: 698614.214728513,
+                &quot;pressed&quot;: false
+            },
+            &quot;aux&quot;: null
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#button-notify-spec">Button Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the button sending the event.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td style="text-align:center">string</td>
+<td>The configured type of the button.  Currently</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>only the <code>gpio</code> type is supported.</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td style="text-align:center">object</td>
+<td>A <code>Button Event</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#button-event-spec</td>
+</tr>
+<tr>
+<td><code>aux</code></td>
+<td style="text-align:center">any</td>
+<td>Auxiliary data attached to the event.  Can be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>any JSON encodable type.  If no aux data is</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>sent with the event the value will be <code>null</code></td>
+</tr>
+<tr>
+<td>{#button-notify-spec} Button Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>elapsed_time</code></td>
+<td style="text-align:center">float</td>
+<td>The time elapsed (in seconds) since the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>last detected button event.</td>
+</tr>
+<tr>
+<td><code>received_time</code></td>
+<td style="text-align:center">float</td>
+<td>The time the event was detected relative</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>to Moonraker's monotonic clock.</td>
+</tr>
+<tr>
+<td><code>render_time</code></td>
+<td style="text-align:center">float</td>
+<td>The time the button's template started</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>rendering relative to Moonraker's monotonic</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>clock.</td>
+</tr>
+<tr>
+<td><code>pressed</code></td>
+<td style="text-align:center">bool</td>
+<td>Set to <code>true</code> if the button is pressed.</td>
+</tr>
+<tr>
+<td>{ #button-event-spec } Button Event</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Announcement update event</h2>
+<p>Moonraker's <code>[announcements]</code> component will emit a notification
+when announcement entries are added or removed.</p>
+<pre><code class="language-{.text">notify_announcement_update
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_announcement_update&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;entries&quot;: [
+                {
+                    &quot;entry_id&quot;: &quot;arksine/moonlight/issue/3&quot;,
+                    &quot;url&quot;: &quot;https://github.com/Arksine/moonlight/issues/3&quot;,
+                    &quot;title&quot;: &quot;Test announcement 3&quot;,
+                    &quot;description&quot;: &quot;Test Description [with a link](https://moonraker.readthedocs.io).&quot;,
+                    &quot;priority&quot;: &quot;normal&quot;,
+                    &quot;date&quot;: 1647459219,
+                    &quot;dismissed&quot;: false,
+                    &quot;date_dismissed&quot;: null,
+                    &quot;dismiss_wake&quot;: null,
+                    &quot;source&quot;: &quot;moonlight&quot;,
+                    &quot;feed&quot;: &quot;moonlight&quot;
+                },
+                {
+                    &quot;entry_id&quot;: &quot;arksine/moonlight/issue/2&quot;,
+                    &quot;url&quot;: &quot;https://github.com/Arksine/moonlight/issues/2&quot;,
+                    &quot;title&quot;: &quot;Announcement Test Two&quot;,
+                    &quot;description&quot;: &quot;This is a high priority announcement. This line is included in the description.&quot;,
+                    &quot;priority&quot;: &quot;high&quot;,
+                    &quot;date&quot;: 1646855579,
+                    &quot;dismissed&quot;: false,
+                    &quot;date_dismissed&quot;: null,
+                    &quot;dismiss_wake&quot;: null,
+                    &quot;source&quot;: &quot;moonlight&quot;,
+                    &quot;feed&quot;: &quot;moonlight&quot;
+                }
+                {
+                    &quot;entry_id&quot;: &quot;arksine/moonraker/issue/349&quot;,
+                    &quot;url&quot;: &quot;https://github.com/Arksine/moonraker/issues/349&quot;,
+                    &quot;title&quot;: &quot;PolicyKit warnings; unable to manage services, restart system, or update packages&quot;,
+                    &quot;description&quot;: &quot;This announcement is an effort to get ahead of a coming change that will certainly result in issues.  PR #346  has been merged, and with it are some changes to Moonraker's default behavior.&quot;,
+                    &quot;priority&quot;: &quot;normal&quot;,
+                    &quot;date&quot;: 1643392406,
+                    &quot;dismissed&quot;: false,
+                    &quot;source&quot;: &quot;moonlight&quot;,
+                    &quot;feed&quot;: &quot;Moonraker&quot;
+                }
+            ]
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#announcement-notify-spec">Announcement Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entries</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td><a href="./announcements.md#announcement-entry-spec">Announcement Entry</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>objects.</td>
+</tr>
+<tr>
+<td>{ #announcement-notify-spec } Announcement Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Announcement dismissed event</h2>
+<p>Moonraker's <code>[announcements]</code> component will emit a notification
+when an announcement is dismissed.</p>
+<pre><code class="language-{.text">notify_announcement_dismissed
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_announcement_dismissed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;entry_id&quot;: &quot;arksine/moonlight/issue/3&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#announcement-dismissed-notify-desc">Announcement Dismissed Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entry_id</code></td>
+<td style="text-align:center">string</td>
+<td>The unique entry ID of the dismissed announcement.</td>
+</tr>
+<tr>
+<td>{ #announcement-dismissed-notify-desc} Announcement Dismissed Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Announcement wake event</h2>
+<p>Moonraker's <code>[announcements]</code> component will emit a notification
+when an announcement &quot;wakes&quot; from a dismissed state.</p>
+<pre><code class="language-{.text">notify_announcement_wake
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_announcement_wake&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;entry_id&quot;: &quot;arksine/moonlight/issue/1&quot;
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#announcement-wake-notify-desc">Announcement Wake Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entry_id</code></td>
+<td style="text-align:center">string</td>
+<td>The unique entry ID of the awoken announcement.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>The announcement's <code>dismissed</code> field will</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be set to <code>false</code>.</td>
+</tr>
+<tr>
+<td>{ #announcement-wake-notify-desc} Announcement Wake Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Sudo alert event</h2>
+<p>At times Moonraker may require sudo permission to perform a specific task.
+This is rare and generally involves an upgrade (ie: Moonraker's systemd
+service file needs to be modified).  When Moonraker runs a command that
+requires sudo permission an alert will be sent via notification.</p>
+<p>Pending sudo requests that cannot be executed until the user
+<a href="./machine.md#set-sudo-password">sets their sudo password</a> will
+also emit a notification.</p>
+<pre><code class="language-{.text">notify_sudo_alert
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_sudo_alert&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;sudo_requested&quot;: true,
+            &quot;sudo_messages&quot;: [
+                &quot;Sudo password required to update Moonraker's systemd service.&quot;
+            ]
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#sudo-alert-notify-spec">Sudo Alert Notification</a> object</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sudo_requested</code></td>
+<td style="text-align:center">bool</td>
+<td>When <code>true</code> there are pending tasks that</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>require super user permission.</td>
+</tr>
+<tr>
+<td><code>sudo_messages</code></td>
+<td style="text-align:center">[string]</td>
+<td>An array of messages describing the action</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>or actions requiring sudo permission.</td>
+</tr>
+<tr>
+<td>{ #sudo-alert-notify-spec} Sudo Alert Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// note
+Each <code>sudo message</code> can fall into one of the following categories:</p>
+<ul>
+<li>An explanation of a pending sudo request.</li>
+<li>A response from a task that successfully ran with sudo permissions.</li>
+<li>A response from a task that returned an error.
+////</li>
+</ul>
+<p>///</p>
+<h2>Webcams changed event</h2>
+<p>Moonraker's <code>[webcam]</code> component will send a notification when
+a webcam is added, removed, or updated.</p>
+<pre><code class="language-{.text">notify_webcams_changed
+</code></pre>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_webcams_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;webcams&quot;: [
+                {
+                    &quot;name&quot;: &quot;tc2&quot;,
+                    &quot;location&quot;: &quot;printer&quot;,
+                    &quot;service&quot;: &quot;mjpegstreamer&quot;,
+                    &quot;enabled&quot;: true,
+                    &quot;icon&quot;: &quot;mdiWebcam&quot;,
+                    &quot;target_fps&quot;: 15,
+                    &quot;target_fps_idle&quot;: 5,
+                    &quot;stream_url&quot;: &quot;http://printer.lan/webcam?action=stream&quot;,
+                    &quot;snapshot_url&quot;: &quot;http://printer.lan/webcam?action=snapshot&quot;,
+                    &quot;flip_horizontal&quot;: false,
+                    &quot;flip_vertical&quot;: false,
+                    &quot;rotation&quot;: 0,
+                    &quot;aspect_ratio&quot;: &quot;4:3&quot;,
+                    &quot;extra_data&quot;: {},
+                    &quot;source&quot;: &quot;database&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;TestCam&quot;,
+                    &quot;location&quot;: &quot;printer&quot;,
+                    &quot;service&quot;: &quot;mjpegstreamer&quot;,
+                    &quot;enabled&quot;: true,
+                    &quot;icon&quot;: &quot;mdiWebcam&quot;,
+                    &quot;target_fps&quot;: 15,
+                    &quot;target_fps_idle&quot;: 5,
+                    &quot;stream_url&quot;: &quot;/webcam/?action=stream&quot;,
+                    &quot;snapshot_url&quot;: &quot;/webcam/?action=snapshot&quot;,
+                    &quot;flip_horizontal&quot;: false,
+                    &quot;flip_vertical&quot;: false,
+                    &quot;rotation&quot;: 0,
+                    &quot;aspect_ratio&quot;: &quot;4:3&quot;,
+                    &quot;extra_data&quot;: {},
+                    &quot;source&quot;: &quot;database&quot;
+                }
+            ]
+        }
+    ]
+}
+</code></pre>
+<p>///</p>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#webcam-notify-spec">Webcam Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webcams</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <a href="./webcams.md#webcam-entry-spec">Webcam Entry</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>objects.</td>
+</tr>
+<tr>
+<td>{ #webcam-notify-spec } Webcam Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Spoolman active spool ID changed</h2>
+<p>Moonraker's <code>[spoolman]</code> component will emit a notification
+when the current active spool ID has changed.</p>
+<pre><code class="language-{.text">notify_active_spool_set
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_active_spool_set&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;spool_id&quot;: 1
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#spoolman-active-spool-notify-spec">Active Spool Set Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spool_id</code></td>
+<td style="text-align:center">int | null</td>
+<td>The spool ID of the new active spool.  A</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>value of <code>null</code> indicates that no active</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>spool is set and tracking is disabled.</td>
+</tr>
+<tr>
+<td>{ #spoolman-active-spool-notify-spec } Active Spool Set Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Spoolman Status Changed</h2>
+<p>Moonraker's <code>[spoolman]</code> component holds a persistent websocket
+connection to the server.  This allow Moonraker to remain aware
+of the server's status.  Moonraker will emit a notification when
+the connection status to Spoolman changes.</p>
+<pre><code class="language-{.text">notify_spoolman_status_changed
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_spoolman_status_changed&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;spoolman_connected&quot;: false
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#spoolman-status-notify-spec">Spoolman Status Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spoolman_connected</code></td>
+<td style="text-align:center">bool</td>
+<td>A value of <code>true</code> indicates that Moonraker is</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>currently connected to the Spoolman Server.</td>
+</tr>
+<tr>
+<td>{ #spoolman-status-notify-spec } Spoolman Status Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Agent Events</h2>
+<p>Moonraker has limited support for third party extensions through
+client connections that identify themselves as
+<a href="./extensions.md#agent-specific-endpoints">agents</a>.
+Agents are granted access to additional endpoints that allow
+them to extend Moonraker's functionality.  One such method
+allows agents to send events that are broadcast to all of Moonraker's
+connected clients.  Moonraker proxies agent events through a
+notification.</p>
+<pre><code class="language-{.text">notify_agent_event
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_agent_event&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;agent&quot;: &quot;moonagent&quot;,
+            &quot;event&quot;: &quot;connected&quot;,
+            &quot;data&quot;: {
+                &quot;name&quot;: &quot;moonagent&quot;,
+                &quot;version&quot;: &quot;0.0.1&quot;,
+                &quot;type&quot;: &quot;agent&quot;,
+                &quot;url&quot;: &quot;https://github.com/arksine/moontest&quot;
+            }
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>An <a href="#agent-event-notify-spec">Agent Event Notification</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent</code></td>
+<td style="text-align:center"><code>string</code></td>
+<td>The name of the agent sending the event.</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td style="text-align:center"><code>string</code></td>
+<td>The name of the event.  Can be any name</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>other than those <a href="#reserved-agent-event-desc">reserved</a></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>by Moonraker.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td style="text-align:center">any</td>
+<td>Additional data sent with the event.  Can be any JSON</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>encodable value.  If the event does not attach data this</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>field will be omitted.</td>
+</tr>
+<tr>
+<td>{ #agent-event-notify-spec } Agent Event Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected</code></td>
+<td>An agent has connected to Moonraker.  The <code>data</code></td>
+</tr>
+<tr>
+<td></td>
+<td>field will contain an</td>
+</tr>
+<tr>
+<td></td>
+<td><a href="./extensions.md#agent-info-spec">Agent Info</a> object.</td>
+</tr>
+<tr>
+<td><code>disconnected</code></td>
+<td>An agent has disconnected from Moonraker.  The <code>data</code></td>
+</tr>
+<tr>
+<td></td>
+<td>field is omitted for this event.</td>
+</tr>
+<tr>
+<td>{ #reserved-agent-event-desc} Reserved Agent Events</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<p>/// note
+The agent that sends an event will not receive a notification for that
+event.  It will however receive events from other agents.
+///</p>
+<h2>Sensor Events</h2>
+<p>Moonraker's <code>[sensor]</code> component will take periodic measurements
+of configured sensors.  When one or more new measurement is received
+a notification will be emitted containing the new measurement data.</p>
+<pre><code class="language-{.text">notify_sensor_update
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;notify_sensor_update&quot;,
+    &quot;params&quot;: [
+        {
+            &quot;sensor1&quot;: {
+                &quot;humidity&quot;: 28.9,
+                &quot;temperature&quot;: 22.4
+            }
+        }
+    ]
+}
+</code></pre>
+<p>/// api-notification-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Pos</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align:center">object</td>
+<td>A <a href="#sensor-notification-spec">Sensor Notification</a> object.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>sensor_name</em></td>
+<td style="text-align:center">object</td>
+<td>The object may contain multiple <code>sensors</code>, where</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>each key is the name of a sensor and the value</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>is a <code>Sensor Values</code> object.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>#sensor-values-spec</td>
+</tr>
+<tr>
+<td>{ #sensor-notification-spec } Sensor Notification</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>value_name</em></td>
+<td style="text-align:center">any</td>
+<td>The object may contain multiple <code>values</code>, where</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>each key is the name of a parameter tracked</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>by the sensor, and the value is the most</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>recent reported measurement.</td>
+</tr>
+<tr>
+<td>{ #sensor-values-spec } Sensor Values</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+
+</main></body></html>

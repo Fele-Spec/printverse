@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Printer API · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/printer/">https://moonraker.readthedocs.io/en/latest/external_api/printer/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Printer Administration</h1>
+<p>These endpoints provide access to printer state and printer control.
+Klippy must be connected to Moonraker to receive a successful response,
+and in many cases Klippy must be in the <code>ready</code> state.</p>
+<p>Most of these endpoints are registered with Moonraker by Klipper.
+Requests pass from the frontend through Moonraker directly to Klipper.
+Moonraker does not intervene.</p>
+<h2>Get Klippy host information</h2>
+<pre><code class="language-{.http">GET /printer/info
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.info&quot;,
+    &quot;id&quot;: 5445
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;state&quot;: &quot;ready&quot;,
+    &quot;state_message&quot;: &quot;Printer is ready&quot;,
+    &quot;hostname&quot;: &quot;pi-debugger&quot;,
+    &quot;klipper_path&quot;: &quot;/home/pi/klipper&quot;,
+    &quot;python_path&quot;: &quot;/home/pi/klipper/venv/bin/python&quot;,
+    &quot;process_id&quot;: 275124,
+    &quot;user_id&quot;: 1000,
+    &quot;group_id&quot;: 1000,
+    &quot;log_file&quot;: &quot;/home/pi/printer_data/logs/klippy.log&quot;,
+    &quot;config_file&quot;: &quot;/home/pi/printer_data/config/printer.cfg&quot;,
+    &quot;software_version&quot;: &quot;v0.12.0-85-gd785b396&quot;,
+    &quot;cpu_info&quot;: &quot;4 core ?&quot;
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state</code></td>
+<td style="text-align:center">string</td>
+<td>Klippy's current <a href="#klippy-state-desc">state</a>.</td>
+</tr>
+<tr>
+<td><code>state_message</code></td>
+<td style="text-align:center">string</td>
+<td>A message describing Klippy's current state.</td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td style="text-align:center">string</td>
+<td>Hostname of the machine running Klippy.</td>
+</tr>
+<tr>
+<td><code>klipper_path</code></td>
+<td style="text-align:center">string</td>
+<td>Path on disk to the Klipper application.</td>
+</tr>
+<tr>
+<td><code>python_path</code></td>
+<td style="text-align:center">string</td>
+<td>Path on disk to the Python executable running Klippy.</td>
+</tr>
+<tr>
+<td><code>process_id</code></td>
+<td style="text-align:center">int</td>
+<td>The PID of the current Klippy process.</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td style="text-align:center">int</td>
+<td>The UID of the user the Klippy process belongs to.</td>
+</tr>
+<tr>
+<td><code>group_id</code></td>
+<td style="text-align:center">int</td>
+<td>The GID of the group the Klippy process belongs to.</td>
+</tr>
+<tr>
+<td><code>log_file</code></td>
+<td style="text-align:center">string</td>
+<td>Path on disk to Klipper's log file.</td>
+</tr>
+<tr>
+<td><code>configfile</code></td>
+<td style="text-align:center">string</td>
+<td>Path on disk to Klipper's configuration file.</td>
+</tr>
+<tr>
+<td><code>software_version</code></td>
+<td style="text-align:center">string</td>
+<td>Version of the currently running instance of Klipper.</td>
+</tr>
+<tr>
+<td><code>cpu_info</code></td>
+<td style="text-align:center">string</td>
+<td>A brief description of the host machine's CPU.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ready</code></td>
+<td>Klippy has initialized and is ready for commands.</td>
+</tr>
+<tr>
+<td><code>startup</code></td>
+<td>Klippy is currently in its startup phase.</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Klippy encountered an error during startup.</td>
+</tr>
+<tr>
+<td><code>shutdown</code></td>
+<td>Klippy is in the shutdown state.  This can be initiated</td>
+</tr>
+<tr>
+<td></td>
+<td>by the user via an emergency stop, or by the software</td>
+</tr>
+<tr>
+<td></td>
+<td>if it encounters a critical error during operation.</td>
+</tr>
+<tr>
+<td>{ #klippy-state-desc } Klippy State</td>
+<td></td>
+</tr>
+<tr>
+<td>///</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Emergency Stop</h2>
+<pre><code class="language-{.http">POST /printer/emergency_stop
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.emergency_stop&quot;,
+    &quot;id&quot;: 4564
+}
+</code></pre>
+<p>/// Note
+This endpoint will immediately halt the printer and put it in a &quot;shutdown&quot;
+state.  It should be used to implement an &quot;emergency stop&quot; button and
+also used if a user enters <code>M112</code>(emergency stop) via a console.
+///</p>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h2>Host Restart</h2>
+<p>Requests a Klipper &quot;soft&quot; restart.  This will reload the Klippy application
+and configuration.  Connected MCUs will not be reset.</p>
+<pre><code class="language-{.http">POST /printer/restart
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.restart&quot;,
+    &quot;id&quot;: 4894
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h2>Firmware Restart</h2>
+<p>Requests a complete Klipper restart.  Both the Klippy Application and connected
+MCUs will be reset.</p>
+<pre><code class="language-{.http">POST /printer/firmware_restart
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.firmware_restart&quot;,
+    &quot;id&quot;: 8463
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h2>Printer Status Requests</h2>
+<h3>List loaded printer objects</h3>
+<p>Returns a list of Klipper <code>printer objects</code> that are currently loaded.
+This can be used to determine if a specific object is available for query
+and/or subscription.</p>
+<pre><code class="language-{.http">GET /printer/objects/list
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.objects.list&quot;,
+    &quot;id&quot;: 1454
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;objects&quot;: [
+        &quot;gcode&quot;,
+        &quot;webhooks&quot;,
+        &quot;configfile&quot;,
+        &quot;mcu&quot;,
+        &quot;mcu linux&quot;,
+        &quot;heaters&quot;,
+        &quot;bme280 chamber&quot;,
+        &quot;temperature_sensor chamber&quot;,
+        &quot;filament_switch_sensor extruder_sensor&quot;,
+        &quot;output_pin sensor_toggle&quot;,
+        &quot;gcode_move&quot;,
+        &quot;bed_mesh&quot;,
+        &quot;exclude_object&quot;,
+        &quot;temperature_host RPi&quot;,
+        &quot;temperature_sensor RPi&quot;,
+        &quot;gcode_macro TURN_OFF_MOTORS&quot;,
+        &quot;gcode_macro SET_HOMING_CURRENT&quot;,
+        &quot;temperature_sensor ambient&quot;,
+        &quot;gcode_macro query_bme280&quot;,
+        &quot;pause_resume&quot;,
+        &quot;print_stats&quot;,
+        &quot;virtual_sdcard&quot;,
+        &quot;probe&quot;,
+        &quot;stepper_enable&quot;,
+        &quot;tmc2130 stepper_x&quot;,
+        &quot;tmc2130 stepper_y&quot;,
+        &quot;tmc2130 stepper_z&quot;,
+        &quot;tmc2130 extruder&quot;,
+        &quot;heater_bed&quot;,
+        &quot;heater_fan nozzle_cooling_fan&quot;,
+        &quot;fan&quot;,
+        &quot;menu&quot;,
+        &quot;display_status&quot;,
+        &quot;output_pin BEEPER_pin&quot;,
+        &quot;idle_timeout&quot;,
+        &quot;motion_report&quot;,
+        &quot;query_endstops&quot;,
+        &quot;system_stats&quot;,
+        &quot;manual_probe&quot;,
+        &quot;toolhead&quot;,
+        &quot;extruder&quot;
+    ]
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>objects</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list Klipper printer objects currently loaded.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>Query printer object status</h3>
+<p>Requests the status of a provided set of printer objects.</p>
+<p>/// Tip
+See the <a href="../printer_objects.md">Printer Objects</a> document
+for details on the objects available for query.
+///</p>
+<pre><code class="language-{.http">POST /printer/objects/query
+Content-Type: application/json
+
+{
+    &quot;objects&quot;: {
+        &quot;gcode_move&quot;: null,
+        &quot;toolhead&quot;: [&quot;position&quot;, &quot;status&quot;]
+    }
+}
+</code></pre>
+<p>/// details | Using the Query String
+The HTTP Request may also be performed using the query string.  It is
+recommended to send the request in the body unless otherwise not possible.</p>
+<pre><code class="language-{.http">GET /printer/objects/query?gcode_move&amp;toolhead&amp;extruder=target,temperature
+</code></pre>
+<p>The above will request a status update for all <code>gcode_move</code> and <code>toolhead</code>
+attributes.  Only the <code>temperature</code> and <code>target</code> attributes are requested
+for the <code>extruder</code>.
+///</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.objects.query&quot;,
+    &quot;params&quot;: {
+        &quot;objects&quot;: {
+            &quot;gcode_move&quot;: null,
+            &quot;toolhead&quot;: [&quot;position&quot;, &quot;status&quot;]
+        }
+    },
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>objects</code></td>
+<td style="text-align:center">object</td>
+<td><strong>REQUIRED</strong></td>
+<td>An object whose key, value pairs represent one or</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>more <a href="#printer-obj-req-desc">Printer Object Requests</a>.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Key Description</th>
+<th>Value Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The <code>key</code>should be an available</td>
+<td>The <code>value</code> specifies the attributes of the object that</td>
+</tr>
+<tr>
+<td>Klipper printer object.</td>
+<td>should be returned.  If the value is <code>null</code>  all attributes</td>
+</tr>
+<tr>
+<td>{ width=40% }</td>
+<td>will be returned.  Alternatively a list of strings</td>
+</tr>
+<tr>
+<td></td>
+<td>specifying the desired attributes can be provided.</td>
+</tr>
+<tr>
+<td>{ #printer-obj-req-desc } Printer Object Request</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+If a requested printer object or attribute does not exist then the result
+will be omitted from the response.  No error is returned.
+////</p>
+<p>///</p>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;eventtime&quot;: 578243.57824499,
+    &quot;status&quot;: {
+        &quot;gcode_move&quot;: {
+            &quot;absolute_coordinates&quot;: true,
+            &quot;absolute_extrude&quot;: true,
+            &quot;extrude_factor&quot;: 1,
+            &quot;gcode_position&quot;: [0, 0, 0, 0],
+            &quot;homing_origin&quot;: [0, 0, 0, 0],
+            &quot;position&quot;: [0, 0, 0, 0],
+            &quot;speed&quot;: 1500,
+            &quot;speed_factor&quot;: 1
+        },
+        &quot;toolhead&quot;: {
+            &quot;position&quot;: [0, 0, 0, 0],
+            &quot;status&quot;: &quot;Ready&quot;
+        }
+    }
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eventtime</code></td>
+<td style="text-align:center">float</td>
+<td>The time at which the status was received, according Klipper's</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>monotonic clock.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td style="text-align:center">object</td>
+<td>An object containing the current state of the requested</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>printer objects.</td>
+</tr>
+<tr>
+<td>{ #object-query-response-spec }</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>Subscribe to printer object status updates</h3>
+<p>Requests status updates for a set of printer objects.  A persistent
+connection (Websocket or Unix Socket) is required to fulfill this
+request.</p>
+<p>Status updates for subscribed objects are sent asynchronously over the
+connection.  See the
+<a href="./jsonrpc_notifications.md#subscription-updates">notify_status_update</a>
+notification for details.</p>
+<p>/// Tip
+See the <a href="../printer_objects.md">Printer Objects</a> document
+for details on the objects available for subscription.
+///</p>
+<pre><code class="language-{.text">Not available
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.objects.subscribe&quot;,
+    &quot;params&quot;: {
+        &quot;objects&quot;: {
+            &quot;gcode_move&quot;: null,
+            &quot;toolhead&quot;: [&quot;position&quot;, &quot;status&quot;]
+        }
+    },
+    &quot;id&quot;: 5434
+}
+</code></pre>
+<p>/// api-parameters
+open: True
+Parameters are identical to the <a href="#query-printer-object-status">query</a>
+status parameters.  A new request will override a previous request.
+If <code>objects</code> is set to an empty object then the subscription will be
+cancelled.
+///</p>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;eventtime&quot;: 578243.57824499,
+    &quot;status&quot;: {
+        &quot;gcode_move&quot;: {
+            &quot;absolute_coordinates&quot;: true,
+            &quot;absolute_extrude&quot;: true,
+            &quot;extrude_factor&quot;: 1,
+            &quot;gcode_position&quot;: [0, 0, 0, 0],
+            &quot;homing_origin&quot;: [0, 0, 0, 0],
+            &quot;position&quot;: [0, 0, 0, 0],
+            &quot;speed&quot;: 1500,
+            &quot;speed_factor&quot;: 1,
+        },
+        &quot;toolhead&quot;: {
+            &quot;position&quot;: [0, 0, 0, 0],
+            &quot;status&quot;: &quot;Ready&quot;
+        }
+    }
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True
+The response spec is identical to the <a href="#object-query-response-spec">query response specification</a>
+The response may be used to initialize local state without performing a
+separate query.
+///</p>
+<h3>Query Endstops</h3>
+<pre><code class="language-{.http">GET /printer/query_endstops/status
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.query_endstops.status&quot;,
+    &quot;id&quot;: 3456
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;x&quot;: &quot;TRIGGERED&quot;,
+    &quot;y&quot;: &quot;open&quot;,
+    &quot;z&quot;: &quot;open&quot;
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variable</em></td>
+<td style="text-align:center">string</td>
+<td>The field is the name of the registered endstop.  The value</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>will be <code>open</code> or <code>TRIGGERED</code>.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>GCode APIs</h2>
+<h3>Run a gcode command</h3>
+<p>Executes a gcode command.  Multiple commands may be executed by separating
+them with a newline (<code>\n</code>).  The request returns when the command or series
+of commands have completed, or when the command results in an error.</p>
+<p>/// warning
+When <code>M112</code>(emergency stop) is requested via this endpoint it will not
+immediately stop the printer. <code>M112</code> will be placed on the gcode queue and
+executed after all previous gcodes are complete.  If a frontend detects
+<code>M112</code> via user input (such as a console) it should request the
+<code>/printer/emergency_stop</code> endpoint to immediately halt the printer.  This
+may be done in addition to sending the <code>M112</code> gcode if desired.
+///</p>
+<pre><code class="language-{.http">POST /printer/gcode/script
+Content-Type: application/json
+
+{
+    &quot;script&quot;: &quot;G28&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.gcode.script&quot;,
+    &quot;params&quot;: {
+        &quot;script&quot;: &quot;G28&quot;
+    },
+    &quot;id&quot;: 7466}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>script</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>A GCode Command to run.  Multiple commands may be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>specified, separated by a newline (<code>\n</code>).</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h3>Get GCode Help</h3>
+<p>Retrieves a list of registered GCode Command Descriptions.  Not all registered
+GCode commands have a description, so this list should not be treated as an
+exhaustive list of all supported commands.</p>
+<pre><code class="language-{.http">GET /printer/gcode/help
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.gcode.help&quot;,
+    &quot;id&quot;: 4645
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;RESTART&quot;: &quot;Reload config file and restart host software&quot;,
+    &quot;FIRMWARE_RESTART&quot;: &quot;Restart firmware, host, and reload config&quot;,
+    &quot;STATUS&quot;: &quot;Report the printer status&quot;,
+    &quot;HELP&quot;: &quot;Report the list of available extended G-Code commands&quot;,
+    &quot;SAVE_CONFIG&quot;: &quot;Overwrite config file and restart&quot;,
+    &quot;SHUTDOWN_MACHINE&quot;: &quot;G-Code macro&quot;,
+    &quot;SET_GCODE_VARIABLE&quot;: &quot;Set the value of a G-Code macro variable&quot;,
+    &quot;REBOOT_MACHINE&quot;: &quot;G-Code macro&quot;,
+    &quot;UPDATE_DELAYED_GCODE&quot;: &quot;Update the duration of a delayed_gcode&quot;,
+    &quot;TURN_OFF_HEATERS&quot;: &quot;Turn off all heaters&quot;,
+    &quot;TEMPERATURE_WAIT&quot;: &quot;Wait for a temperature on a sensor&quot;,
+    &quot;QUERY_ADC&quot;: &quot;Report the last value of an analog pin&quot;,
+    &quot;QUERY_FILAMENT_SENSOR&quot;: &quot;Query the status of the Filament Sensor&quot;,
+    &quot;SET_FILAMENT_SENSOR&quot;: &quot;Sets the filament sensor on/off&quot;,
+    &quot;SET_PIN&quot;: &quot;Set the value of an output pin&quot;,
+    &quot;BED_MESH_CALIBRATE&quot;: &quot;Perform Mesh Bed Leveling&quot;,
+    &quot;BED_MESH_PROFILE&quot;: &quot;Bed Mesh Persistent Storage management&quot;,
+    &quot;BED_MESH_OUTPUT&quot;: &quot;Retrieve interpolated grid of probed z-points&quot;,
+    &quot;BED_MESH_MAP&quot;: &quot;Serialize mesh and output to terminal&quot;,
+    &quot;BED_MESH_CLEAR&quot;: &quot;Clear the Mesh so no z-adjustment is made&quot;,
+    &quot;BED_MESH_OFFSET&quot;: &quot;Add X/Y offsets to the mesh lookup&quot;,
+    &quot;SET_GCODE_OFFSET&quot;: &quot;Set a virtual offset to g-code positions&quot;,
+    &quot;SAVE_GCODE_STATE&quot;: &quot;Save G-Code coordinate state&quot;,
+    &quot;RESTORE_GCODE_STATE&quot;: &quot;Restore a previously saved G-Code state&quot;,
+    &quot;GET_POSITION&quot;: &quot;Return information on the current location of the toolhead&quot;,
+    &quot;EXCLUDE_OBJECT_START&quot;: &quot;Marks the beginning the current object as labeled&quot;,
+    &quot;EXCLUDE_OBJECT_END&quot;: &quot;Marks the end the current object&quot;,
+    &quot;EXCLUDE_OBJECT&quot;: &quot;Cancel moves inside a specified objects&quot;,
+    &quot;EXCLUDE_OBJECT_DEFINE&quot;: &quot;Provides a summary of an object&quot;,
+    &quot;TURN_OFF_MOTORS&quot;: &quot;G-Code macro&quot;,
+    &quot;CLEAR_PAUSE&quot;: &quot;Clears the current paused state without resuming the print&quot;,
+    &quot;SET_PRINT_STATS_INFO&quot;: &quot;Pass slicer info like layer act and total to klipper&quot;,
+    &quot;SDCARD_RESET_FILE&quot;: &quot;Clears a loaded SD File. Stops the print if necessary&quot;,
+    &quot;SDCARD_PRINT_FILE&quot;: &quot;Loads a SD file and starts the print.  May include files in subdirectories.&quot;,
+    &quot;RESPOND&quot;: &quot;Echo the message prepended with a prefix&quot;,
+    &quot;PROBE&quot;: &quot;Probe Z-height at current XY position&quot;,
+    &quot;QUERY_PROBE&quot;: &quot;Return the status of the z-probe&quot;,
+    &quot;PROBE_CALIBRATE&quot;: &quot;Calibrate the probe's z_offset&quot;,
+    &quot;PROBE_ACCURACY&quot;: &quot;Probe Z-height accuracy at current XY position&quot;,
+    &quot;Z_OFFSET_APPLY_PROBE&quot;: &quot;Adjust the probe's z_offset&quot;,
+    &quot;GET_CURRENT_SKEW&quot;: &quot;Report current printer skew&quot;,
+    &quot;CALC_MEASURED_SKEW&quot;: &quot;Calculate skew from measured print&quot;,
+    &quot;SET_SKEW&quot;: &quot;Set skew based on lengths of measured object&quot;,
+    &quot;SKEW_PROFILE&quot;: &quot;Profile management for skew_correction&quot;,
+    &quot;SET_STEPPER_ENABLE&quot;: &quot;Enable/disable individual stepper by name&quot;,
+    &quot;SET_TMC_FIELD&quot;: &quot;Set a register field of a TMC driver&quot;,
+    &quot;INIT_TMC&quot;: &quot;Initialize TMC stepper driver registers&quot;,
+    &quot;SET_TMC_CURRENT&quot;: &quot;Set the current of a TMC driver&quot;,
+    &quot;DUMP_TMC&quot;: &quot;Read and display TMC stepper driver registers&quot;,
+    &quot;PID_CALIBRATE&quot;: &quot;Run PID calibration test&quot;,
+    &quot;SET_HEATER_TEMPERATURE&quot;: &quot;Sets a heater temperature&quot;,
+    &quot;SET_DISPLAY_TEXT&quot;: &quot;Set or clear the display message&quot;,
+    &quot;SET_DISPLAY_GROUP&quot;: &quot;Set the active display group&quot;,
+    &quot;STEPPER_BUZZ&quot;: &quot;Oscillate a given stepper to help id it&quot;,
+    &quot;FORCE_MOVE&quot;: &quot;Manually move a stepper; invalidates kinematics&quot;,
+    &quot;SET_KINEMATIC_POSITION&quot;: &quot;Force a low-level kinematic position&quot;,
+    &quot;SET_IDLE_TIMEOUT&quot;: &quot;Set the idle timeout in seconds&quot;,
+    &quot;QUERY_ENDSTOPS&quot;: &quot;Report on the status of each endstop&quot;,
+    &quot;SET_VELOCITY_LIMIT&quot;: &quot;Set printer velocity limits&quot;,
+    &quot;MANUAL_PROBE&quot;: &quot;Start manual probe helper script&quot;,
+    &quot;TUNING_TOWER&quot;: &quot;Tool to adjust a parameter at each Z height&quot;,
+    &quot;SET_PRESSURE_ADVANCE&quot;: &quot;Set pressure advance parameters&quot;,
+    &quot;SET_EXTRUDER_ROTATION_DISTANCE&quot;: &quot;Set extruder rotation distance&quot;,
+    &quot;SYNC_EXTRUDER_MOTION&quot;: &quot;Set extruder stepper motion queue&quot;,
+    &quot;SET_EXTRUDER_STEP_DISTANCE&quot;: &quot;Set extruder step distance&quot;,
+    &quot;SYNC_STEPPER_TO_EXTRUDER&quot;: &quot;Set extruder stepper&quot;,
+    &quot;ACTIVATE_EXTRUDER&quot;: &quot;Change the active extruder&quot;,
+    &quot;BASE_PAUSE&quot;: &quot;Renamed builtin of 'PAUSE'&quot;,
+    &quot;BASE_RESUME&quot;: &quot;Renamed builtin of 'RESUME'&quot;,
+    &quot;BASE_CANCEL_PRINT&quot;: &quot;Renamed builtin of 'CANCEL_PRINT'&quot;,
+    &quot;ACCEPT&quot;: &quot;Accept the current Z position&quot;,
+    &quot;ABORT&quot;: &quot;Abort manual Z probing tool&quot;,
+    &quot;TESTZ&quot;: &quot;Move to new Z height&quot;
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variable</em></td>
+<td style="text-align:center">string</td>
+<td>The field is the name of the registered gcode command.  The value</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>is a string containing the associated help descriptions.</td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+As mentioned previously, this list is not exhaustive.  Help strings are not
+available for default gcode handlers such as G1, G28, etc, nor are they
+available for extended handlers that failed to register a description in
+Klipper's python source.
+////</p>
+<p>///</p>
+<h2>Print Job Management</h2>
+<h3>Start a print job</h3>
+<pre><code class="language-{.http">POST /printer/print/start?filename=test_print.gcode
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.print.start&quot;,
+    &quot;params&quot;: {
+        &quot;filename&quot;: &quot;test_print.gcode&quot;
+    },
+    &quot;id&quot;: 4654
+}
+</code></pre>
+<p>/// api-parameters
+open: true</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The name of the gcode file to print.  May be a path</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>relative to the gcode folder.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h3>Pause a print job</h3>
+<pre><code class="language-{.http">POST /printer/print/pause
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.print.pause&quot;,
+    &quot;id&quot;: 4564
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h3>Resume a print job</h3>
+<pre><code class="language-{.http">POST /printer/print/resume
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.print.resume&quot;,
+    &quot;id&quot;: 1465
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h3>Cancel a print job</h3>
+<pre><code class="language-{.http">POST /printer/print/cancel
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.print.cancel&quot;,
+    &quot;id&quot;: 2578
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+
+</main></body></html>

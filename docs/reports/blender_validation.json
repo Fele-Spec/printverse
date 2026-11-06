@@ -1,0 +1,19 @@
+{
+  "blender": "4.5.12 LTS",
+  "addon": "bl_ext.user_default.print3d_toolbox",
+  "addon_enabled": true,
+  "addon_error": null,
+  "print3d_check_all_available": true,
+  "print3d_check_result": "{'FINISHED'}",
+  "print3d_check_error": null,
+  "mesh": "Filament_Card",
+  "vertices": 401,
+  "polygons": 802,
+  "dimensions_mm": [
+    60.0,
+    34.0,
+    2.0
+  ],
+  "glb": "C:\\Users\\someb\\Desktop\\printverse\\assets\\processed\\filament_card.glb",
+  "glb_bytes": 43608
+}

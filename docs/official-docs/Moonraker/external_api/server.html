@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Server API · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/server/">https://moonraker.readthedocs.io/en/latest/external_api/server/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Server Administration</h1>
+<p>These endpoints provide access to server status, data tracking, and
+administrative requests.</p>
+<h2>Query Server Info</h2>
+<pre><code class="language-{.http">GET /server/info
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.info&quot;,
+    &quot;id&quot;: 9546
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;klippy_connected&quot;: true,
+    &quot;klippy_state&quot;: &quot;ready&quot;,
+    &quot;components&quot;: [
+        &quot;database&quot;,
+        &quot;file_manager&quot;,
+        &quot;klippy_apis&quot;,
+        &quot;machine&quot;,
+        &quot;data_store&quot;,
+        &quot;shell_command&quot;,
+        &quot;proc_stats&quot;,
+        &quot;history&quot;,
+        &quot;octoprint_compat&quot;,
+        &quot;update_manager&quot;,
+        &quot;power&quot;
+    ],
+    &quot;failed_components&quot;: [],
+    &quot;registered_directories&quot;: [&quot;config&quot;, &quot;gcodes&quot;, &quot;config_examples&quot;, &quot;docs&quot;],
+    &quot;warnings&quot;: [
+        &quot;Invalid config option 'api_key_path' detected in section [authorization]. Remove the option to resolve this issue. In the future this will result in a startup error.&quot;,
+        &quot;Unparsed config section [fake_section] detected.  This may be the result of a component that failed to load.  In the future this will result in a startup error.&quot;
+    ],
+    &quot;websocket_count&quot;: 2,
+    &quot;moonraker_version&quot;: &quot;v0.7.1-105-ge4f103c&quot;,
+    &quot;api_version&quot;: [1, 4, 0],
+    &quot;api_version_string&quot;: &quot;1.4.0&quot;
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>klippy_connected</code></td>
+<td style="text-align:center">bool</td>
+<td>Moonraker's connection status to the Klippy Host.</td>
+</tr>
+<tr>
+<td><code>klippy_state</code></td>
+<td style="text-align:center">string</td>
+<td>Klippy's current state. Expand for available values.</td>
+</tr>
+<tr>
+<td>#klippy-state-desc</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td><code>components</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of Moonraker components that are currently</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>loaded.</td>
+</tr>
+<tr>
+<td><code>failed_components</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of Moonraker components that failed to load.</td>
+</tr>
+<tr>
+<td><code>registered_directories</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of &quot;roots&quot; registered with Moonraker's file</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>manager.</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of warning messages describing errors encountered</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>during initialization or regular operation.</td>
+</tr>
+<tr>
+<td><code>websocket_count</code></td>
+<td style="text-align:center">int</td>
+<td>The number of currently active websocket connections.</td>
+</tr>
+<tr>
+<td><code>moonraker_version</code></td>
+<td style="text-align:center">string</td>
+<td>The version of the Moonraker Application.</td>
+</tr>
+<tr>
+<td><code>api_version</code></td>
+<td style="text-align:center">[int]</td>
+<td>The version of the API in tuple format.</td>
+</tr>
+<tr>
+<td><code>api_version_string</code></td>
+<td style="text-align:center">string</td>
+<td>The version of the API in string format.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>disconnected</code></td>
+<td>Moonraker is currently disconnect from Klippy.</td>
+</tr>
+<tr>
+<td><code>startup</code></td>
+<td>Klippy is currently initializing.</td>
+</tr>
+<tr>
+<td><code>ready</code></td>
+<td>Klippy is active and ready to receive commands.</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Klippy experienced an error during startup.</td>
+</tr>
+<tr>
+<td><code>shutdown</code></td>
+<td>Klippy has been emergency stopped.  This can occur at user request</td>
+</tr>
+<tr>
+<td></td>
+<td>or if a critical error is encountered while running.</td>
+</tr>
+<tr>
+<td>{ #klippy-state-desc }</td>
+<td></td>
+</tr>
+<tr>
+<td>///</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Get Server Configuration</h2>
+<pre><code class="language-{.http">GET /server/config
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.config&quot;,
+    &quot;id&quot;: 5616
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;config&quot;: {
+        &quot;server&quot;: {
+            &quot;host&quot;: &quot;0.0.0.0&quot;,
+            &quot;port&quot;: 7125,
+            &quot;ssl_port&quot;: 7130,
+            &quot;enable_debug_logging&quot;: true,
+            &quot;enable_asyncio_debug&quot;: false,
+            &quot;klippy_uds_address&quot;: &quot;/tmp/klippy_uds&quot;,
+            &quot;max_upload_size&quot;: 210,
+            &quot;ssl_certificate_path&quot;: null,
+            &quot;ssl_key_path&quot;: null
+        },
+        &quot;dbus_manager&quot;: {},
+        &quot;database&quot;: {
+            &quot;database_path&quot;: &quot;~/.moonraker_database&quot;,
+            &quot;enable_database_debug&quot;: false
+        },
+        &quot;file_manager&quot;: {
+            &quot;enable_object_processing&quot;: true,
+            &quot;queue_gcode_uploads&quot;: true,
+            &quot;config_path&quot;: &quot;~/printer_config&quot;,
+            &quot;log_path&quot;: &quot;~/logs&quot;
+        },
+        &quot;klippy_apis&quot;: {},
+        &quot;machine&quot;: {
+            &quot;provider&quot;: &quot;systemd_dbus&quot;
+        },
+        &quot;shell_command&quot;: {},
+        &quot;data_store&quot;: {
+            &quot;temperature_store_size&quot;: 1200,
+            &quot;gcode_store_size&quot;: 1000
+        },
+        &quot;proc_stats&quot;: {},
+        &quot;job_state&quot;: {},
+        &quot;job_queue&quot;: {
+            &quot;load_on_startup&quot;: true,
+            &quot;automatic_transition&quot;: false,
+            &quot;job_transition_delay&quot;: 2,
+            &quot;job_transition_gcode&quot;: &quot;\nM118 Transitioning to next job...&quot;
+        },
+        &quot;http_client&quot;: {},
+        &quot;announcements&quot;: {
+            &quot;dev_mode&quot;: false,
+            &quot;subscriptions&quot;: []
+        },
+        &quot;authorization&quot;: {
+            &quot;login_timeout&quot;: 90,
+            &quot;force_logins&quot;: false,
+            &quot;cors_domains&quot;: [
+                &quot;*.home&quot;,
+                &quot;http://my.mainsail.xyz&quot;,
+                &quot;http://app.fluidd.xyz&quot;,
+                &quot;*://localhost:*&quot;
+            ],
+            &quot;trusted_clients&quot;: [
+                &quot;192.168.1.0/24&quot;
+            ]
+        },
+        &quot;zeroconf&quot;: {},
+        &quot;octoprint_compat&quot;: {
+            &quot;enable_ufp&quot;: true,
+            &quot;flip_h&quot;: false,
+            &quot;flip_v&quot;: false,
+            &quot;rotate_90&quot;: false,
+            &quot;stream_url&quot;: &quot;/webcam/?action=stream&quot;,
+            &quot;webcam_enabled&quot;: true
+        },
+        &quot;history&quot;: {},
+        &quot;secrets&quot;: {
+            &quot;secrets_path&quot;: &quot;~/moonraker_secrets.ini&quot;
+        },
+        &quot;mqtt&quot;: {
+            &quot;address&quot;: &quot;eric-work.home&quot;,
+            &quot;port&quot;: 1883,
+            &quot;username&quot;: &quot;{secrets.mqtt_credentials.username}&quot;,
+            &quot;password_file&quot;: null,
+            &quot;password&quot;: &quot;{secrets.mqtt_credentials.password}&quot;,
+            &quot;mqtt_protocol&quot;: &quot;v3.1.1&quot;,
+            &quot;instance_name&quot;: &quot;pi-debugger&quot;,
+            &quot;default_qos&quot;: 0,
+            &quot;status_objects&quot;: {
+                &quot;webhooks&quot;: null,
+                &quot;toolhead&quot;: &quot;position,print_time&quot;,
+                &quot;idle_timeout&quot;: &quot;state&quot;,
+                &quot;gcode_macro M118&quot;: null
+            },
+            &quot;api_qos&quot;: 0,
+            &quot;enable_moonraker_api&quot;: true
+        },
+        &quot;template&quot;: {}
+    },
+    &quot;orig&quot;: {
+        &quot;DEFAULT&quot;: {},
+        &quot;server&quot;: {
+            &quot;enable_debug_logging&quot;: &quot;True&quot;,
+            &quot;max_upload_size&quot;: &quot;210&quot;
+        },
+        &quot;file_manager&quot;: {
+            &quot;config_path&quot;: &quot;~/printer_config&quot;,
+            &quot;log_path&quot;: &quot;~/logs&quot;,
+            &quot;queue_gcode_uploads&quot;: &quot;True&quot;,
+            &quot;enable_object_processing&quot;: &quot;True&quot;
+        },
+        &quot;machine&quot;: {
+            &quot;provider&quot;: &quot;systemd_dbus&quot;
+        },
+        &quot;announcements&quot;: {},
+        &quot;job_queue&quot;: {
+            &quot;job_transition_delay&quot;: &quot;2.&quot;,
+            &quot;job_transition_gcode&quot;: &quot;\nM118 Transitioning to next job...&quot;,
+            &quot;load_on_startup&quot;: &quot;True&quot;
+        },
+        &quot;authorization&quot;: {
+            &quot;trusted_clients&quot;: &quot;\n192.168.1.0/24&quot;,
+            &quot;cors_domains&quot;: &quot;\n*.home\nhttp://my.mainsail.xyz\nhttp://app.fluidd.xyz\n*://localhost:*&quot;
+        },
+        &quot;zeroconf&quot;: {},
+        &quot;octoprint_compat&quot;: {},
+        &quot;history&quot;: {},
+        &quot;secrets&quot;: {
+            &quot;secrets_path&quot;: &quot;~/moonraker_secrets.ini&quot;
+        },
+        &quot;mqtt&quot;: {
+            &quot;address&quot;: &quot;eric-work.home&quot;,
+            &quot;port&quot;: &quot;1883&quot;,
+            &quot;username&quot;: &quot;{secrets.mqtt_credentials.username}&quot;,
+            &quot;password&quot;: &quot;{secrets.mqtt_credentials.password}&quot;,
+            &quot;enable_moonraker_api&quot;: &quot;True&quot;,
+            &quot;status_objects&quot;: &quot;\nwebhooks\ntoolhead=position,print_time\nidle_timeout=state\ngcode_macro M118&quot;
+        }
+    },
+    &quot;files&quot;: [
+        {
+            &quot;filename&quot;: &quot;moonraker.conf&quot;,
+            &quot;sections&quot;: [
+                &quot;server&quot;,
+                &quot;file_manager&quot;,
+                &quot;machine&quot;,
+                &quot;announcements&quot;,
+                &quot;job_queue&quot;,
+                &quot;authorization&quot;,
+                &quot;zeroconf&quot;,
+                &quot;octoprint_compat&quot;,
+                &quot;history&quot;,
+                &quot;secrets&quot;
+            ]
+        },
+        {
+            &quot;filename&quot;: &quot;include/extras.conf&quot;,
+            &quot;sections&quot;: [
+                &quot;mqtt&quot;
+            ]
+        }
+    ]
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config</code></td>
+<td style="text-align:center">object</td>
+<td>An object containing the full Moonraker configuration.  Each field of</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>this object is a section name.  The value for each section is an</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>object mapping option names to values.  Values are cast to their</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>internal type.  Default values not specified in the configuration</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>files are included.</td>
+</tr>
+<tr>
+<td><code>orig</code></td>
+<td style="text-align:center">object</td>
+<td>An object containing the original configuration as read from the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>configuration file(s).  Like <code>config</code>, each field is a section name</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>and each value is a mapping of options to values.  Only values present</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>in the configuration files are reported, and all values are strings.</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <a href="#file-object-spec">File Objects</a> describing the config</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>files parsed.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td style="text-align:center">string</td>
+<td>The name of the configuration file.  This name is a path relative</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>to the main configuration file's parent folder.</td>
+</tr>
+<tr>
+<td><code>sections</code></td>
+<td style="text-align:center">[string]</td>
+<td>The config sections parsed from this file.</td>
+</tr>
+<tr>
+<td>{ #file-object-spec } File Object</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Request Cached Temperature Data</h2>
+<pre><code class="language-{.http">GET /server/temperature_store?include_monitors=false
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.temperature_store&quot;,
+    &quot;params&quot;: {
+        &quot;include_monitors&quot;: false
+    },
+    &quot;id&quot;: 2313
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include_monitors</code></td>
+<td style="text-align:center">bool</td>
+<td><code>false</code></td>
+<td>When set to <code>true</code> the response will include</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>sensors reported as <code>temperature monitors.</code></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>A temperature monitor is a specific type of</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>sensor that may include <code>null</code> values in</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>the <code>temperatures</code> field of the response.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;extruder&quot;: {
+        &quot;temperatures&quot;: [21.05, 21.12, 21.1, 21.1, 21.1],
+        &quot;targets&quot;: [0, 0, 0, 0, 0],
+        &quot;powers&quot;: [0, 0, 0, 0, 0]
+    },
+    &quot;temperature_fan my_fan&quot;: {
+        &quot;temperatures&quot;: [21.05, 21.12, 21.1, 21.1, 21.1],
+        &quot;targets&quot;: [0, 0, 0, 0, 0],
+        &quot;speeds&quot;: [0, 0, 0, 0, 0]
+    },
+    &quot;temperature_sensor my_sensor&quot;: {
+        &quot;temperatures&quot;: [21.05, 21.12, 21.1, 21.1, 21.1]
+    }
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variable</em></td>
+<td style="text-align:center">object</td>
+<td>A primary object including zero or more <a href="#sensor-obj-spec">Sensor Objects</a>.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>The <code>fields</code> in this object will be sensor names as reported by Klippy.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>If Klippy has not been initialized or reports no sensors this object will</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>be empty.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperatures</code></td>
+<td style="text-align:center">[float?]</td>
+<td>Contains the history of temperature measurements of this sensor.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>If the sensor is a <code>temperature monitor</code> values may be <code>null</code>.  A</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td><code>null</code> value indicates that the sensor recorded no measurement at</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>that time.</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td style="text-align:center">[float]</td>
+<td>Contains the history of temperature targets for heaters.</td>
+</tr>
+<tr>
+<td><code>speeds</code></td>
+<td style="text-align:center">[float]</td>
+<td>Contains a history of <code>speeds</code> for fans.  This value should be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>between 0 and 1 indicating the pwm duty cycle.</td>
+</tr>
+<tr>
+<td><code>powers</code></td>
+<td style="text-align:center">[float]</td>
+<td>Contains a history fof <code>powers</code> for heaters.  This value should be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>between 0 and 1 indicating the pwm duty cycle.</td>
+</tr>
+<tr>
+<td>{ #sensor-obj-spec } Sensor Object</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+Fields not reported by a sensor will be omitted in the <code>Sensor Object</code>.</p>
+<p>Each array in the <code>Sensor Object</code> is a FIFO queue, where the measurement at index 0
+is the oldest value.  The time period between each measurement is 1 second.  The
+maximum length of the array is set in Moonraker's configuration, where the default is
+1200 values.
+////</p>
+<p>///</p>
+<h2>Request Cached GCode Responses</h2>
+<pre><code class="language-{.http">GET /server/gcode_store?count=100
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.gcode_store&quot;,
+    &quot;params&quot;: {
+        &quot;count&quot;: 100
+    },
+    &quot;id&quot;: 7643
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count</code></td>
+<td style="text-align:center">int</td>
+<td><em>Store Size</em></td>
+<td>The number of cached gcode responses to return. The</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>default is to return all cached items.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;gcode_store&quot;: [
+        {
+            &quot;message&quot;: &quot;FIRMWARE_RESTART&quot;,
+            &quot;time&quot;: 1615832299.1167388,
+            &quot;type&quot;: &quot;command&quot;
+        },
+        {
+            &quot;message&quot;: &quot;// Klipper state: Ready&quot;,
+            &quot;time&quot;: 1615832309.9977088,
+            &quot;type&quot;: &quot;response&quot;
+        },
+        {
+            &quot;message&quot;: &quot;M117 This is a test&quot;,
+            &quot;time&quot;: 1615834094.8662775,
+            &quot;type&quot;: &quot;command&quot;
+        },
+        {
+            &quot;message&quot;: &quot;G4 P1000&quot;,
+            &quot;time&quot;: 1615834098.761729,
+            &quot;type&quot;: &quot;command&quot;
+        },
+        {
+            &quot;message&quot;: &quot;STATUS&quot;,
+            &quot;time&quot;: 1615834104.2860553,
+            &quot;type&quot;: &quot;command&quot;
+        },
+        {
+            &quot;message&quot;: &quot;// Klipper state: Ready&quot;,
+            &quot;time&quot;: 1615834104.3299904,
+            &quot;type&quot;: &quot;response&quot;
+        }
+    ]
+}
+</code></pre>
+<p>////</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gcode_store</code></td>
+<td style="text-align:center">[object]</td>
+<td>An array of <a href="#gc-tracking-obj-spec">GCode Tracking Objects</a>.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>The array is a FIFO queue with the oldest item being at index 0.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message</code></td>
+<td style="text-align:center">string</td>
+<td>The GCode Message associated with ths object.</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td style="text-align:center">float</td>
+<td>The time at which the message was received reported in Unix Time.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td style="text-align:center">string</td>
+<td>The message type.  Can be <code>command</code> or <code>response</code>.  Commands are</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>only tracked when received through Moonraker's gcode API endpoint.</td>
+</tr>
+<tr>
+<td>{ #gc-tracking-obj-spec } GCode Tracking Object</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>///</p>
+<h2>Rollover Logs</h2>
+<p>Requests a manual rollover for log files registered with Moonraker's
+log management facility.  Currently these are limited to <code>moonraker.log</code>
+and <code>klippy.log</code>.</p>
+<p>/// Warning
+Moonraker must be able to manage Klipper's systemd service to
+perform a manual rollover.  The rollover will fail under the following
+conditions:</p>
+<ul>
+<li>Moonraker cannot detect Klipper's systemd unit</li>
+<li>Moonraker cannot detect the location of Klipper's files</li>
+<li>A print is in progress
+///</li>
+</ul>
+<pre><code class="language-{.http">POST /server/logs/rollover
+Content-Type: application/json
+
+{
+    &quot;application&quot;: &quot;moonraker&quot;
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.logs.rollover&quot;,
+    &quot;params&quot;: {
+        &quot;application&quot;: &quot;moonraker&quot;
+    },
+    &quot;id&quot;: 4656
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>application</code></td>
+<td style="text-align:center">string</td>
+<td><em>all</em></td>
+<td>The name of the application for which the log should be</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>rolled over.  Can be <code>moonraker</code> or <code>klipper</code>.  When no</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>value is specified all logs are rolled over.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>/// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;rolled_over&quot;: [
+        &quot;moonraker&quot;,
+        &quot;klipper&quot;
+    ],
+    &quot;failed&quot;: {}
+}
+</code></pre>
+<p>///</p>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rolled_over</code></td>
+<td style="text-align:center">[string]</td>
+<td>A list of application names successfully rolled over.</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td style="text-align:center">object</td>
+<td>An object where the fields consist of applications names</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>that failed the rollover procedure.  The value assigned</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td>to each field is an error message.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Restart Server</h2>
+<pre><code class="language-{.http">POST /server/restart
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.restart&quot;,
+    &quot;id&quot;: 4656
+}
+</code></pre>
+<pre><code class="language-{.text">&quot;ok&quot;
+</code></pre>
+<h2>Identify Connection</h2>
+<p>This method provides a way for applications with persistent connections
+to identify themselves to Moonraker.  This information may be used by
+Moonraker perform an action or present information based on if a specific
+type of frontend is connected.  Currently this method is only available
+to websocket and unix socket connections.  Once this endpoint returns
+success it cannot be called again, repeated calls will result in an error.</p>
+<pre><code class="language-{.text">Not Available
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.connection.identify&quot;,
+    &quot;params&quot;: {
+        &quot;client_name&quot;: &quot;moontest&quot;,
+        &quot;version&quot;: &quot;0.0.1&quot;,
+        &quot;type&quot;: &quot;web&quot;,
+        &quot;url&quot;: &quot;http://github.com/arksine/moontest&quot;,
+        &quot;access_token&quot;: &quot;&lt;base64 encoded token&gt;&quot;,
+        &quot;api_key&quot;: &quot;&lt;system API key&gt;&quot;
+    },
+    &quot;id&quot;: 4656
+}
+</code></pre>
+<p>/// api-parameters
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_name</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The name of the application identifying itself,</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>ie: <code>Mainsail</code>, <code>Fluidd</code>, <code>KlipperScreen</code>, etc.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The version of the application identifying itself.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The type of the application.  Expand for available</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>values.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>#valid-id-type-desc</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td style="text-align:center">string</td>
+<td><strong>REQUIRED</strong></td>
+<td>The project URL or homepage for the application.</td>
+</tr>
+<tr>
+<td><code>access_token</code></td>
+<td style="text-align:center">string</td>
+<td><code>null</code></td>
+<td>An optional JSON Web Token used to authenticate</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>the websocket connection.  Only needed when the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>app uses JWT authentication and did not</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>authenticate through the original Websocket</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>Request.</td>
+</tr>
+<tr>
+<td><code>api_key</code></td>
+<td style="text-align:center">string</td>
+<td><code>null</code></td>
+<td>An optional API Key used to authenticate the</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>connection.  Only needed when the APP uses API</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>Key authentication and did not authenticate</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"></td>
+<td></td>
+<td>through the original Websocket Request.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>web</code></td>
+<td>A web application like <code>Mainsail</code> and <code>Fluidd</code>.</td>
+</tr>
+<tr>
+<td><code>mobile</code></td>
+<td>A mobile application like <code>Mobileraker</code>.</td>
+</tr>
+<tr>
+<td><code>desktop</code></td>
+<td>A desktop application like <code>OrcaSlicer</code>.</td>
+</tr>
+<tr>
+<td><code>display</code></td>
+<td>An application intended to drive displays like <code>KlipperScreen</code>.</td>
+</tr>
+<tr>
+<td><code>bot</code></td>
+<td>An interactive bot like <code>MoonCord</code>.</td>
+</tr>
+<tr>
+<td><code>agent</code></td>
+<td>An external extension like <code>Obico</code>.</td>
+</tr>
+<tr>
+<td><code>other</code></td>
+<td>Anything that doesn't fit in to the above categories.</td>
+</tr>
+<tr>
+<td>{: #valid-id-type-desc }</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>//// Note
+When identifying as an <code>agent</code>, only one instance should be connected
+to Moonraker at a time.  If multiple agents of the same <code>client_name</code>
+attempt to identify themselves this endpoint will return an error.
+See the <a href="./extensions.md">extensions</a> document for more information about
+<code>agents</code>.
+////</p>
+<p>//// Tip
+See the authorization API documentation for details on JWT and API Key authentication.
+////
+///</p>
+<pre><code class="language-{.json">{
+    &quot;connection_id&quot;: 1730367696
+}
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connection_id</code></td>
+<td style="text-align:center">int</td>
+<td>A unique identifier for this connection.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Get Websocket ID</h2>
+<p>!!! Warning
+This method is deprecated.  Please use the
+<a href="#identify-connection">identify endpoint</a> to retrieve the
+Websocket's UID</p>
+<pre><code class="language-{.text">Not Available
+</code></pre>
+<pre><code class="language-{json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.websocket.id&quot;,
+    &quot;id&quot;: 4656
+}
+</code></pre>
+<pre><code class="language-{.json">{
+    &quot;websocket_id&quot;: 1730367696
+}
+</code></pre>
+<p>/// api-response-spec
+open: True</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th style="text-align:center">Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>websocket_id</code></td>
+<td style="text-align:center">int</td>
+<td>A unique identifier for this connection.</td>
+</tr>
+<tr>
+<td>///</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</main></body></html>

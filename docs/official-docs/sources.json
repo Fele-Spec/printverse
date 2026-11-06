@@ -1,0 +1,230 @@
+{
+  "retrieved_at": "2026-11-06T04:00:47.869819+00:00",
+  "documents": [
+    {
+      "vendor": "Voron",
+      "title": "Mechanical assembly overview",
+      "markdown": "docs/official-docs/Voron/build/mechanical/index.md",
+      "html": "docs/official-docs/Voron/build/mechanical/index.html",
+      "source_url": "https://docs.vorondesign.com/build/mechanical/",
+      "bytes": 4879,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "V2 gantry squaring",
+      "markdown": "docs/official-docs/Voron/build/mechanical/v2_gantry_squaring.md",
+      "html": "docs/official-docs/Voron/build/mechanical/v2_gantry_squaring.html",
+      "source_url": "https://docs.vorondesign.com/build/mechanical/v2_gantry_squaring.html",
+      "bytes": 7089,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Software configuration",
+      "markdown": "docs/official-docs/Voron/build/software/configuration.md",
+      "html": "docs/official-docs/Voron/build/software/configuration.html",
+      "source_url": "https://docs.vorondesign.com/build/software/configuration.html",
+      "bytes": 10151,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "First print",
+      "markdown": "docs/official-docs/Voron/build/slicer/first_print.md",
+      "html": "docs/official-docs/Voron/build/slicer/first_print.html",
+      "source_url": "https://docs.vorondesign.com/build/slicer/first_print.html",
+      "bytes": 1443,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Tuning overview",
+      "markdown": "docs/official-docs/Voron/tuning/index.md",
+      "html": "docs/official-docs/Voron/tuning/index.html",
+      "source_url": "https://docs.vorondesign.com/tuning/",
+      "bytes": 152,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Filament tuning",
+      "markdown": "docs/official-docs/Voron/tuning/filament_tuning.md",
+      "html": "docs/official-docs/Voron/tuning/filament_tuning.html",
+      "source_url": "https://docs.vorondesign.com/tuning/filament_tuning.html",
+      "bytes": 961,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Sensorless homing",
+      "markdown": "docs/official-docs/Voron/tuning/sensorless.md",
+      "html": "docs/official-docs/Voron/tuning/sensorless.html",
+      "source_url": "https://docs.vorondesign.com/tuning/sensorless.html",
+      "bytes": 18502,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Sourcing",
+      "markdown": "docs/official-docs/Voron/sourcing.md",
+      "html": "docs/official-docs/Voron/sourcing.html",
+      "source_url": "https://docs.vorondesign.com/sourcing.html",
+      "bytes": 8432,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Materials",
+      "markdown": "docs/official-docs/Voron/materials.md",
+      "html": "docs/official-docs/Voron/materials.html",
+      "source_url": "https://docs.vorondesign.com/materials.html",
+      "bytes": 5452,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Voron",
+      "title": "Maintenance",
+      "markdown": "docs/official-docs/Voron/maintenance.md",
+      "html": "docs/official-docs/Voron/maintenance.html",
+      "source_url": "https://docs.vorondesign.com/maintenance.html",
+      "bytes": 3403,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Configuration reference",
+      "markdown": "docs/official-docs/Klipper/Config_Reference.md",
+      "html": "docs/official-docs/Klipper/Config_Reference.html",
+      "source_url": "https://www.klipper3d.org/Config_Reference.html",
+      "bytes": 196599,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "G-code commands",
+      "markdown": "docs/official-docs/Klipper/G-Codes.md",
+      "html": "docs/official-docs/Klipper/G-Codes.html",
+      "source_url": "https://www.klipper3d.org/G-Codes.html",
+      "bytes": 70087,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Example configurations",
+      "markdown": "docs/official-docs/Klipper/Example_Configs.md",
+      "html": "docs/official-docs/Klipper/Example_Configs.html",
+      "source_url": "https://www.klipper3d.org/Example_Configs.html",
+      "bytes": 6079,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Kinematics",
+      "markdown": "docs/official-docs/Klipper/Kinematics.md",
+      "html": "docs/official-docs/Klipper/Kinematics.html",
+      "source_url": "https://www.klipper3d.org/Kinematics.html",
+      "bytes": 12712,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Bed mesh",
+      "markdown": "docs/official-docs/Klipper/Bed_Mesh.md",
+      "html": "docs/official-docs/Klipper/Bed_Mesh.html",
+      "source_url": "https://www.klipper3d.org/Bed_Mesh.html",
+      "bytes": 32570,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Configuration checks",
+      "markdown": "docs/official-docs/Klipper/Config_checks.md",
+      "html": "docs/official-docs/Klipper/Config_checks.html",
+      "source_url": "https://www.klipper3d.org/Config_checks.html",
+      "bytes": 7785,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "Command templates",
+      "markdown": "docs/official-docs/Klipper/Command_Templates.md",
+      "html": "docs/official-docs/Klipper/Command_Templates.html",
+      "source_url": "https://www.klipper3d.org/Command_Templates.html",
+      "bytes": 11418,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Klipper",
+      "title": "API server",
+      "markdown": "docs/official-docs/Klipper/API_Server.md",
+      "html": "docs/official-docs/Klipper/API_Server.html",
+      "source_url": "https://www.klipper3d.org/API_Server.html",
+      "bytes": 19110,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "API introduction",
+      "markdown": "docs/official-docs/Moonraker/external_api/introduction.md",
+      "html": "docs/official-docs/Moonraker/external_api/introduction.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/introduction/",
+      "bytes": 19989,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "Printer API",
+      "markdown": "docs/official-docs/Moonraker/external_api/printer.md",
+      "html": "docs/official-docs/Moonraker/external_api/printer.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/printer/",
+      "bytes": 21279,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "Server API",
+      "markdown": "docs/official-docs/Moonraker/external_api/server.md",
+      "html": "docs/official-docs/Moonraker/external_api/server.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/server/",
+      "bytes": 24134,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "File manager API",
+      "markdown": "docs/official-docs/Moonraker/external_api/file_manager.md",
+      "html": "docs/official-docs/Moonraker/external_api/file_manager.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/file_manager/",
+      "bytes": 48479,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "Job queue API",
+      "markdown": "docs/official-docs/Moonraker/external_api/job_queue.md",
+      "html": "docs/official-docs/Moonraker/external_api/job_queue.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/job_queue/",
+      "bytes": 12898,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "Authorization",
+      "markdown": "docs/official-docs/Moonraker/external_api/authorization.md",
+      "html": "docs/official-docs/Moonraker/external_api/authorization.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/authorization/",
+      "bytes": 20591,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    },
+    {
+      "vendor": "Moonraker",
+      "title": "JSON-RPC notifications",
+      "markdown": "docs/official-docs/Moonraker/external_api/jsonrpc_notifications.md",
+      "html": "docs/official-docs/Moonraker/external_api/jsonrpc_notifications.html",
+      "source_url": "https://moonraker.readthedocs.io/en/latest/external_api/jsonrpc_notifications/",
+      "bytes": 53343,
+      "retrieved_at": "2026-11-06T04:00:47.869819+00:00"
+    }
+  ]
+}

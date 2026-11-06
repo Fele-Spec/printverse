@@ -1,0 +1,46 @@
+{
+  "freecad_version": [
+    "1",
+    "1",
+    "4",
+    "20260928 (Git shallow)",
+    "Unknown",
+    "2026/09/28 13:46:34",
+    "(HEAD detached at 4fd3bf320)",
+    "4fd3bf320d9566a27e60069fc8387448aaa3a094"
+  ],
+  "python": "3.11.14 | packaged by conda-forge | (main, Oct 13 2025, 14:00:26) [MSC v.1944 64 bit (AMD64)]",
+  "cwd": "C:\\Users\\someb\\Desktop\\printverse",
+  "imports": [
+    {
+      "path": "C:\\Users\\someb\\Desktop\\printverse\\assets\\source\\voron-v2.4r2-300\\STLs\\Test_Prints\\Filament_Card.stl",
+      "bytes": 40184,
+      "label": "stl",
+      "elapsed_s": 0.01,
+      "object_count": 1,
+      "part_feature_count": 0,
+      "mesh_feature_count": 1,
+      "solid_count": 0,
+      "face_count": 0,
+      "volume_mm3": 0.0,
+      "bbox_mm": {
+        "valid": true,
+        "xmin": -0.0,
+        "ymin": -0.0,
+        "zmin": 0.0,
+        "xmax": 60.0,
+        "ymax": 34.0,
+        "zmax": 2.0,
+        "dx": 60.0,
+        "dy": 34.0,
+        "dz": 2.0
+      },
+      "ok": true,
+      "mesh_points": 401,
+      "mesh_facets": 802,
+      "mesh_solid_flags": [
+        true
+      ]
+    }
+  ]
+}

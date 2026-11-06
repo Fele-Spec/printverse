@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sourcing · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Voron · source: <a href="https://docs.vorondesign.com/sourcing.html">https://docs.vorondesign.com/sourcing.html</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<hr />
+<h2>layout: default
+title: Sourcing Information
+has_children: true
+nav_order: 4</h2>
+<h1>Sourcing Information</h1>
+<h2>Bill of Materials and Source Guide</h2>
+<p>The Bill of Materials (BOM) is generated from the <a href="http://vorondesign.com">Voron Design website</a>.  Select the printer to be built, then select 'Configurator' and choose from the parameters.  A customized BOM will be presented.  The BOM is considered the absolute guide for what is actually required to build the printer.</p>
+<p>The Sourcing Guide is made available at the same time as the customized BOM.  It is a list of Voron maintained references to where to purchase the various components listed on the BOM for the different printers.  <em>The sourcing guide is not customized to the printer.  All quantities are mostly incorrect.</em>  There are additional tabs at the bottom of the sourcing guide for optional or additional components.</p>
+<h2>Printing Parts</h2>
+<h3>Material</h3>
+<p>Please see the <a href="./materials.md">materials guide</a> for more detailed information.</p>
+<h3>Print It Forward (PIF)</h3>
+<p>If you are not able to print the ABS parts of a Voron yourself, there is a community-driven service called Print it Forward (PIF) in place. The goal of PIF is to provide a set of necessary structural parts for a Voron printer of your desire, printed on a Voron 3D Printer, showcasing their print quality. Every PIF-Provider undergoes a thorough vetting procedure in order to provide parts capable of demonstrating of what a Voron is capable of. PIF is a non-profit project, the pricing is set to compensate for the filament, energy and wear on the provider's rig.</p>
+<p>More information and the current queue length can be found on the <a href="https://pif.voron.dev/">PIF Website</a>. There is also a separate channel on the Voron discord, where questions can be asked.</p>
+<h3>Colors and Quantities</h3>
+<p>The recommended accent parts are denoted with a &quot;[a]_&quot; in the filename. Many of these are still functional in nature and should still follow the recommended print settings.</p>
+<p>Filenames that end with &quot;_x#&quot;, indicate that the part must be printed multiple times (ie. x2, x4, etc.)</p>
+<p>Typical printers require approximately 1.5kg of the primary color and 0.3kg of the alternate color, assuming no failed or reprinted parts. Most people end up reprinting a few parts and a few mods, so plan on 2kg of the primary color. Refer to the table <a href="./sourcing_faq.md">here</a> for your specific model.</p>
+<p>For information on selecting parts to print, clarification of colors and quantities, and even what parts PIF will provide, see the <a href="https://docs.google.com/spreadsheets/d/1njgHapSZLiQHobrEVkeuAuhhDsXzFOJOiIpvfVFeGxQ/edit?usp=sharing">Printed Part Reference</a> spreadsheet.</p>
+<h3>Print Settings</h3>
+<p>These are the recommended settings.</p>
+<ul>
+<li>Layer height: 0.2mm</li>
+<li>Extrusion width: 0.4mm, forced</li>
+<li>Infill percentage: 40%</li>
+<li>Infill type: grid, gyroid, honeycomb, triangle, or cubic</li>
+<li>Wall count: 4</li>
+<li>Solid top/bottom layers: 5</li>
+<li>Supports: NONE</li>
+</ul>
+<h2>Ordering Parts</h2>
+<p>When purchasing, the sourcing guide and the bill of materials (BOM) are not the same.  Be sure to refer to the BOM for all quantities.  If unclear please see the <a href="#bill-of-materials-and-source-guide">explanation of differences</a>.</p>
+<p><em>When purchasing small items, it is recommended to buy extras (round up). Having a few extra screws or connectors around may actually help you later.</em></p>
+<p><em>Note:</em> The generated BOM part numbers for Misumi extrusions are the exact part numbers.  Enter them into Misumi's website and they will return exactly what needs to be ordered, including any extra drilling or tapping operations.</p>
+<p>There are a growing number of suppliers that are assembling kits to build Voron printers.  Outside of the sourcing guide, Voron does not implicitly endorse any specific vendor of Voron kits.</p>
+<h3>Parts Selection / Alternates</h3>
+<p>When choosing extrusions, V-slot extrusions are discouraged.  This is due to the use of the MGN9 linear rail as the V-slot and width of the rail are very close and cause misalignment.  Vendors of extrusions other than Misumi are generally fine but verification of the extrusion profile is highly recommended to ensure they will fit with the rails.</p>
+<p>If trying to keep costs down, the display / screen on any printer is entirely optional. Many builders solely use the web interface.</p>
+<p>Builders are welcome to make substitutions as they see fit but this printer is not a race to be as cheap as possible. It is designed to compete with many other high-end printers while still being affordable. Substituting parts may also have other unintended side effects and cause compatibility issues. Please feel free to ask for advice before any substitutions are made.</p>
+<p>More sourcing information can be found in the <a href="./sourcing_faq.md">sourcing FAQ</a></p>
+<h2>Unsupported Configurations</h2>
+<h3>Large Format Printers</h3>
+<p>As print volumes for CoreXY printers grow, they become increasingly difficult to build, tune, operate, and maintain. Vorons are no exception to these fundamentals.</p>
+<p>Please be mindful of the size specifications listed for each Voron printer -- these have been chosen based on limitations of the components and structure unique to each model. We do not recommend exceeding the largest size.</p>
+<h3>Chamber Heating</h3>
+<p>There are a few reasons Voron does not and will not support active chamber heating:</p>
+<ul>
+<li>It is not necessary to use a chamber heater to achieve sufficient chamber temperatures for ABS or other common 3D printing materials.</li>
+<li>Chamber heating is easy to screw up for someone that doesn't have direct experience with properly designing, controlling, and mounting heaters in high temperature environments.</li>
+<li>If we spec something and people cheap out, there will be fires involved.</li>
+<li>If we spec something and people don't cheap out but don't install it correctly, there will be fires involved.</li>
+<li>Fire is bad.</li>
+</ul>
+<h3>Exotic Materials (PEEK, PEI, etc.)</h3>
+<p>While Vorons are designed to be enclosed, chamber temperatures generally do not exceed 50-60C. This is perfect for printing ABS and most Nylon and PC blends, but it is insufficient for exotic materials such as PEEK and PEI which require 100-130C chamber temperatures. While the jump from 60C to 100C may not sound like a lot, most of the parts in your Voron printer will fail before 100C including: all of the 3D printed components, stepper motors, Gates belt, linear bearings, linear rail end caps, inductive probe, acrylic, and ABS panels, fans...</p>
+<p>Voron printers are currently not designed for exotic materials and there are no plans to modify the design to support this in the future. We recommend purchasing an industrial printer designed for this purpose if you intend to print with these materials.</p>
+<h3>Multimaterial / Multicolor</h3>
+<p>Voron does not currently support native, in-house designs for dual extrusion, dual hot ends, tool changers, or other multimaterial/multicolor solutions.  However, there are many community-provided systems available, including:</p>
+<ul>
+<li><a href="https://github.com/ArmoredTurtle/BoxTurtle">BoxTurtle</a></li>
+<li><a href="https://github.com/Carrot-collective/ERCF_v3">Enraged Rabbit Carrot Feeder (ERCF)</a></li>
+<li><a href="https://github.com/mjonuschat/NightOwl">NightOwl</a></li>
+<li><a href="https://github.com/Batalhoti/QuattroBox">QuattroBox</a></li>
+<li><a href="https://github.com/DW-Tas/EMU">EMU</a></li>
+<li><a href="https://github.com/lhndo/LH-Stinger/wiki/Pico-MMU">PicoMMU</a></li>
+<li><a href="https://github.com/zruncho3d/madmax">MadMax</a></li>
+<li><a href="https://github.com/DraftShift/StealthChanger">StealthChanger</a></li>
+</ul>
+<p>This is not an exhaustive list and the landscape changes rapidly.</p>
+<h2>Tools</h2>
+<h3>Required Tools</h3>
+<p><em>It might be possible to build, troubleshoot, and tune a Voron without this list, but it will be much harder.</em></p>
+<ul>
+<li>Set of metric hex wrenches (&quot;keys&quot;) from at least 1.5mm - 5mm. (Wiha, Wera, or Bondhus are preferred)</li>
+<li>Standard screwdrivers</li>
+<li>Wire strippers from 16 gauge (1.25mm) to 26 gauge (0.405mm)</li>
+<li>Diagonal wire cutters, small</li>
+<li>Soldering iron (solder helpful)</li>
+<li>Multimeter</li>
+<li>Metric calipers, 6&quot;/150mm</li>
+<li>Crimpers
+<ul>
+<li>Molex Crimpers (Good: IWISS IWS-3220M, Better: Engineer PA-09, Best: Molex Crimper)</li>
+<li>Ferrule Crimpers</li>
+<li>Terminal Crimpers</li>
+</ul>
+</li>
+</ul>
+<h3>Helpful / Nice To Have Tools</h3>
+<p><em>These make Voron life a little nicer.</em></p>
+<ul>
+<li>Needle nose pliers</li>
+<li>Tweezers</li>
+<li>Small &quot;X-Acto&quot; knife</li>
+<li>Machinist scale / ruler, either 6&quot;/150mm or 12&quot;/300mm</li>
+<li>Machinist square, 4&quot;/100mm or larger (Sometimes called &quot;locksmith angles&quot;, see DIN 875)</li>
+<li>Deburring tool</li>
+<li>Small files</li>
+<li>Small flashlight</li>
+<li>Precision screwdriver set</li>
+<li>Heat shrink labeler</li>
+</ul>
+<hr />
+<h3>Next: <a href="./build/index.md">The Build</a></h3>
+
+</main></body></html>

@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "arc_count": 2,
+  "layers": 2,
+  "commands": {
+    "G1": 3,
+    "G2": 1,
+    "G3": 1
+  },
+  "filament": {
+    "diameter_mm": 1.75,
+    "density_g_cm3": 1.24,
+    "extrusion_length_mm": 4.0,
+    "retraction_length_mm": 0.0,
+    "volume_mm3": 9.621,
+    "mass_g": 0.012,
+    "path_length_mm": 48.49
+  },
+  "source": "C:\\Users\\someb\\Desktop\\printverse\\.cache\\arc_test.gcode"
+}

@@ -1,0 +1,119 @@
+{
+  "retrieved_at": "2026-11-06T04:00:20.491Z",
+  "sources": [
+    {
+      "ok": true,
+      "repo": "VoronDesign/Voron-2",
+      "ref": "V2.4r2",
+      "default_branch": "Voron2.4",
+      "size_kb": 2294879,
+      "pushed_at": "2026-10-22T01:39:12Z",
+      "license": "GPL-3.0",
+      "description": "Voron 2 CoreXY 3D Printer design",
+      "commit": "45128487e8e8e4aa113bb2cbfdf5bf6752d242d3",
+      "commit_date": "2022-02-23T20:33:40Z",
+      "commit_message": "Fix merge conflicts for V2.4r2"
+    },
+    {
+      "ok": true,
+      "repo": "VoronDesign/Voron-Documentation",
+      "ref": "main",
+      "default_branch": "main",
+      "size_kb": 390591,
+      "pushed_at": "2026-09-16T13:52:02Z",
+      "license": "GPL-3.0",
+      "description": "Sources of the documentation website for all Voron 3D printers",
+      "commit": "b8c014f88948c9fca963dfe726e0e66b1287af90",
+      "commit_date": "2026-09-16T13:52:02Z",
+      "commit_message": "V2 fixed bed (#482)"
+    },
+    {
+      "ok": true,
+      "repo": "Klipper3d/klipper",
+      "ref": "v0.13.0",
+      "default_branch": "master",
+      "size_kb": 259099,
+      "pushed_at": "2026-11-05T18:56:28Z",
+      "license": "GPL-3.0",
+      "description": "Klipper is a 3d-printer firmware",
+      "commit": "61c0c8d2ef40340781835dd53fb04cc7a454e37a",
+      "commit_date": "2025-04-12T01:07:28Z",
+      "commit_message": "docs: Note the release of v0.13.0"
+    },
+    {
+      "ok": true,
+      "repo": "Arksine/moonraker",
+      "ref": "v0.11.0",
+      "default_branch": "master",
+      "size_kb": 4857,
+      "pushed_at": "2026-10-21T22:14:48Z",
+      "license": "GPL-3.0",
+      "description": "Web API Server for Klipper",
+      "commit": "985c1d0bbeb90bc057d34a232c9dc3b05e0c6c8d",
+      "commit_date": "2026-08-25T16:34:57Z",
+      "commit_message": "docs: prepare for version 0.11.0 release"
+    },
+    {
+      "ok": true,
+      "repo": "OrcaSlicer/OrcaSlicer",
+      "ref": "v2.4.2",
+      "default_branch": "main",
+      "size_kb": 1516252,
+      "pushed_at": "2026-11-06T03:30:15Z",
+      "license": "AGPL-3.0",
+      "description": "G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc.)",
+      "commit": "8500fcdccaa10b5099ac20d252af3a7c560046f1",
+      "commit_date": "2026-07-06T14:18:06Z",
+      "commit_message": "Fix version was not properly updated on non windows OS (#14617)"
+    },
+    {
+      "ok": true,
+      "repo": "FreeCAD/FreeCAD",
+      "ref": "1.1.4",
+      "default_branch": "main",
+      "size_kb": 2969179,
+      "pushed_at": "2026-11-05T22:23:41Z",
+      "license": "LGPL-2.1",
+      "description": "Official source code of FreeCAD, a free and opensource multiplatform 3D parametric modeler.",
+      "commit": "4fd3bf320d9566a27e60069fc8387448aaa3a094",
+      "commit_date": "2026-09-28T13:46:34Z",
+      "commit_message": "Build: Update to v1.1.4"
+    },
+    {
+      "ok": true,
+      "repo": "Tencent-Hunyuan/Hunyuan3D-2.1",
+      "ref": null,
+      "default_branch": "main",
+      "size_kb": 152296,
+      "pushed_at": "2025-10-17T10:10:07Z",
+      "license": "NOASSERTION",
+      "description": "From Images to High-Fidelity 3D Assets with Production-Ready PBR Material",
+      "commit": "82920d643c0dc2f7bfd7255f45f62d386edfe60c",
+      "commit_date": "2025-10-17T10:10:07Z"
+    },
+    {
+      "ok": true,
+      "repo": "VAST-AI-Research/TripoSR",
+      "ref": null,
+      "default_branch": "main",
+      "size_kb": 37566,
+      "pushed_at": "2026-06-04T07:11:09Z",
+      "license": "MIT",
+      "description": "TripoSR: Fast 3D Object Reconstruction from a Single Image",
+      "commit": "107cefdc244c39106fa830359024f6a2f1c78871",
+      "commit_date": "2026-06-04T07:11:09Z"
+    },
+    {
+      "ok": true,
+      "repo": "microsoft/TRELLIS",
+      "ref": null,
+      "default_branch": "main",
+      "size_kb": 1125580,
+      "pushed_at": "2026-10-27T05:03:08Z",
+      "license": "MIT",
+      "description": "Official repo for paper \"Structured 3D Latents for Scalable and Versatile 3D Generation\" (CVPR'25 Spotlight).",
+      "commit": "193e0502b5cb3eb5997ec457d5340e95d09b158e",
+      "commit_date": "2026-10-27T05:00:50Z"
+    }
+  ]
+}

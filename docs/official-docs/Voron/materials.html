@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Materials · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Voron · source: <a href="https://docs.vorondesign.com/materials.html">https://docs.vorondesign.com/materials.html</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<hr />
+<h2>layout: default
+title: &quot;Materials Selection&quot;
+parent: Sourcing Information</h2>
+<h1>Voron Materials Selection</h1>
+<p>When determining what materials to create the Voron printed parts from, there are a number of criteria that need to be considered.</p>
+<ul>
+<li>The parts have been designed with ABS/ASA shrinkage in mind. This is built in to the parts already, so shrinkage should be set to 100%. Compensating for this is likely to make bearing fits and screw holes too large.</li>
+<li>It is common for the chamber temperatures inside an enclosed Voron printer to reach 55–60 ºC. The material chosen should have a thermal deformation temperature or “glass temperature” that is at least 80 ºC.</li>
+<li>The V2 gantry can become misaligned for a variety of reasons. Since the gantry is 4 points, that misalignment can cause flex in the AB drive units. It is recommended that the material for the AB drive units be able to handle that movement.</li>
+</ul>
+<h2>PLA</h2>
+<p>PLA has a glass transition temperature of around 55–60 ºC. It is very stiff and has a low ductility (ability of a material to have its shape changed without losing strength or breaking).  It is not recommended for Voron parts.  This is due to both the low temperature tolerance and the low ductility that can occasionally cause unexpected cracking.  The high temperature variant HTPLA is viable for temperature tolerance but is expensive and still has issues with ductility and risk of cracking.  PLA is entirely acceptable for skirts and panel clips as they do not see the same high temperatures or forces.</p>
+<h2>PETG</h2>
+<p>PETG has a glass transition temperature of around 70-80 ºC. It has moderate stiffness depending on the additives and typically high ductility.  It is not recommended for Voron parts due to the low temperature tolerance. The thermal properties do not change with additives such as carbon fiber.  Some have successfully built a Voron in PETG and used that to reprint in ABS but the part failure rate in that situation is very high.  PETG is acceptable for skirts and panel clips.</p>
+<h2>ABS</h2>
+<p>ABS has a glass transition temperature of around 90-100 ºC. It has moderate stiffness and moderate ductility.  It is the primary recommended material for Voron printers due to the high temperature rating and moderate ductility.  This allows for the parts to hold up in a higher temperature environment well yet endure some flex without cracking.  ASA is fully supported as well due to the very similar technical properties. ABS+ while supported has a glass transition temperature thats closer to 75C.</p>
+<p>Note on ABS+ and other blended ABS products:<br />
+ABS comes from a well-known basic chemical formula (Acrylonitrile Butadiene Styrene), however manufacturers of ABS+ filament don’t offer us much information on what makes their filaments “Plus”. Some brands claim reduced odor and toxic fumes, which may be related to a lower percentage of styrene. the variability in the chemical composition of ABS+ filaments means that consistency across brands cannot be guaranteed. As such, ABS+ is not recommended for new builds given the unknown mechanical properties.</p>
+<h2>Nylon</h2>
+<p>PA6 nylon has a glass transition temperature of around 70-80C. It has moderate stiffness and moderate ductility.  It is not recommended for Voron parts due to the tendency of nylon PA6 to creep (slowly deform) under the constant pressure exerted by the bolts clamping on the parts. PA12 nylon has the same or very similar temperature rating and a similar stiffness and ductility, but it is a viable option for Voron parts as it exhibits only minimal creep under pressure. However it is quite expensive and is more commonly found in SLS processes than FDM.</p>
+<h2>Polycarbonate</h2>
+<p>Polycarbonate (PC) and one of the various blends and/or additives (e.g. PC-ABS, PC-CF) have a high glass temperature of 110-130C but have a very high stiffness and low ductility.  Some blends such as PC-ABS have slightly lower stiffness and higher ductility but not by huge amounts.  PC and PC blends are not recommended for Voron parts due to the risk of sudden cracking.  However some have successfully printed and used toolheads made from PC blends as the mechanical loads are low and the need for thermal tolerance is high.</p>
+<h2>Resin</h2>
+<p>While on paper resin printed parts could work for heat resistance depending on the resin type, resin parts typically continue to shrink over time putting them outside of dimensional tolerances. Resin prints also typically exhibit long term creeping under bolt pressure and have a tendency to catastrophically fail after just a few months of use. A viable resin has yet to be found that will sync up to the Voron environment.  Resin is strongly discouraged for use in Voron parts.</p>
+<h2>Aluminum</h2>
+<p>There is a recent trend toward printer parts that are CNC machined out of aluminum. While aluminum has more than sufficient heat tolerance the high stiffness may cause issues with the V2 due the slight flexibility needed in the gantry. It is also very common to machine the aluminum parts to match the dimensions of parts designed to be made in ABS.  Unfortunately due to the differences in raw material weight and the printed parts averaging 50% hollow the aluminum parts are typically around 5X heavier than their ABS printed versions.</p>
+<h2>Testimonials</h2>
+<h4>@Weaslus</h4>
+<p>“dissassembling a whole printer to reassemble in ABS, and spending twice on filament, was the worst part. it was a days work I wouldn't wish on anyone.”</p>
+
+</main></body></html>

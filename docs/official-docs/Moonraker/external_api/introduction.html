@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API introduction · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Moonraker · source: <a href="https://moonraker.readthedocs.io/en/latest/external_api/introduction/">https://moonraker.readthedocs.io/en/latest/external_api/introduction/</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Introduction</h1>
+<p>Moonraker provides APIs over two protocols, HTTP and JSON-RPC. Most
+endpoints have corresponding APIs over both protocols.  When requests
+are exclusive to a protocol or depend on some other condition it will
+be noted in the documentation for that specific API.</p>
+<p>At a high level, file transfer requests (upload and download) are exclusive
+to the HTTP API. The Websocket is required to receive events such as status
+updates and gcode responses.  For information on how to set up the Websocket,
+please see the <a href="#websocket-setup">Miscellaneous Tutorials</a>.</p>
+<h2>HTTP API Overview</h2>
+<p>Moonraker's HTTP API could be described as &quot;REST-ish&quot;. Attempts are made to
+conform to REST standards, however the dynamic nature of Moonraker's endpoint
+registration along with the need to keep consistency between two API protocols
+results in an HTTP API that deviates</p>
+<p>Moonraker is capable of parsing request arguments from the both the body
+(either JSON or form-data depending on the <code>Content-Type</code> header) and from
+the query string.  All arguments are grouped together in one data structure,
+with body arguments taking precedence over query arguments.  Thus
+if the same argument is supplied both in the body and in the
+query string the body argument would be used. It is left up to the front end
+developer to decide exactly how they want to provide arguments.</p>
+<p>Nearly all successful HTTP requests will return a json encoded object in
+the form of:</p>
+<pre><code class="language-text">{
+    &quot;result&quot;: &lt;response data&gt;
+}
+</code></pre>
+<p>The response data may be any valid JSON type.  In most cases it will be
+a JSON object itself, but some requests may return a simple string.</p>
+<p>If the response is not wrapped in an object with a <code>result</code> field it will
+be noted in the documentation for that API (or API set).  Generally this
+only applies to endpoints that attempt to emulate other backends.</p>
+<p>Should a request result in an error, a standard error code along with
+an error specific message is returned, wrapped in a JSON object.</p>
+<h3>Query string type hints</h3>
+<p>By default all arguments passed via the query string are represented as
+strings.  Most endpoint handlers know the data type for each of their
+arguments, thus they can perform conversion from a string type if necessary.
+However some endpoints accept arguments of a &quot;generic&quot; type, thus the
+client is responsible for specifying the type if &quot;string&quot; is not desirable.
+This is not a problem for websocket requests as the JSON parser can extract
+the appropriate type.  HTTP requests must provide &quot;type hints&quot; in these
+scenarios.  Moonraker supplies support for the following query string type hints:</p>
+<ul>
+<li>int</li>
+<li>bool</li>
+<li>float</li>
+<li>json
+The <code>json</code> type hint can be specified to pass an array or an object via
+the query string.  Remember to percent encode the json string so that
+the query string is correctly parsed.</li>
+</ul>
+<p>Type hints may be specified by post-fixing them to a key, with a &quot;:&quot;
+separating the key and the hint.  For example, lets assume that we
+have a request that takes <code>seconds</code> (integer) and <code>enabled</code> (boolean)
+arguments.  The query string with type hints might look like:</p>
+<pre><code>?seconds:int=120&amp;enabled:bool=true
+</code></pre>
+<p>A query string that takes a <code>value</code> argument with which we want to
+pass an object, <code>{foo: 21.5, bar: &quot;hello&quot;}</code> might look like:</p>
+<pre><code>?value:json=%7B%22foo%22%3A21.5%2C%22bar%22%3A%22hello%22%7D
+</code></pre>
+<p>As you can see, a percent encoded json string is not human readable,
+thus using this functionality should be seen as a &quot;last resort.&quot;  If at
+all possible clients should attempt to put these arguments in the body
+of a request.</p>
+<h2>JSON-RPC API Overview</h2>
+<p>Websocket, Unix Socket, and MQTT connections exclusively use the API
+available over <a href="https://jsonrpc.org">JSON-RPC 2.0</a>.  In addition, Moonraker
+provides an <a href="#json-rpc-over-http-endpoint">JSON-RPC HTTP endpoint</a> giving
+developers who want to avoid persistent connections a choice to use JSON-RPC.</p>
+<p>The Websocket transmits and receives JSON-RPC objects in text frames.  MQTT
+transmits them in the payload of a topic defined when MQTT is configured.  By
+default, Moonraker receives JSON-RPC requests from the
+<code>{instance_name}/moonraker/api/request</code> topic, and publishes responses to the
+<code>{instance_name}/moonraker/api/response</code> topic.  The <code>{instance_name}</code> must be
+a unique identifier for each instance of Moonraker connected to the broker.
+It defaults to the machine's host name.</p>
+<p>An encoded request should look something like:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;API method&quot;,
+    &quot;params&quot;: {&quot;arg_one&quot;: 1, &quot;arg_two&quot;: true},
+    &quot;id&quot;: 354
+}
+</code></pre>
+<p>The <code>params</code> field may be left out if the API request takes no arguments.
+The <code>id</code> should be a unique value that has no chance of colliding
+with other JSON-RPC requests.  The <code>method</code> is the API method, as defined
+for each API in this document.</p>
+<p>/// details | Optional MQTT timestamp
+type: tip
+MQTT requests may provide an optional <code>mqtt_timestamp</code> keyword
+argument in the <code>params</code> field of the JSON-RPC request.  To avoid
+potential collisions from time drift it is recommended to specify
+the timestamp in microseconds since the Unix Epoch.  If provided
+Moonraker will use the timestamp to discard duplicate requests.
+It is recommended to either provide a timestamp or publish API
+requests at a QoS level of 0 or 2.
+///</p>
+<p>A successful request will return a response like the following:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;result&quot;: {&quot;res_data&quot;: &quot;success&quot;},
+    &quot;id&quot;: 354
+}
+</code></pre>
+<p>The <code>result</code> will generally contain an object, but as with the HTTP API in some
+cases it may simply return a string.  The <code>id</code> field will return an id that
+matches the one provided by the request.</p>
+<p>Requests that result in an error will receive a properly formatted
+JSON-RPC response:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;error&quot;: {&quot;code&quot;: 36000, &quot;message&quot;: &quot;Error Message&quot;},
+    &quot;id&quot;: 354
+}
+</code></pre>
+<p>Some errors may not return a request ID, such as an improperly formatted request.</p>
+<p>The <a href="https://www.github.com/arksine/moontest">moontest</a> repo includes a basic
+test interface with example usage for most of the requests below.  It also
+includes a basic JSON-RPC implementation that uses promises to return responses
+and errors (see json-rpc.js).</p>
+<h2>Websocket Connections</h2>
+<h3>Primary websocket</h3>
+<p>The primary websocket supports Moonraker's JSON-RPC API.  Most applications that
+desire a websocket connection will make use of the primary websocket.</p>
+<p>The primary websocket is available at:</p>
+<pre><code> ws://host_or_ip:port/websocket`
+</code></pre>
+<p>The primary websocket will remain connected until the application disconnects
+or Moonraker is shutdown.</p>
+<h3>Bridge websocket</h3>
+<p>The &quot;bridge&quot; websocket provides a near direct passthrough to Klipper's API
+Server.  Klipper uses its own RPC protocol, which is effectively a simplified
+version of the JSON-RPC specification. Developers should refer to
+<a href="https://www.klipper3d.org/API_Server.html">Klipper's API documentation</a>
+for details on the protocol and available APIs.</p>
+<p>!!! Note
+The bridge websocket is described as &quot;near direct passthrough&quot; because
+Moonraker handles the ETX (<code>0x03</code>) terminator internally.  Applications
+can expect to receive complete JSON encoded messages in a text frame
+without the ETX terminator.  Likewise applications should send JSON encoded
+messages without the ETX terminator.  Messages may be sent using either
+text frames or binary frames.</p>
+<p>The bridge websocket provides access to diagnostic APIs that are not generally
+suitable for Moonraker's primary connection.  These requests stream a
+substantial amount of data; bridge connections allow Moonraker to avoid
+decoding and re-encoding this data, reducing CPU load on the host. The &quot;dump&quot;
+requests, such as <code>motion_report/dump_stepper</code> and <code>adxl345/dump_adxl345</code>, are
+examples of APIs that should make use of the bridge websocket.</p>
+<p>The bridge websocket is available at:</p>
+<pre><code>ws://host_or_ip:port/klippysocket
+</code></pre>
+<p>The availability of bridge connections depends on Klippy's availability.
+If Klippy is not running or its API server is not enabled then a bridge
+websocket connection cannot be established.  Established bridge connections
+will close when Klippy is shutdown or restarted.  Such connections will also
+be closed if Moonraker is restarted or shutdown.</p>
+<p>!!! Note
+If JWT or API Key authentication is required the application must use a
+<a href="./authorization.md#generate-a-oneshot-token">oneshot token</a> when connecting
+to a bridge socket.  Since Moonraker does not decode bridge requests it is
+not possible to perform JWT authentication post connection.</p>
+<h2>Unix Socket Connection</h2>
+<p>All JSON-RPC APIs available over the Websocket transport are also available
+over the Unix Domain Socket connection.  Moonraker creates the socket file at
+<code>&lt;datapath&gt;/comms/moonraker.sock</code> (ie: <code>~/printer_data/comms/moonraker.sock</code>).
+The Unix Socket expects UTF-8 encoded JSON-RPC byte strings. Each JSON-RPC
+request must be terminated with an ETX character (<code>0x03</code>).</p>
+<p>The Unix Socket is desirable for front ends and extensions running on the
+local machine as authentication is not necessary.  There should be a small
+performance improvement due to the simplified transport protocol, however
+the impact of this is likely negligible.</p>
+<p>The <code>moontest</code> repo contains a
+<a href="https://github.com/Arksine/moontest/blob/master/scripts/unix_socket_test.py">python script</a>
+to test comms over the unix socket.</p>
+<h2>JSON-RPC over HTTP Endpoint</h2>
+<p>Exposes the JSON-RPC interface over HTTP.  Most JSON-RPC methods with
+corresponding HTTP APIs are available.  Methods exclusive to other
+transports, such as <a href="./server.md#identify-connection">Identify Connection</a>, are
+not available.</p>
+<p>/// note
+If authentication is required it must be part of the HTTP request,
+either using the API Key Header (<code>X-Api-Key</code>) or JWT Bearer Token.
+///</p>
+<pre><code class="language-{.http">POST /server/jsonrpc
+Content-Type: application/json
+{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.info&quot;,
+    &quot;id&quot;: 5153
+}
+</code></pre>
+<p>//// collapse-code</p>
+<pre><code class="language-{.json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;id&quot;: 5153,
+    &quot;result&quot;: {
+        &quot;state&quot;: &quot;ready&quot;,
+        &quot;state_message&quot;: &quot;Printer is ready&quot;,
+        &quot;hostname&quot;: &quot;my-pi-hostname&quot;,
+        &quot;software_version&quot;: &quot;v0.9.1-302-g900c7396&quot;,
+        &quot;cpu_info&quot;: &quot;4 core ARMv7 Processor rev 4 (v7l)&quot;,
+        &quot;klipper_path&quot;: &quot;/home/pi/klipper&quot;,
+        &quot;python_path&quot;: &quot;/home/pi/klippy-env/bin/python&quot;,
+        &quot;log_file&quot;: &quot;/tmp/klippy.log&quot;,
+        &quot;config_file&quot;: &quot;/home/pi/printer.cfg&quot;
+    }
+}
+</code></pre>
+<p>////</p>
+<p>/// note
+If an error is encountered while processing a JSON-RPC request
+over HTTP the request itself will still return success.  The
+error will be returned in the response as a JSON-RPC encoded
+object.
+///</p>
+<h2>Jinja2 Template API Calls</h2>
+<p>Some template options in Moonraker's configuration, such as those in the
+<a href="../configuration.md#button">button</a> component, may call Moonraker APIs through
+the <code>call_method(method_name, kwargs)</code> context function. The <code>call_method</code>
+function takes the API's JSON-RPC method name as its first parameter, followed
+by a set of keyword arguments as per the method's requirements.</p>
+<pre><code class="language-ini"># moonraker.conf
+
+# Query Printer Objects example
+[button check_status]
+pin: gpio26
+on_press:
+  {% set query = {&quot;toolhead&quot;: [&quot;position&quot;], &quot;print_stats&quot;: None} %}
+  # JSON-RPC method is &quot;printer.objects.query&quot;, which takes a single &quot;objects&quot;
+  # argument
+  {% set status = call_method(&quot;printer.objects.query&quot;, objects=query) %}
+  # do something with the value returned from the object query, perhaps
+  # send a websocket notification or publish a mqtt topic
+
+# Publish button event to MQTT Topic
+[button check_status]
+pin: gpio26
+on_release:
+  # JSON-RPC method is &quot;server.mqtt.publish&quot;
+  {% do call_method(&quot;server.mqtt.publish&quot;,
+                    topic=&quot;moonraker/my-button&quot;,
+                    payload=&quot;Button Released&quot;) %}
+</code></pre>
+<h2>Miscellaneous Tutorials</h2>
+<h3>Websocket setup</h3>
+<p>The websocket is located at <code>ws://host:port/websocket</code>, for example:</p>
+<pre><code class="language-javascript">var s = new WebSocket(&quot;ws://&quot; + location.host + &quot;/websocket&quot;);
+</code></pre>
+<p>/// Note
+It may be necessary to authenticate the connection first.  This
+tutorial assumes that the client is running on a trusted connection.
+///</p>
+<p>The following is a basic startup sequence that may be used to establish
+a full connection to Moonraker and ensure that Klipper is running and
+available:</p>
+<ol>
+<li>Attempt to connect to <code>/websocket</code> until successful using a timer-like
+mechanism.</li>
+<li>Once connected, query the <a href="./server.md#query-server-info">server info</a>
+endpoint to check Klippy's state.
+<ul>
+<li>If the response returns an error then either the client
+is not authorized or Moonraker is not running.  Direct the user to
+SSH into the machine and check <code>&lt;data_folder/logs/moonraker.log</code>.</li>
+<li>If the response returns success, check the result's <code>klippy_state</code>
+field:
+<ul>
+<li><code>klippy_state == &quot;ready&quot;</code>: you may proceed to request status of
+printer objects make subscriptions, get the file list, etc.</li>
+<li><code>klippy_state == &quot;error&quot;</code>:  Klippy has experienced an error
+starting up</li>
+<li><code>klippy_state == &quot;shutdown&quot;</code>: Klippy is in a shutdown state.</li>
+<li><code>klippy_state == &quot;startup&quot;</code>: re-request the <code>server info</code> endpoint in 2 seconds.</li>
+<li><code>klippy_state == &quot;disconnected&quot;</code>: The Klippy host either isn't running,
+has experienced a critical error during startup, or does not have its
+API Server enabled.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Repeat step 2 until Klipper reports ready.</li>
+<li>Clients should watch for the <code>notify_klippy_disconnected</code> event.  If
+received then Klippy has either been stopped or restarted.  In this
+state the client should repeat the steps above to determine when
+klippy is ready.</li>
+</ol>
+<p>/// note
+If  Klippy reports an <code>error</code> or <code>shutdown</code> state it is advisable prompt
+the user. You can get a description from the <code>state_message</code>
+field of a <a href="./printer.md#get-klippy-host-information">printer info</a> request.
+///</p>
+<h3>Basic Print Status</h3>
+<p>An advanced client will likely use subscriptions and notifications
+to interact with Moonraker, however simple clients such as home automation
+software and embedded devices (ie: ESP32) may only wish to monitor the
+status of a print.  Below is a high level walkthrough for receiving print state
+via polling.</p>
+<ul>
+<li>
+<p>Set up a timer to poll at the desired interval.  Depending on your use
+case, 1 to 2 seconds is recommended.</p>
+</li>
+<li>
+<p>On each cycle, issue the following request:</p>
+<pre><code>GET http://host/printer/objects/query?webhooks&amp;virtual_sdcard&amp;print_stats
+</code></pre>
+<p>Or via JSON-RPC 2.0:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;printer.objects.query&quot;,
+    &quot;params&quot;: {
+        &quot;objects&quot;: {
+            &quot;webhooks&quot;: null,
+            &quot;virtual_sdcard&quot;: null,
+            &quot;print_stats&quot;: null
+        }
+    },
+    &quot;id&quot;: 5664
+}
+</code></pre>
+</li>
+<li>
+<p>If the request returns an error or the returned <code>result.status</code> is an empty
+object, then this is an indication that Klippy either experienced an error or
+it is not properly configured.  Each queried object should be available in
+<code>result.status</code>.  The client should check to make sure that all objects are
+received before proceeding.</p>
+</li>
+<li>
+<p>Inspect <code>webhooks.state</code>.  If the value is not <code>ready</code> the printer
+is not available.  <code>webhooks.message</code> contains a message pertaining
+to the current state.</p>
+</li>
+<li>
+<p>If the printer is ready, inspect <code>print_stats.state</code>.  It may be one
+of the following values:
+- <code>standby</code>: No print in progress
+- <code>printing</code>:  The printer is currently printing
+- <code>paused</code>:  A print in progress has been paused
+- <code>error</code>:  The print exited with an error.  <code>print_stats.message</code>
+contains a related error message
+- <code>complete</code>:  The last print has completed</p>
+</li>
+<li>
+<p>If <code>print_stats.state</code> is not <code>standby</code> then <code>print_stats.filename</code>
+will report the name of the currently loaded file.</p>
+</li>
+<li>
+<p><code>print_stats.filename</code> can be used to fetch file metadata.  It
+is only necessary to fetch metadata once per print.</p>
+<pre><code>GET http://host/server/files/metadata?filename=&lt;filename&gt;
+</code></pre>
+<p>Or via JSON-RPC 2.0:</p>
+<pre><code class="language-json">{
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;server.files.metadata&quot;,
+    &quot;params&quot;: {
+        &quot;filename&quot;: &quot;{filename}&quot;
+    },
+    &quot;id&quot;: 5643
+}
+</code></pre>
+<p>If metadata extraction failed then this request will return an error.
+Some metadata fields are only populated for specific slicers, and
+unsupported slicers will only return the size and modified date.</p>
+</li>
+<li>
+<p>There are multiple ways to calculate the ETA, this example will use
+file progress, as it is possible calculate the ETA with or without
+metadata.</p>
+<ul>
+<li>If <code>metadata.estimated_time</code> is available, the eta calculation can
+be done as:<pre><code class="language-javascript">// assume &quot;result&quot; is the response from the status query
+let vsd = result.status.virtual_sdcard;
+let prog_time = vsd.progress * metadata.estimated_time;
+let eta = metadata.estimated_time - prog_time
+</code></pre>
+Alternatively, one can simply subtract the print duration from
+the estimated time:<pre><code class="language-javascript">// assume &quot;result&quot; is the response from the status query
+let pstats = result.status.print_status;
+let eta = metadata.estimated_time - pstats.print_duration;
+if (eta &lt; 0) eta = 0;
+</code></pre>
+</li>
+<li>If no metadata is available, print duration and progress can be used to
+calculate the ETA:<pre><code class="language-javascript">// assume &quot;result&quot; is the response from the status query
+let vsd = result.status.virtual_sdcard;
+let pstats = result.status.print_stats;
+let total_time = pstats.print_duration / vsd.progress;
+let eta = total_time - pstats.print_duration;
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>It is possible to query additional objects if a client wishes to display
+more information (ie: temperatures).  See Klipper's
+<a href="https://www.klipper3d.org/Status_Reference.html">Status Reference</a>
+documentation for details on objects available for query.</p>
+</li>
+</ul>
+<h3>Bed Mesh Coordinates</h3>
+<p>The <a href="../printer_objects.md#bed_mesh">Bed Mesh</a> printer object may be used
+to generate three dimensional coordinates of a probed area (or mesh).
+Below is an example (in javascript) of how to transform the data received
+from a bed_mesh object query into an array of 3D coordinates.</p>
+<pre><code class="language-javascript">// assume that we have executed an object query for bed_mesh and have the
+// result.  This example generates 3D coordinates for the probed matrix,
+// however it would work with the mesh matrix as well
+function process_mesh(result) {
+  let bed_mesh = result.status.bed_mesh;
+  let matrix = bed_mesh.probed_matrix;
+  if (!(matrix instanceof Array) ||  matrix.length &lt; 3 ||
+      !(matrix[0] instanceof Array) || matrix[0].length &lt; 3)
+      // make sure that the matrix is valid
+      return;
+  let coordinates = [];
+  // calculate the distance between each sample on both the X an Y
+  // axes
+  let x_distance = (bed_mesh.mesh_max[0] - bed_mesh.mesh_min[0]) /
+    (matrix[0].length - 1);
+  let y_distance = (bed_mesh.mesh_max[1] - bed_mesh.mesh_min[1]) /
+    (matrix.length - 1);
+  let x_idx = 0;
+  let y_idx = 0;
+  // transform the matrix of z values into (x, y, z) coordinates
+  for (const x_axis of matrix) {
+    x_idx = 0;
+    // mesh_min is the (x, y) coordinate of the first z sample
+    let y_coord = bed_mesh.mesh_min[1] + (y_idx * y_distance);
+    for (const z_coord of x_axis) {
+      let x_coord = bed_mesh.mesh_min[0] + (x_idx * x_distance);
+      x_idx++;
+      coordinates.push([x_coord, y_coord, z_coord]);
+    }
+    y_idx++;
+  }
+}
+// Use the array of coordinates to visualize the &quot;probed area&quot;
+// or mesh..
+</code></pre>
+<h3>Converting to Unix Time</h3>
+<p>Some of Moonraker's APIs return a date represented in Unix time.
+Most languages have functionality built in to convert Unix
+time to a workable object or string.  For example, in JavaScript
+one might do something like the following:</p>
+<pre><code class="language-javascript">for (let resp of result.gcode_store) {
+  let date = new Date(resp.time * 1000);
+  // Do something with date and resp.message ...
+}
+</code></pre>
+
+</main></body></html>

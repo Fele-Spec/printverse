@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "file": "assets/processed/filament_card.glb",
+  "bytes": 43608,
+  "three_version": "187",
+  "meshes": 1,
+  "mesh_names": [
+    "Filament_Card"
+  ],
+  "triangles": 802,
+  "size_mm": [
+    60,
+    2,
+    34
+  ],
+  "center_mm": [
+    30,
+    1,
+    -17
+  ],
+  "animations": 0
+}

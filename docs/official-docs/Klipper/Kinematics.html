@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kinematics · PrintVerse official docs</title>
+<style>
+:root{--ink:#15212b;--muted:#607180;--line:#dce5eb;--accent:#0b7a66;--bg:#fbfdfe}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,'Segoe UI',sans-serif}
+main{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+.meta{font:12px ui-monospace,Consolas,monospace;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:28px}
+a{color:var(--accent)} h1,h2,h3{line-height:1.25;letter-spacing:-.02em} h1{font-size:34px}
+pre{background:#101a22;color:#dcecf5;padding:16px;border-radius:10px;overflow:auto} code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:14px} th,td{border:1px solid var(--line);padding:7px 9px;text-align:left} th{background:#eef4f7}
+blockquote{border-left:3px solid var(--accent);margin-left:0;padding-left:16px;color:var(--muted)}
+</style></head><body><main>
+<div class="meta">Klipper · source: <a href="https://www.klipper3d.org/Kinematics.html">https://www.klipper3d.org/Kinematics.html</a> · retrieved 2026-11-06 · license recorded in LICENSE_AUDIT.csv</div>
+<h1>Kinematics</h1>
+<p>This document provides an overview of how Klipper implements robot
+motion (its <a href="https://en.wikipedia.org/wiki/Kinematics">kinematics</a>).
+The contents may be of interest to both developers interested in
+working on the Klipper software as well as users interested in better
+understanding the mechanics of their machines.</p>
+<h2>Acceleration</h2>
+<p>Klipper implements a constant acceleration scheme whenever the print
+head changes velocity - the velocity is gradually changed to the new
+speed instead of suddenly jerking to it. Klipper always enforces
+acceleration between the tool head and the print. The filament leaving
+the extruder can be quite fragile - rapid jerks and/or extruder flow
+changes lead to poor quality and poor bed adhesion. Even when not
+extruding, if the print head is at the same level as the print then
+rapid jerking of the head can cause disruption of recently deposited
+filament. Limiting speed changes of the print head (relative to the
+print) reduces risks of disrupting the print.</p>
+<p>It is also important to limit acceleration so that the stepper motors
+do not skip or put excessive stress on the machine. Klipper limits the
+torque on each stepper by virtue of limiting the acceleration of the
+print head. Enforcing acceleration at the print head naturally also
+limits the torque of the steppers that move the print head (the
+inverse is not always true).</p>
+<p>Klipper implements constant acceleration. The key formula for constant
+acceleration is:</p>
+<pre><code>velocity(time) = start_velocity + accel*time
+</code></pre>
+<h2>Trapezoid generator</h2>
+<p>Klipper uses a traditional &quot;trapezoid generator&quot; to model the motion
+of each move - each move has a start speed, it accelerates to a
+cruising speed at constant acceleration, it cruises at a constant
+speed, and then decelerates to the end speed using constant
+acceleration.</p>
+<p><img src="img/trapezoid.svg.png" alt="trapezoid" /></p>
+<p>It's called a &quot;trapezoid generator&quot; because a velocity diagram of the
+move looks like a trapezoid.</p>
+<p>The cruising speed is always greater than or equal to both the start
+speed and the end speed. The acceleration phase may be of zero
+duration (if the start speed is equal to the cruising speed), the
+cruising phase may be of zero duration (if the move immediately starts
+decelerating after acceleration), and/or the deceleration phase may be
+of zero duration (if the end speed is equal to the cruising speed).</p>
+<p><img src="img/trapezoids.svg.png" alt="trapezoids" /></p>
+<h2>Look-ahead</h2>
+<p>The &quot;look-ahead&quot; system is used to determine cornering speeds between
+moves.</p>
+<p>Consider the following two moves contained on an XY plane:</p>
+<p><img src="img/corner.svg.png" alt="corner" /></p>
+<p>In the above situation it is possible to fully decelerate after the
+first move and then fully accelerate at the start of the next move,
+but that is not ideal as all that acceleration and deceleration would
+greatly increase the print time and the frequent changes in extruder
+flow would result in poor print quality.</p>
+<p>To solve this, the &quot;look-ahead&quot; mechanism queues multiple incoming
+moves and analyzes the angles between moves to determine a reasonable
+speed that can be obtained during the &quot;junction&quot; between two moves. If
+the next move is nearly in the same direction then the head need only
+slow down a little (if at all).</p>
+<p><img src="img/lookahead.svg.png" alt="lookahead" /></p>
+<p>However, if the next move forms an acute angle (the head is going to
+travel in nearly a reverse direction on the next move) then only a
+small junction speed is permitted.</p>
+<p><img src="img/lookahead-slow.svg.png" alt="lookahead" /></p>
+<p>The junction speeds are determined using &quot;approximated centripetal
+acceleration&quot;. Best
+<a href="https://onehossshay.wordpress.com/2011/09/24/improving_grbl_cornering_algorithm/">described by the author</a>.
+However, in Klipper, junction speeds are configured by specifying the
+desired speed that a 90° corner should have (the &quot;square corner
+velocity&quot;), and the junction speeds for other angles are derived from
+that.</p>
+<p>Key formula for look-ahead:</p>
+<pre><code>end_velocity^2 = start_velocity^2 + 2*accel*move_distance
+</code></pre>
+<h3>Minimum cruise ratio</h3>
+<p>Klipper also implements a mechanism for smoothing out the motions of
+short &quot;zigzag&quot; moves. Consider the following moves:</p>
+<p><img src="img/zigzag.svg.png" alt="zigzag" /></p>
+<p>In the above, the frequent changes from acceleration to deceleration
+can cause the machine to vibrate which causes stress on the machine
+and increases the noise. Klipper implements a mechanism to ensure
+there is always some movement at a cruising speed between acceleration
+and deceleration. This is done by reducing the top speed of some moves
+(or sequence of moves) to ensure there is a minimum distance traveled
+at cruising speed relative to the distance traveled during
+acceleration and deceleration.</p>
+<p>Klipper implements this feature by tracking both a regular move
+acceleration as well as a virtual &quot;acceleration to deceleration&quot; rate:</p>
+<p><img src="img/smoothed.svg.png" alt="smoothed" /></p>
+<p>Specifically, the code calculates what the velocity of each move would
+be if it were limited to this virtual &quot;acceleration to deceleration&quot;
+rate. In the above picture the dashed gray lines represent this
+virtual acceleration rate for the first move. If a move can not reach
+its full cruising speed using this virtual acceleration rate then its
+top speed is reduced to the maximum speed it could obtain at this
+virtual acceleration rate.</p>
+<p>For most moves the limit will be at or above the move's existing
+limits and no change in behavior is induced. For short zigzag moves,
+however, this limit reduces the top speed. Note that it does not
+change the actual acceleration within the move - the move continues to
+use the normal acceleration scheme up to its adjusted top-speed.</p>
+<h2>Generating steps</h2>
+<p>Once the look-ahead process completes, the print head movement for the
+given move is fully known (time, start position, end position,
+velocity at each point) and it is possible to generate the step times
+for the move. This process is done within &quot;kinematic classes&quot; in the
+Klipper code. Outside of these kinematic classes, everything is
+tracked in millimeters, seconds, and in cartesian coordinate space.
+It's the task of the kinematic classes to convert from this generic
+coordinate system to the hardware specifics of the particular printer.</p>
+<p>Klipper uses an
+<a href="https://en.wikipedia.org/wiki/Root-finding_algorithm">iterative solver</a>
+to generate the step times for each stepper. The code contains the
+formulas to calculate the ideal cartesian coordinates of the head at
+each moment in time, and it has the kinematic formulas to calculate
+the ideal stepper positions based on those cartesian coordinates. With
+these formulas, Klipper can determine the ideal time that the stepper
+should be at each step position. The given steps are then scheduled at
+these calculated times.</p>
+<p>The key formula to determine how far a move should travel under
+constant acceleration is:</p>
+<pre><code>move_distance = (start_velocity + .5 * accel * move_time) * move_time
+</code></pre>
+<p>and the key formula for movement with constant velocity is:</p>
+<pre><code>move_distance = cruise_velocity * move_time
+</code></pre>
+<p>The key formulas for determining the cartesian coordinate of a move
+given a move distance is:</p>
+<pre><code>cartesian_x_position = start_x + move_distance * total_x_movement / total_movement
+cartesian_y_position = start_y + move_distance * total_y_movement / total_movement
+cartesian_z_position = start_z + move_distance * total_z_movement / total_movement
+</code></pre>
+<h3>Cartesian Robots</h3>
+<p>Generating steps for cartesian printers is the simplest case. The
+movement on each axis is directly related to the movement in cartesian
+space.</p>
+<p>Key formulas:</p>
+<pre><code>stepper_x_position = cartesian_x_position
+stepper_y_position = cartesian_y_position
+stepper_z_position = cartesian_z_position
+</code></pre>
+<h3>CoreXY Robots</h3>
+<p>Generating steps on a CoreXY machine is only a little more complex
+than basic cartesian robots. The key formulas are:</p>
+<pre><code>stepper_a_position = cartesian_x_position + cartesian_y_position
+stepper_b_position = cartesian_x_position - cartesian_y_position
+stepper_z_position = cartesian_z_position
+</code></pre>
+<h3>Delta Robots</h3>
+<p>Step generation on a delta robot is based on Pythagoras's theorem:</p>
+<pre><code>stepper_position = (sqrt(arm_length^2
+                         - (cartesian_x_position - tower_x_position)^2
+                         - (cartesian_y_position - tower_y_position)^2)
+                    + cartesian_z_position)
+</code></pre>
+<h3>Stepper motor acceleration limits</h3>
+<p>With delta kinematics it is possible for a move that is accelerating
+in cartesian space to require an acceleration on a particular stepper
+motor greater than the move's acceleration. This can occur when a
+stepper arm is more horizontal than vertical and the line of movement
+passes near that stepper's tower. Although these moves could require a
+stepper motor acceleration greater than the printer's maximum
+configured move acceleration, the effective mass moved by that stepper
+would be smaller. Thus the higher stepper acceleration does not result
+in significantly higher stepper torque and it is therefore considered
+harmless.</p>
+<p>However, to avoid extreme cases, Klipper enforces a maximum ceiling on
+stepper acceleration of three times the printer's configured maximum
+move acceleration. (Similarly, the maximum velocity of the stepper is
+limited to three times the maximum move velocity.) In order to enforce
+this limit, moves at the extreme edge of the build envelope (where a
+stepper arm may be nearly horizontal) will have a lower maximum
+acceleration and velocity.</p>
+<h3>Extruder kinematics</h3>
+<p>Klipper implements extruder motion in its own kinematic class. Since
+the timing and speed of each print head movement is fully known for
+each move, it's possible to calculate the step times for the extruder
+independently from the step time calculations of the print head
+movement.</p>
+<p>Basic extruder movement is simple to calculate. The step time
+generation uses the same formulas that cartesian robots use:</p>
+<pre><code>stepper_position = requested_e_position
+</code></pre>
+<h3>Pressure advance</h3>
+<p>Experimentation has shown that it's possible to improve the modeling
+of the extruder beyond the basic extruder formula. In the ideal case,
+as an extrusion move progresses, the same volume of filament should be
+deposited at each point along the move and there should be no volume
+extruded after the move. Unfortunately, it's common to find that the
+basic extrusion formulas cause too little filament to exit the
+extruder at the start of extrusion moves and for excess filament to
+extrude after extrusion ends. This is often referred to as &quot;ooze&quot;.</p>
+<p><img src="img/ooze.svg.png" alt="ooze" /></p>
+<p>The &quot;pressure advance&quot; system attempts to account for this by using a
+different model for the extruder. Instead of naively believing that
+each mm^3 of filament fed into the extruder will result in that amount
+of mm^3 immediately exiting the extruder, it uses a model based on
+pressure. Pressure increases when filament is pushed into the extruder
+(as in <a href="https://en.wikipedia.org/wiki/Hooke%27s_law">Hooke's law</a>) and
+the pressure necessary to extrude is dominated by the flow rate
+through the nozzle orifice (as in
+<a href="https://en.wikipedia.org/wiki/Poiseuille_law">Poiseuille's law</a>). The
+key idea is that the relationship between filament, pressure, and flow
+rate can be modeled using a linear coefficient:</p>
+<pre><code>pa_position = nominal_position + pressure_advance_coefficient * nominal_velocity
+</code></pre>
+<p>See the <a href="Pressure_Advance.md">pressure advance</a> document for
+information on how to find this pressure advance coefficient.</p>
+<p>The basic pressure advance formula can cause the extruder motor to
+make sudden velocity changes. Klipper implements &quot;smoothing&quot; of the
+extruder movement to avoid this.</p>
+<p><img src="img/pressure-velocity.png" alt="pressure-advance" /></p>
+<p>The above graph shows an example of two extrusion moves with a
+non-zero cornering velocity between them. Note that the pressure
+advance system causes additional filament to be pushed into the
+extruder during acceleration. The higher the desired filament flow
+rate, the more filament must be pushed in during acceleration to
+account for pressure. During head deceleration the extra filament is
+retracted (the extruder will have a negative velocity).</p>
+<p>The &quot;smoothing&quot; is implemented using a weighted average of the
+extruder position over a small time period (as specified by the
+<code>pressure_advance_smooth_time</code> config parameter). This averaging can
+span multiple g-code moves. Note how the extruder motor will start
+moving prior to the nominal start of the first extrusion move and will
+continue to move after the nominal end of the last extrusion move.</p>
+<p>Key formula for &quot;smoothed pressure advance&quot;:</p>
+<pre><code>smooth_pa_position(t) =
+    ( definitive_integral(pa_position(x) * (smooth_time/2 - abs(t - x)) * dx,
+                          from=t-smooth_time/2, to=t+smooth_time/2)
+     / (smooth_time/2)^2 )
+</code></pre>
+
+</main></body></html>
