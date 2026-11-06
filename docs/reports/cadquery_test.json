@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "cadquery": "2.8.0",
+  "volume_mm3": 6000.0,
+  "bbox": [
+    10.0,
+    20.0,
+    30.0
+  ],
+  "step": "assets/processed/cadquery_test.step",
+  "step_bytes": 15478
+}

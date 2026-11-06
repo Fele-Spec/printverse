@@ -117,7 +117,24 @@ custom `LineSegments` / `BufferGeometry` renderer without sending G-code text th
 - Orca's 275 mm printable height vs configurator 280 mm remains unresolved without a real machine.
 - No physical print was performed, and no real printer was contacted.
 
-## 9. Verdict
+## 9. Phase-2 animation toolpath
+
+`scripts/gcode_to_toolpath.py` converts the same real G-code into the compact toolpath used by
+the Three.js scene:
+
+| Field | Value |
+|---|---:|
+| Layers | 100 |
+| Moves | 7,853 |
+| Types | Custom, Travel, Inner wall, Outer wall, Bottom surface, Internal solid infill, Sparse infill, Internal Bridge, Top surface |
+| Mass | 3.9784 g |
+| Bounds | 140.2–159.8 X, 140.2–159.8 Y, 0.2–20.0 Z |
+
+Evidence: `docs/reports/toolpath_test.json`. The animation interpolates the toolhead along
+these real moves, moves the bed by G-code Z, and advances deposited line geometry; it does not
+use a preset loop.
+
+## 10. Verdict
 
 **COMPLETE** for test slicing, G-code generation, parsing, mass and dimensional consistency.
 Profile calibration against a real Voron remains out of scope and is marked unverified.

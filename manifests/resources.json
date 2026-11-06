@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T05:08:58.929778+00:00",
+  "generated_at": "2026-11-06T05:54:30.329936+00:00",
   "resources": [
     {
       "id": "7zr-exe",
@@ -177,6 +177,24 @@
       "sha256": "af3ecbeaf28ee4df17a07c8a3b88e3009bb820c7f4c7d7d1732745d064c96781",
       "sha256_matches_download_ledger": true,
       "downloaded_at": "2026-11-06T04:14:46.392Z",
+      "license": "UNKNOWN_LICENSE",
+      "homepage": "",
+      "opens": true
+    },
+    {
+      "id": "cadquery-ocp-7-9-3-1-cp312-cp312-win-amd64-whl",
+      "kind": "download",
+      "title": "cadquery_ocp-7.9.3.1-cp312-cp312-win_amd64.whl",
+      "path": "tools/downloads/cadquery_ocp-7.9.3.1-cp312-cp312-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/61/86/3784e3ae2a797e9436a9a658ea5dc0649728b103e96600d8f7307ce0c711/cadquery_ocp-7.9.3.1-cp312-cp312-win_amd64.whl",
+      "resolved_url": "https://files.pythonhosted.org/packages/61/86/3784e3ae2a797e9436a9a658ea5dc0649728b103e96600d8f7307ce0c711/cadquery_ocp-7.9.3.1-cp312-cp312-win_amd64.whl",
+      "repository": "",
+      "version": "",
+      "commit": null,
+      "bytes": 46518666,
+      "sha256": "af37f7368d3b64344469227d109380f76215698d9511fdf8364689a23089cc47",
+      "sha256_matches_download_ledger": true,
+      "downloaded_at": "2026-11-06T05:43:45.362Z",
       "license": "UNKNOWN_LICENSE",
       "homepage": "",
       "opens": true

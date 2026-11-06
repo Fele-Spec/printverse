@@ -3,6 +3,10 @@
 AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual printing,
 3D collection / desktop-pet surface, and dual virtual/physical filament accounting.
 
+> Phase 2 status: **PARTIAL** — upload→Orca slice→G-code animation→detach→collect passes end to end
+> ([PHASE2_REPORT.md](PHASE2_REPORT.md)); exact STEP assembly transforms remain pending, so the
+> Web scene is a verified kinematic proxy rather than exact CAD placement.
+>
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
 > six project Skills, a real Orca slice, a parsed G-code file, and real headless-Edge WebGL
@@ -20,24 +24,35 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 | Slicer profiles | `configs/machine/`, `configs/process/`, `configs/filament/` |
 | Test slice | `assets/test-models/cube.gcode`, `cube.3mf` — 100 layers, 3.98 g PLA |
 | G-code parser | `scripts/parse_gcode.py` + `docs/reports/gcode_parse.json` |
-| Frontend | `frontend/` — React 19 + Three.js + R3F + Drei; real WebGL screenshots in `assets/previews/threejs_*.png` |
+| Frontend | `frontend/` — React 19 + Three.js + R3F + Drei; real WebGL screenshots in `assets/previews/phase2_scene_*.png` |
+| Phase-2 loop | upload → Orca slice → parser → CoreXY/Z animation → detach → collect; `PHASE2_REPORT.md` |
 | Skills | `.dsh/skills/` — six PrintVerse skills recognized by the Harness |
 | Indexes | `CAD_ASSET_INDEX.csv`, `LICENSE_AUDIT.csv`, `manifests/`, `SHA256SUMS.txt` |
 
-## Quick start
+## Quick start (phase 2)
 
 ```powershell
-# 1. Serve the built frontend (already installed)
-npm run preview --prefix frontend
+# terminal 1: virtual ledger / upload / Orca slicing API
+.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+
+# terminal 2: Vite UI
+npm run dev --prefix frontend
 # open http://127.0.0.1:4173/
 
-# 2. Inspect a parsed slice
-.\.venv\Scripts\python.exe scripts\parse_gcode.py assets\test-models\cube.gcode `
-  --out docs\reports\gcode_parse.json --expected-size 20,20,20
-
-# 3. Re-run the whole reproducible bootstrap
-.\bootstrap.ps1
+# upload an STL, watch the real G-code animation, detach, add to collection
 ```
+
+The uploaded STL is sliced by the local OrcaSlicer 2.4.2 with the resolved Voron 300 profiles.
+The browser test can also use the built bundle:
+
+```powershell
+npm run build --prefix frontend
+npm run preview --prefix frontend
+node scripts\phase2_e2e.mjs
+```
+
+Phase-2 report and evidence: [PHASE2_REPORT.md](PHASE2_REPORT.md),
+[docs/reports/phase2_e2e.json](docs/reports/phase2_e2e.json).
 
 ## Tool locations
 
@@ -45,6 +60,7 @@ npm run preview --prefix frontend
 - Blender 4.5.12 LTS: `tools/Blender-4.5.12/blender.exe`
 - OrcaSlicer 2.4.2: `tools/OrcaSlicer-2.4.2/orca-slicer.exe`
 - Python 3.12 venv: `.venv/` (build123d 0.13.0, OCP 8.0.1.1.0, trimesh 5.2.0)
+- Isolated CadQuery venv: `.venv-cadquery/` (CadQuery 2.8.0, OCP 7.9.3.1)
 - Node 24.16 / npm 11.13; frontend deps in `frontend/node_modules/`
 
 ## Safety boundary

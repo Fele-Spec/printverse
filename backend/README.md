@@ -1,16 +1,39 @@
-# Backend
+# PrintVerse Backend
 
-The bootstrap installs FastAPI 0.162, Pydantic 2.14 and Uvicorn 0.54 but intentionally does
-not implement product endpoints yet. Start with the contracts in
-`../docs/architecture/SYSTEM_OVERVIEW.md` and the accounting schema in
-`../.dsh/skills/printverse-filament-accounting/SKILL.md`.
+FastAPI + SQLite implementation of the phase-2 virtual print loop.
 
-Planned first vertical slice:
+## Run
 
-1. `GET /health` and `GET /api/machine` (read the resolved Voron profile).
-2. Upload → mesh preflight job.
-3. Slice job → parsed toolpath JSON.
-4. Reserve/commit/release ledger operations with idempotency.
-5. Read-only Moonraker fixture adapter; no control endpoints.
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+```
 
-Do not add payment processing or real printer control without explicit authorization.
+The database is created at `database/printverse.db`; upload jobs and generated files live under
+`runtime/` (Git-ignored). The frontend defaults to `http://127.0.0.1:8000`.
+
+## Endpoints
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/health` | health |
+| GET | `/api/machine` | 275/280 resolved parameters |
+| GET | `/api/wallet` | virtual grams, first-print flag, ledger |
+| POST | `/api/jobs` | multipart STL → real OrcaSlicer slice → toolpath |
+| GET | `/api/jobs/{id}` | job + wallet |
+| POST | `/api/jobs/{id}/complete` | commit completion (idempotent) |
+| POST | `/api/jobs/{id}/cancel` | release reservation |
+| GET/POST | `/api/collection` | list / save finished object |
+
+## Safety
+
+No payment provider, no card data, no real printer. Uploaded STLs are sliced locally with the
+same Orca profiles used by the phase-1 test; the resulting G-code is parsed to a compact
+toolpath, never executed on hardware.
+
+## Tests
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend\tests -q -p no:cacheprovider
+```
+
+6 ledger/collection tests pass (first free, refund, idempotency, insufficient balance, admin).

@@ -1,0 +1,12 @@
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+const require = createRequire(import.meta.url);
+const { chromium } = require('../frontend/node_modules/playwright-core');
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 980 } });
+await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle', timeout: 60000 });
+await page.waitForTimeout(1800);
+await page.screenshot({ path: 'assets/previews/phase2_scene_initial.png' });
+console.log(JSON.stringify({ status: await page.locator('[data-testid="print-status"]').innerText(), url: page.url() }));
+await browser.close();

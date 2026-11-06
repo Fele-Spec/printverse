@@ -1,0 +1,217 @@
+{
+  "root": "_VORON2.4_Assembly",
+  "source": "assets/source/voron-v2.4r2-300/CAD/VORON2.4_Assembly.step",
+  "step_product_count": 1534,
+  "note": "Named STEP products are grouped for the digital twin. Positions in the Web scene are nominal, verified kinematic relationships, not claimed exact STEP transforms.",
+  "groups": [
+    {
+      "id": "FRAME",
+      "parent": "VORON_V2_4R2_300",
+      "count": 234,
+      "sample": [
+        "B Drive Frame Upper",
+        "B Drive Frame Lower",
+        "A Drive Frame Upper",
+        "A Drive Frame Lower",
+        "X Carriage Frame",
+        "x_carriage_frame_left",
+        "x_carriage_frame_right",
+        "Skirt",
+        "Front_Skirt_Logo",
+        "Front Skirt A",
+        "Front Skirt B",
+        "Side Skirt B",
+        "Side Skirt A",
+        "Side Skirt A (1)",
+        "Side Skirt B (1)",
+        "Keystone_Skirt",
+        "Filtered_Inlet_Skirt",
+        "Frame"
+      ],
+      "motion": "static"
+    },
+    {
+      "id": "CORE_XY_GANTRY",
+      "parent": "VORON_V2_4R2_300",
+      "count": 119,
+      "sample": [
+        "Gantry",
+        "A/B Drives",
+        "B Drive",
+        "Z Belt Clamp Upper (2)",
+        "GT2 20T 6mm",
+        "Idler Assembly (3)",
+        "Idler Assembly (4)",
+        "Idler Assembly (5)",
+        "A Drive",
+        "Z Belt Clamp Upper (1)",
+        "GT2 20T 6mm (1)",
+        "Idler Assembly (6)",
+        "Idler Assembly (7)",
+        "Idler Assembly (8)",
+        "X Axis (MGN12)",
+        "X Carriage",
+        "Guidler Assembly",
+        "Guidler"
+      ],
+      "motion": "Y carriage + X carriage (CoreXY)"
+    },
+    {
+      "id": "Z_AXIS",
+      "parent": "VORON_V2_4R2_300",
+      "count": 18,
+      "sample": [
+        "Ceramic Cartridge Heater (1)",
+        "Z Joint with Hall Effect",
+        "Z Joint",
+        "Z Joint (1)",
+        "Z Joint (2)",
+        "Z Motor Unit",
+        "Z Motor Mount",
+        "Z Motor Unit (1)",
+        "Z Motor Mount (1)",
+        "Z Motor Unit (2)",
+        "Z Motor Mount (2)",
+        "Z Motor Unit (3)",
+        "Z Motor Mount (3)",
+        "Bed Supports",
+        "Bed Components",
+        "10in Bed",
+        "10in MIC6 Plate",
+        "Bed heater"
+      ],
+      "motion": "bed moves in -Z; 4 lead screws rotate"
+    },
+    {
+      "id": "TOOLHEAD",
+      "parent": "VORON_V2_4R2_300",
+      "count": 46,
+      "sample": [
+        "Extruder Motor Plate",
+        "Extruder Body",
+        "Fan Assembly",
+        "Hotend Fan Mount",
+        "4020 Blower Fan",
+        "40x40x10 DC Fan",
+        "Toolheads",
+        "E3D V6 All Metal Hotend",
+        "E3D Revo Micro v4",
+        "E3D Revo Micro Body Front",
+        "E3D Revo Micro Body Rear",
+        "E3D Revo Micro",
+        "Mosquito Hotend",
+        "Dragon",
+        "Dragon Body Rear",
+        "Dragon Body Front",
+        "Dragon Hotend",
+        "Dragonfly_BMS"
+      ],
+      "motion": "X/Y with gantry; nozzle at fixed world Z"
+    },
+    {
+      "id": "ELECTRONICS_BAY",
+      "parent": "VORON_V2_4R2_300",
+      "count": 33,
+      "sample": [
+        "Electronics",
+        "Controllers (1)",
+        "DIN Clips",
+        "Octopus",
+        "DIN Clips (2)",
+        "Octopus Bracket",
+        "DIN Clips (1)",
+        "SKR+EXPMOT",
+        "DIN Clips (3)",
+        "SKR Bracket",
+        "SKR-Pro",
+        "DIN Clips (5)",
+        "SKR Pro Bracket",
+        "DIN Clips (4)",
+        "DIN Clips (6)",
+        "Raspberry Pi (1)",
+        "raspberry_pi_B_(RJ45)",
+        "PCB DIN Clip (1)"
+      ],
+      "motion": "static"
+    },
+    {
+      "id": "MOTION_HARDWARE",
+      "parent": "VORON_V2_4R2_300",
+      "count": 228,
+      "sample": [
+        "NEMA17 Black (1)",
+        "M5 1mm Shim",
+        "F695 ZZ (2)",
+        "F695 ZZ (1)",
+        "M5 1mm Shim (1)",
+        "M5 1mm Shim (2)",
+        "F695 ZZ (3)",
+        "F695 ZZ (19)",
+        "M5 1mm Shim (3)",
+        "M5 1mm Shim (4)",
+        "F695 ZZ (4)",
+        "F695 ZZ (17)",
+        "M5 1mm Shim (5)",
+        "NEMA17 Black",
+        "M5 1mm Shim (6)",
+        "F695 ZZ (5)",
+        "F695 ZZ (8)",
+        "M5 1mm Shim (7)"
+      ],
+      "motion": "distributed"
+    },
+    {
+      "id": "OTHER",
+      "parent": "VORON_V2_4R2_300",
+      "count": 856,
+      "sample": [
+        "_VORON2.4_Assembly",
+        "M5x10 BHCS (7)",
+        "M5x10 BHCS (8)",
+        "M5x10 BHCS (9)",
+        "M5x10 BHCS (10)",
+        "M5x16 BHCS (7)",
+        "M5x16 BHCS (8)",
+        "M5x30 BHCS (2)",
+        "M3x30 SHCS (2)",
+        "M3x30 SHCS (3)",
+        "M3x30 SHCS (4)",
+        "M5x30 BHCS (3)",
+        "Cable Cover",
+        "Chain Retainer Bracket",
+        "M3 Threaded Insert (108)",
+        "M3x12 SHCS (2)",
+        "M3x12 SHCS (3)",
+        "M5x10 BHCS (11)"
+      ],
+      "motion": "static/instance"
+    }
+  ],
+  "links": [
+    {
+      "parent": "FRAME",
+      "child": "CORE_XY_GANTRY",
+      "type": "linear rail / extrusion"
+    },
+    {
+      "parent": "CORE_XY_GANTRY",
+      "child": "TOOLHEAD",
+      "type": "X carriage"
+    },
+    {
+      "parent": "FRAME",
+      "child": "Z_AXIS",
+      "type": "4-point Z drive"
+    },
+    {
+      "parent": "Z_AXIS",
+      "child": "PRINTED_OBJECT",
+      "type": "bed-local detachable object"
+    },
+    {
+      "parent": "FRAME",
+      "child": "ELECTRONICS_BAY",
+      "type": "static mount"
+    }
+  ]
+}

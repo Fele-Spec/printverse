@@ -1,0 +1,33 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "steps": {
+    "initial_status": "READY",
+    "initial_wallet": "VIRTUAL FILAMENT\n100.00 g\nfirst print free",
+    "upload_status": "READY",
+    "job_notice": "Sliced cube.stl: 100 layers, 3.978 g",
+    "layer_count": "0",
+    "mid_status": "PRINTING",
+    "mid_progress": "42%",
+    "mid_layer": "48",
+    "complete_status": "COMPLETE",
+    "complete_progress": "100%",
+    "wallet_after": "VIRTUAL FILAMENT\n100.00 g\nfirst print used",
+    "detached_status": "DETACHED",
+    "collection_items": 1,
+    "collection_open": 1
+  },
+  "screenshots": [
+    "assets/previews/phase2_scene_initial.png",
+    "assets/previews/phase2_scene_printing.png",
+    "assets/previews/phase2_scene_complete.png",
+    "assets/previews/phase2_scene_detached.png",
+    "assets/previews/phase2_scene_collection.png"
+  ],
+  "errors": [],
+  "failed": [],
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "ok": true
+}

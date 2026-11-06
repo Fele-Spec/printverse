@@ -215,6 +215,7 @@ TestModel,gcode,assets/test-models/cube.gcode,301690,f0eb34444f0e84aa1423d18254d
 TestModel,stl,assets/test-models/cube.stl,2378,1aa8f1a06de688f838b588e702a85d419019a9393ab33f441731b7d3bb015f0c,PrintVerse,V2.4r2,project,indexed,
 TestModel,gcode,assets/test-models/plate_1.gcode,301690,f0eb34444f0e84aa1423d18254d0a87fd55de3fe6588e20633eab8ea6ff5ab08,PrintVerse,V2.4r2,project,indexed,
 Processed,step,assets/processed/build123d_test.step,15430,e1002501369805c510db1b85e01d55c1825dc0dbdfe2e07a104d2f1941e5d648,PrintVerse,V2.4r2,project,indexed,
+Processed,step,assets/processed/cadquery_test.step,15478,b23fe040f9e1a5c379b065a2ddbe5f7d6d14c6da29a9362ea0fcb4e4879f82aa,PrintVerse,V2.4r2,project,indexed,
 Processed,stl,assets/processed/cube_repaired.stl,684,ae4bcb4527c2c0c9be9c05e4fe845361942ebd3b7e960500e6590930b869024e,PrintVerse,V2.4r2,project,indexed,
 Processed,glb,assets/processed/filament_card.glb,43608,c827502cf0a5223668110485d18defc718747e520e1cfef730cf2fda594b3399,PrintVerse,V2.4r2,project,indexed,
 Processed,stl,assets/processed/Filament_Card_repaired.stl,40184,b25470984f662bac26ea39f4754a06f815df7c607aa39f853963430ff0a64d7e,PrintVerse,V2.4r2,project,indexed,

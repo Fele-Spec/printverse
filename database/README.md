@@ -1,14 +1,15 @@
-# Database
+# PrintVerse Database
 
-Planned PostgreSQL schema (integer milligrams for all balances):
+SQLite is used for the phase-2 demo; migrations are intentionally minimal. Tables are created
+by `backend/app/db.py` on startup.
 
-```sql
-users(id, email, role, first_print_used_at, created_at)
-wallets(user_id PK, virtual_mg BIGINT, physical_mg BIGINT, version BIGINT)
-ledger(id, user_id, kind, mg BIGINT, operation_id TEXT UNIQUE, print_id, actor, reason, created_at)
-print_jobs(id, user_id, status, estimated_g_mg BIGINT, committed_g_mg BIGINT, created_at, completed_at)
-entitlements(user_id, kind, consumed_at)
-```
+| Table | Purpose |
+|---|---|
+| `users` | demo/user/admin role |
+| `wallets` | virtual balance in integer milligrams + first-print flag |
+| `ledger` | append-only reserve/commit/release/grant rows, unique `operation_id` |
+| `jobs` | upload, sliced G-code/toolpath paths, mass, layer count, status |
+| `collection` | finished objects, unique per (user, job) |
 
-Rules: one ledger row per `operation_id`, no negative available balance, separate virtual and
-physical wallets, admin unlimited virtual still logs usage. No payment tables in this phase.
+The demo seeds 100,000 mg virtual credit and one free first print. No real payment or physical
+spool data is stored. The database file is Git-ignored; it is recreated on a fresh run.

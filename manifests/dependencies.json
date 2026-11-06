@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T05:08:58.929778+00:00",
+  "generated_at": "2026-11-06T05:54:30.329936+00:00",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "machine": "AMD64",
@@ -112,6 +112,53 @@
     "webcolors==24.8.0",
     "websockets==17.4",
     "wrapt==2.5.2"
+  ],
+  "python_cadquery_lock": [
+    "\ufeffUsing Python 3.12.13 environment at: .venv-cadquery",
+    "aiohappyeyeballs==2.7.1",
+    "aiohttp==3.14.5",
+    "aiosignal==1.4.0",
+    "attrs==26.1.0",
+    "cadquery==2.8.0",
+    "cadquery-ocp @ file:///C:/Users/someb/Desktop/printverse/tools/downloads/cadquery_ocp-7.9.3.1-cp312-cp312-win_amd64.whl",
+    "cadquery-ocp-proxy==7.9.3.1",
+    "casadi==3.8.2",
+    "contourpy==1.4.0",
+    "cycler==0.12.1",
+    "ezdxf==1.4.5",
+    "fonttools==4.68.0",
+    "frozenlist==1.8.0",
+    "idna==3.20",
+    "kiwisolver==1.5.1",
+    "llvmlite==0.50.0",
+    "matplotlib==3.11.2",
+    "more-itertools==11.2.1",
+    "msgpack==1.2.4",
+    "multidict==7.2.1",
+    "multimethod==1.12",
+    "nlopt==2.11.0",
+    "numba==0.68.1",
+    "numpy==2.5.4",
+    "packaging==26.3",
+    "pillow==13.0.0",
+    "propcache==0.5.4",
+    "pyparsing==3.3.3",
+    "python-dateutil==4.0.0",
+    "pyyaml==6.0.3",
+    "runtype==0.5.3",
+    "scipy==1.18.1",
+    "trame==4.0.0",
+    "trame-client==4.1.4",
+    "trame-common==1.2.9",
+    "trame-components==2.5.0",
+    "trame-server==4.1.0",
+    "trame-vtk==2.11.17",
+    "trame-vuetify==3.3.0",
+    "typing-extensions==4.16.0",
+    "tzdata==2026.6",
+    "vtk==9.5.2",
+    "wslink==2.6.0",
+    "yarl==1.25.1"
   ],
   "python_licenses": [
     {
@@ -608,6 +655,136 @@
       "name": "wrapt",
       "version": "2.5.2",
       "license": "BSD-2-Clause"
+    },
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.14.5",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "cadquery",
+      "version": "2.8.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "casadi",
+      "version": "3.8.2",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "llvmlite",
+      "version": "0.50.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "more-itertools",
+      "version": "11.2.1",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "msgpack",
+      "version": "1.2.4",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "multidict",
+      "version": "7.2.1",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "multimethod",
+      "version": "1.12",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "nlopt",
+      "version": "2.11.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "numba",
+      "version": "0.68.1",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.4",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "runtype",
+      "version": "0.5.3",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame",
+      "version": "4.0.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-client",
+      "version": "4.1.4",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-common",
+      "version": "1.2.9",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-components",
+      "version": "2.5.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-server",
+      "version": "4.1.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-vtk",
+      "version": "2.11.17",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "trame-vuetify",
+      "version": "3.3.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "vtk",
+      "version": "9.5.2",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "wslink",
+      "version": "2.6.0",
+      "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "yarl",
+      "version": "1.25.1",
+      "license": "UNKNOWN_LICENSE"
     }
   ],
   "node_manifest": {
@@ -642,6 +819,10 @@
     "Blender": "4.5.12 LTS",
     "OrcaSlicer": "2.4.2",
     "7zr": "26.04",
-    "Print3D Toolbox": "1.5.0"
+    "Print3D Toolbox": "1.5.0",
+    "build123d": "0.13.0",
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery": "2.8.0 (isolated .venv-cadquery)",
+    "cadquery-ocp": "7.9.3.1 (isolated)"
   }
 }

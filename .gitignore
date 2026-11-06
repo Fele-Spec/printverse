@@ -4,6 +4,13 @@ tools/
 logs/
 .cache/
 .venv/
+.venv-cadquery/
+runtime/
+database/*.db
+database/*.db-shm
+database/*.db-wal
+database/test-*.db
+.pytest_cache/
 frontend/node_modules/
 frontend/dist/
 frontend/vite.config.js
@@ -18,3 +25,6 @@ docs/official-docs/*.zip
 Thumbs.db
 .DS_Store
 *.log
+
+pytest-cache-files-*
+

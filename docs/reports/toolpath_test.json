@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "layers": 100,
+  "mass_g": 3.9784,
+  "filament_mm": 1333.886,
+  "move_count": 7853,
+  "types": [
+    "Custom",
+    "Travel",
+    "Inner wall",
+    "Outer wall",
+    "Bottom surface",
+    "Internal solid infill",
+    "Sparse infill",
+    "Internal Bridge",
+    "Top surface"
+  ],
+  "bounds": {
+    "min": [
+      140.2,
+      140.2,
+      0.2
+    ],
+    "max": [
+      159.8,
+      159.8,
+      20.0
+    ]
+  }
+}

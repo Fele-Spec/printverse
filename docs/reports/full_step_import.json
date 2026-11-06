@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "file": "assets/source/voron-v2.4r2-300/CAD/VORON2.4_Assembly.step",
+  "bytes": 267315729,
+  "import_seconds": 76.17,
+  "solid_query_seconds": 0.05,
+  "bbox_seconds": 57.4,
+  "solid_count": 1677,
+  "volume_mm3": 122455.72,
+  "bbox_mm": {
+    "min": [
+      -88.0,
+      -49.0,
+      -143.096
+    ],
+    "max": [
+      342.0,
+      485.154,
+      378.904
+    ],
+    "size": [
+      430.0,
+      534.154,
+      522.0
+    ]
+  },
+  "python_peak_bytes": 1898886
+}

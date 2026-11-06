@@ -167,10 +167,17 @@ def main() -> int:
 
     # Per-file Python dependency license where metadata is available.
     python_rows = []
-    for line in (ROOT / "requirements.lock").read_text(encoding="utf-8").splitlines():
-        if "==" not in line:
-            continue
+    seen_python = set()
+    lock_sources = [ROOT / "requirements.lock", ROOT / "requirements-cadquery.lock"]
+    locked_lines = []
+    for lock in lock_sources:
+        if lock.exists():
+            locked_lines.extend(line for line in lock.read_text(encoding="utf-8").splitlines() if "==" in line)
+    for line in locked_lines:
         name, version = line.split("==", 1)
+        if name.lower() in seen_python:
+            continue
+        seen_python.add(name.lower())
         try:
             from importlib.metadata import metadata
             md = metadata(name)
@@ -246,7 +253,8 @@ def main() -> int:
     checksum_files = []
     for base in ["assets/source", "assets/previews", "assets/processed", "assets/test-models",
                  "docs/official-docs", "docs/architecture", "docs/research",
-                 "tools/downloads", "configs", "docs/reports", "scripts", "backend", "database"]:
+                 "tools/downloads", "configs", "docs/reports", "scripts", "backend", "database",
+                 "frontend/public"]:
         p = ROOT / base
         if p.exists():
             checksum_files.extend([x for x in p.rglob("*") if x.is_file()])
@@ -255,6 +263,8 @@ def main() -> int:
                  "OFFICIAL_RESOURCES.md", "SKILL_AUDIT.md", "SOFTWARE_INVENTORY.md",
                  "GCODE_TEST_REPORT.md", "CAD_VALIDATION_REPORT.md", "NEXT_DEVELOPMENT_PLAN.md",
                  "docs/research/IMAGE_TO_3D.md", "docs/research/GCODE_LIBRARIES.md",
+                 "PHASE2_REPORT.md", "MECHANICAL_PARAMETERS.md", "requirements-cadquery.lock",
+                 "manifests/mechanical-parameters.json", "manifests/machine-hierarchy.json",
                  "frontend/package.json", "frontend/package-lock.json", "frontend/index.html",
                  "frontend/vite.config.ts"]:
         p = ROOT / name
@@ -287,11 +297,14 @@ def main() -> int:
             "cpu_logical": os.cpu_count(),
         },
         "python_lock": [line for line in (ROOT / "requirements.lock").read_text(encoding="utf-8").splitlines() if line.strip()],
+        "python_cadquery_lock": [line for line in (ROOT / "requirements-cadquery.lock").read_text(encoding="utf-8").splitlines() if line.strip()] if (ROOT / "requirements-cadquery.lock").exists() else [],
         "python_licenses": python_rows,
         "node_manifest": json.loads((ROOT / "frontend/package.json").read_text(encoding="utf-8")),
         "tools": {
             "FreeCAD": "1.1.4", "Blender": "4.5.12 LTS", "OrcaSlicer": "2.4.2",
             "7zr": "26.04", "Print3D Toolbox": "1.5.0",
+            "build123d": "0.13.0", "cadquery-ocp-novtk": "8.0.1.1.0",
+            "cadquery": "2.8.0 (isolated .venv-cadquery)", "cadquery-ocp": "7.9.3.1 (isolated)",
         },
     }
     (MAN / "dependencies.json").write_text(json.dumps(dependencies, indent=2), encoding="utf-8")
@@ -338,6 +351,22 @@ def main() -> int:
             "threejs_smoke": "docs/reports/threejs_smoke.json",
             "skills": "SKILL_AUDIT.md",
             "checksums": "manifests/checksums.sha256",
+        },
+        "phase2": {
+            "report": "PHASE2_REPORT.md",
+            "status": "PARTIAL",
+            "acceptance": {
+                "upload_stl": "COMPLETE",
+                "real_orca_slice": "COMPLETE",
+                "gcode_animation": "COMPLETE",
+                "detach_transform_collect": "COMPLETE",
+                "filament_ledger": "COMPLETE",
+                "exact_step_transforms": "PARTIAL",
+                "cadquery_build123d_isolation": "COMPLETE",
+                "image_to_3d_local": "BLOCKED_HARDWARE",
+            },
+            "evidence": "docs/reports/phase2_e2e.json",
+            "screenshots": "assets/previews/phase2_scene_*.png",
         },
         "blocked": [
             "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded.",

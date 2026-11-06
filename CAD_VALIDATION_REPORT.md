@@ -75,13 +75,20 @@ Evidence: `docs/reports/freecad_stl_test.json`.
 
 Evidence: `docs/reports/freecad_step_part_test.json`.
 
-### Full assembly — PARTIAL
+### Full assembly — geometry import COMPLETE; transform audit PARTIAL
 
-The 267 MB `VORON2.4_Assembly.step` was attempted in `FreeCADCmd`. It consumed 261.7 CPU
-seconds and about 1.2 GB working set, but had not completed after roughly 4.5 minutes; the
-process was stopped to keep the workspace responsive. No assembly bounding box is claimed.
+The 267 MB `VORON2.4_Assembly.step` was imported with **build123d 0.13.0 / OCP 8.0.1.1.0**
+(`scripts/full_step_import.py`), not FreeCAD. Result (`docs/reports/full_step_import.json`):
 
-Instead, the STEP text structure was parsed (`docs/reports/step_structure.json`):
+| Metric | Value |
+|---|---:|
+| Import time | 76.17 s |
+| Solids returned | 1,677 |
+| Volume | 122,455.72 mm³ |
+| Bounding box | 430 × 534.154 × 522 mm |
+| BBox min / max | (−88, −49, −143.096) / (342, 485.154, 378.904) |
+
+The STEP text structure (`docs/reports/step_structure.json`) gives:
 
 | Structural count | Value |
 |---|---:|
@@ -92,19 +99,25 @@ Instead, the STEP text structure was parsed (`docs/reports/step_structure.json`)
 | `CARTESIAN_POINT` | 1,267,030 |
 | `AXIS2_PLACEMENT_3D` | 187,334 |
 
-Product names include `_VORON2.4_Assembly`, `Gantry`, `A/B Drives`, `Z Belt Clamp Upper`,
-`GT2 20T 6mm`, `NEMA17`, idlers, shims and bearings. This proves a populated assembly graph
-exists, but not that FreeCAD can resolve every constraint or that dimensions match a physical
-machine. The full import remains **PARTIAL / timed out**.
+The imported bounding box is **not** 460 × 460 × 480 mm. It is evidence that the assembly
+contains geometry/transform outliers or parts that extend beyond the frame; it is **not** used
+as the frame envelope. The authoritative frame envelope remains the configurator/BOM-derived
+460 × 460 × 480 mm. Exact assembly transforms and per-product world positions remain
+**PARTIAL** until a name-preserving XCAF hierarchy import is completed.
 
-## 5. Assembly relationship attempt
+## 5. Assembly relationship model
 
-- Text-level parent/child links: 1,544 — a complete-looking solid assembly, not a flat dump.
-- FreeCAD object tree: not obtained (timeout).
-- BOM-to-CAD mapping: not established; product names are Fusion 360 occurrences and do not
-  map one-to-one to BOM line items.
-- Frame envelope: not measured from the imported assembly. The configurator independently
-  derives a 460 × 460 × 480 mm frame for the 300 mm build.
+- Text-level parent/child links: 1,544 — a populated solid assembly, not a flat dump.
+- Product categories from the STEP names (`manifests/machine-hierarchy.json`):
+  FRAME 234, CORE_XY_GANTRY 119, Z_AXIS 18, TOOLHEAD 46, ELECTRONICS_BAY 33,
+  MOTION_HARDWARE 228, OTHER 856.
+- The Web scene uses a verified kinematic hierarchy (frame → CoreXY gantry → toolhead,
+  frame → four-point Z → bed → printed object). Positions are nominal dimensions from the
+  official BOM/configurator; they are not claimed to be exact STEP transforms.
+- BOM-to-CAD mapping is not one-to-one; product occurrence names and purchasing descriptions
+  are different vocabularies.
+- Frame envelope: 460 × 460 × 480 mm (configurator/BOM). Imported STEP bbox is retained as
+  an anomaly to investigate, not silently normalized.
 
 ## 6. Missing / at-risk data
 
@@ -112,8 +125,8 @@ machine. The full import remains **PARTIAL / timed out**.
    whole-machine STEP and one F3D.
 2. The F3D file requires Autodesk Fusion 360; it was integrity-checked as a ZIP container but
    not opened.
-3. The full STEP import is too slow for the current headless audit; a tiled/partial import or
-   a stronger CAD kernel is needed for production.
+3. Exact STEP assembly transforms/world positions are not yet name-preserving; the Web scene
+   uses a nominal kinematic hierarchy.
 4. BOM line items are purchasing descriptions, not CAD instance IDs.
 5. All dimensions are nominal CAD values; none were measured on a physical Voron.
 
@@ -122,4 +135,5 @@ machine. The full import remains **PARTIAL / timed out**.
 - Official CAD acquired and checksummed: **COMPLETE**
 - STL collection structurally validated: **COMPLETE**
 - STEP part import in FreeCAD: **COMPLETE**
-- Full assembly import and dimensional audit: **PARTIAL** (timed out; text structure parsed)
+- Full assembly geometry import: **COMPLETE** (1,677 solids, 76 s)
+- Exact assembly transform / dimensional audit: **PARTIAL** (STEP bbox anomaly; nominal scene hierarchy)

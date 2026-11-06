@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T05:08:58.929778+00:00",
+  "generated_at": "2026-11-06T05:54:30.329936+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -16,14 +16,14 @@
     "J_reports": "COMPLETE"
   },
   "counts": {
-    "resources": 18,
-    "cad_index_rows": 221,
-    "checksum_files": 3484,
-    "checksum_bytes": 3912547093,
+    "resources": 19,
+    "cad_index_rows": 222,
+    "checksum_files": 3531,
+    "checksum_bytes": 3962164373,
     "stl_files": 190,
     "dxf_files": 12,
-    "step_files": 5,
-    "licenses": 142
+    "step_files": 6,
+    "licenses": 168
   },
   "evidence": {
     "bom": "BOM_300MM.csv",
@@ -39,6 +39,22 @@
     "threejs_smoke": "docs/reports/threejs_smoke.json",
     "skills": "SKILL_AUDIT.md",
     "checksums": "manifests/checksums.sha256"
+  },
+  "phase2": {
+    "report": "PHASE2_REPORT.md",
+    "status": "PARTIAL",
+    "acceptance": {
+      "upload_stl": "COMPLETE",
+      "real_orca_slice": "COMPLETE",
+      "gcode_animation": "COMPLETE",
+      "detach_transform_collect": "COMPLETE",
+      "filament_ledger": "COMPLETE",
+      "exact_step_transforms": "PARTIAL",
+      "cadquery_build123d_isolation": "COMPLETE",
+      "image_to_3d_local": "BLOCKED_HARDWARE"
+    },
+    "evidence": "docs/reports/phase2_e2e.json",
+    "screenshots": "assets/previews/phase2_scene_*.png"
   },
   "blocked": [
     "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded."
