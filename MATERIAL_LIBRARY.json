@@ -1,0 +1,90 @@
+{
+  "schema": "printverse.material-library.v1",
+  "note": "Visual design presets for the Voron digital twin. They describe intended industrial finishes; they are not measured material data from a physical machine.",
+  "materials": {
+    "anodized_aluminum": {
+      "label": "Anodized Aluminum", "category": "metal",
+      "base_color": "#20272c", "metalness": 0.88, "roughness": 0.34,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0.12, "clearcoat_roughness": 0.4,
+      "normal_map": null, "bump_scale": 0.12,
+      "surface": "fine vertical grain, low sheen"
+    },
+    "brushed_aluminum": {
+      "label": "Brushed Aluminum", "category": "metal",
+      "base_color": "#b8c1c6", "metalness": 0.94, "roughness": 0.27,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0.05,
+      "normal_map": null, "bump_scale": 0.2,
+      "surface": "directional brushing"
+    },
+    "stainless_steel": {
+      "label": "Stainless Steel", "category": "metal",
+      "base_color": "#c6cdd0", "metalness": 0.96, "roughness": 0.21,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.08,
+      "surface": "cold rolled / satin"
+    },
+    "black_oxide_steel": {
+      "label": "Black Oxide Steel", "category": "metal",
+      "base_color": "#171a1c", "metalness": 0.72, "roughness": 0.4,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.15,
+      "surface": "matte conversion coating"
+    },
+    "rubber_belt": {
+      "label": "Rubber Belt", "category": "elastomer",
+      "base_color": "#101214", "metalness": 0.02, "roughness": 0.82,
+      "ior": 1.45, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.55,
+      "surface": "black rubber, GT2 tooth pattern"
+    },
+    "engineering_plastic": {
+      "label": "Engineering Plastic", "category": "polymer",
+      "base_color": "#20262a", "metalness": 0.04, "roughness": 0.56,
+      "ior": 1.52, "transmission": 0, "clearcoat": 0.08,
+      "normal_map": null, "bump_scale": 0.25,
+      "surface": "fine matte mold texture"
+    },
+    "acrylic_panel": {
+      "label": "Acrylic Panel", "category": "transparent",
+      "base_color": "#8caeb8", "metalness": 0.01, "roughness": 0.08,
+      "ior": 1.49, "transmission": 0.62, "opacity": 0.24,
+      "clearcoat": 0, "normal_map": null, "bump_scale": 0,
+      "surface": "clear cast acrylic, edge tint"
+    },
+    "textured_print_surface": {
+      "label": "Textured Print Surface", "category": "surface",
+      "base_color": "#a9a396", "metalness": 0.03, "roughness": 0.7,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.6,
+      "surface": "PEI powder-coated texture"
+    },
+    "brass_nozzle": {
+      "label": "Brass Nozzle", "category": "metal",
+      "base_color": "#b88645", "metalness": 0.9, "roughness": 0.3,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.06,
+      "surface": "machined brass"
+    },
+    "silicone_cable": {
+      "label": "Silicone Cable", "category": "elastomer",
+      "base_color": "#1b1f22", "metalness": 0.01, "roughness": 0.74,
+      "ior": 1.43, "transmission": 0, "clearcoat": 0,
+      "normal_map": null, "bump_scale": 0.35,
+      "surface": "flexible black insulation"
+    },
+    "painted_metal": {
+      "label": "Painted Metal", "category": "coated metal",
+      "base_color": "#263139", "metalness": 0.5, "roughness": 0.44,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0.22,
+      "clearcoat_roughness": 0.35, "normal_map": null, "bump_scale": 0.12,
+      "surface": "satin industrial paint"
+    },
+    "powder_coated": {
+      "label": "Powder Coated Surface", "category": "coated metal",
+      "base_color": "#1d2429", "metalness": 0.24, "roughness": 0.63,
+      "ior": 1.5, "transmission": 0, "clearcoat": 0.04,
+      "normal_map": null, "bump_scale": 0.3,
+      "surface": "fine powder-coat orange peel"
+    }
+  }
+}

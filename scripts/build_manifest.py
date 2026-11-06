@@ -253,6 +253,7 @@ def main() -> int:
     # Checksums over source archives, docs, configs, scripts and reports.
     checksum_files = []
     for base in ["assets/source", "assets/previews", "assets/processed", "assets/test-models",
+                 "assets/models", "BEFORE_AFTER_SCREENSHOTS",
                  "docs/official-docs", "docs/architecture", "docs/research",
                  "tools/downloads", "configs", "docs/reports", "scripts", "backend", "database",
                  "frontend/public"]:
@@ -264,8 +265,13 @@ def main() -> int:
                  "OFFICIAL_RESOURCES.md", "SKILL_AUDIT.md", "SOFTWARE_INVENTORY.md",
                  "GCODE_TEST_REPORT.md", "CAD_VALIDATION_REPORT.md", "NEXT_DEVELOPMENT_PLAN.md",
                  "docs/research/IMAGE_TO_3D.md", "docs/research/GCODE_LIBRARIES.md",
-                 "PHASE2_REPORT.md", "MECHANICAL_PARAMETERS.md", "requirements-cadquery.lock",
+                 "PHASE2_REPORT.md", "PHASE3_COMPLETION_REPORT.md", "PHASE3_MANIFEST.json",
+                 "MECHANICAL_PARAMETERS.md", "requirements-cadquery.lock",
+                 "CAD_PLACEMENT_AUDIT.md", "CAD_MODULE_MANIFEST.json", "ASSEMBLY_HIERARCHY.json",
+                 "MATERIAL_LIBRARY.json", "MODEL_VALIDATION_REPORT.md", "VISUAL_UPGRADE_REPORT.md",
+                 "PERFORMANCE_REPORT.md", "HEIGHT_CLEARANCE_ANALYSIS.md",
                  "manifests/mechanical-parameters.json", "manifests/machine-hierarchy.json",
+                 "manifests/placements.json", "manifests/module-parts.json",
                  "frontend/package.json", "frontend/package-lock.json", "frontend/index.html",
                  "frontend/vite.config.ts"]:
         p = ROOT / name
@@ -376,6 +382,20 @@ def main() -> int:
             "freecad_object_placements": "docs/reports/freecad_full_tree.json",
             "bed_mesh": "frontend/public/models/voron_300_bed.stl",
             "screenshots": "assets/previews/phase2_scene_*.png",
+        },
+        "phase3": {
+            "report": "PHASE3_COMPLETION_REPORT.md",
+            "manifest": "PHASE3_MANIFEST.json",
+            "status": "PARTIAL",
+            "placements": 4526,
+            "part_features": 1686,
+            "modules": 8,
+            "module_bytes": 35489880,
+            "lod_bytes": 8919408,
+            "hardware_fps": 60.1,
+            "instancing": "PARTIAL / NOT_IMPLEMENTED",
+            "motion_hierarchy": "PARTIAL / CAD static display + proxy simulation",
+            "physical_z_clearance": "PHYSICAL_PENDING",
         },
         "blocked": [
             "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded.",

@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T06:22:02.137448+00:00",
+  "generated_at": "2026-11-06T08:25:50.095034+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,12 +18,12 @@
   "counts": {
     "resources": 20,
     "cad_index_rows": 223,
-    "checksum_files": 3538,
-    "checksum_bytes": 3965360499,
+    "checksum_files": 3633,
+    "checksum_bytes": 4141638538,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
-    "licenses": 168
+    "licenses": 169
   },
   "evidence": {
     "bom": "BOM_300MM.csv",
@@ -63,6 +63,20 @@
     "freecad_object_placements": "docs/reports/freecad_full_tree.json",
     "bed_mesh": "frontend/public/models/voron_300_bed.stl",
     "screenshots": "assets/previews/phase2_scene_*.png"
+  },
+  "phase3": {
+    "report": "PHASE3_COMPLETION_REPORT.md",
+    "manifest": "PHASE3_MANIFEST.json",
+    "status": "PARTIAL",
+    "placements": 4526,
+    "part_features": 1686,
+    "modules": 8,
+    "module_bytes": 35489880,
+    "lod_bytes": 8919408,
+    "hardware_fps": 60.1,
+    "instancing": "PARTIAL / NOT_IMPLEMENTED",
+    "motion_hierarchy": "PARTIAL / CAD static display + proxy simulation",
+    "physical_z_clearance": "PHYSICAL_PENDING"
   },
   "blocked": [
     "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded."

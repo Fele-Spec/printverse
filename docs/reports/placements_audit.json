@@ -1,0 +1,40 @@
+{
+  "source": ".cache/voron_full.FCStd",
+  "source_step": "assets/source/voron-v2.4r2-300/CAD/VORON2.4_Assembly.step",
+  "total_objects_in_document": 4881,
+  "placements": 4526,
+  "part_features": 1686,
+  "assembly_nodes": 355,
+  "construction_objects": 2485,
+  "duplicate_part_ids": [],
+  "zero_volume_count": 1,
+  "zero_volume_ids": [
+    "F0490"
+  ],
+  "modules": {
+    "XY_GANTRY": 1030,
+    "TOOLHEAD": 476,
+    "Z_DRIVE": 843,
+    "ELECTRONICS": 434,
+    "ENCLOSURE": 1272,
+    "FRAME": 438,
+    "BUILD_PLATFORM": 32,
+    "WIRING": 1
+  },
+  "solids_by_module": {
+    "XY_GANTRY": 470,
+    "TOOLHEAD": 180,
+    "Z_DRIVE": 315,
+    "ELECTRONICS": 130,
+    "ENCLOSURE": 392,
+    "FRAME": 182,
+    "BUILD_PLATFORM": 16,
+    "WIRING": 1
+  },
+  "unit": "mm",
+  "gltf_unit": "m",
+  "scale_factor": 0.001,
+  "shape_embeds_local_placement": true,
+  "parent_placement_applied_once": true,
+  "elapsed_s": 24.84
+}

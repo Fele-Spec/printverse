@@ -1,0 +1,16 @@
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+const require = createRequire(import.meta.url);
+const { chromium } = require('../frontend/node_modules/playwright-core');
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 980 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(String(e)));
+page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+const t0 = Date.now();
+await page.goto('http://127.0.0.1:4173/?cad=1', { waitUntil: 'networkidle', timeout: 90000 });
+await page.waitForTimeout(5000);
+await page.screenshot({ path: 'BEFORE_AFTER_SCREENSHOTS/after_cad_product.png' });
+console.log(JSON.stringify({ load_ms: Date.now() - t0, errors, controls: await page.locator('[data-testid="cad-toggle"]').innerText().catch(() => null) }));
+await browser.close();

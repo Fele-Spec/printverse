@@ -98,3 +98,4 @@ wcwidth==0.9.4
 webcolors==24.8.0
 websockets==17.4
 wrapt==2.5.2
+fast-simplification==0.2.0

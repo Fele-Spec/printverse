@@ -12,6 +12,8 @@ import {
   uploadStl,
 } from './lib/api';
 import { PrintScene } from './components/PrintScene';
+import { SceneControls, type PanelMode, type ViewPreset } from './components/SceneControls';
+import { PartInspector } from './components/PartInspector';
 
 type Status = 'idle' | 'slicing' | 'ready' | 'printing' | 'paused' | 'completed' | 'detached' | 'error';
 const INITIAL_TICK: PrintTick = {
@@ -49,6 +51,16 @@ export default function App() {
   const [speed, setSpeed] = useState(120);
   const [resetKey, setResetKey] = useState(0);
   const [showLabels, setShowLabels] = useState(false);
+  const [viewPreset, setViewPreset] = useState<ViewPreset>('product');
+  const [orthographic, setOrthographic] = useState(false);
+  const [panelMode, setPanelMode] = useState<PanelMode>('glass');
+  const [explode, setExplode] = useState(0);
+  const [cadMode, setCadMode] = useState(() => !new URLSearchParams(window.location.search).has('sim'));
+  const [selectedPart, setSelectedPart] = useState<{ name: string; module: string } | null>(null);
+  const [visibleModules, setVisibleModules] = useState<Record<string, boolean>>({
+    FRAME: true, ENCLOSURE: true, XY_GANTRY: true, Z_DRIVE: true,
+    TOOLHEAD: true, BUILD_PLATFORM: true, ELECTRONICS: true, WIRING: true,
+  });
   const [transformMode, setTransformMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
@@ -122,6 +134,7 @@ export default function App() {
       setResetKey((n) => n + 1);
     }
     setError('');
+    setCadMode(false);
     setStatus('printing');
     setPlaying(true);
   }, [status, toolpath]);
@@ -206,7 +219,7 @@ export default function App() {
     <div className="app" data-testid="printverse-app">
       <header className="topbar">
         <div className="brandblock">
-          <div className="eyebrow">PRINTVERSE · PHASE 02 · VIRTUAL PRINT LOOP</div>
+          <div className="eyebrow">PRINTVERSE · PHASE 03 · CAD DIGITAL TWIN</div>
           <h1>Voron 2.4r2 <span>/ 300 mm</span></h1>
         </div>
         <div className="machine-facts">
@@ -246,8 +259,31 @@ export default function App() {
             transformMode={transformMode}
             detached={status === 'detached'}
             resetKey={resetKey}
+            viewPreset={viewPreset}
+            orthographic={orthographic}
+            panelMode={panelMode}
+            explode={explode}
+            visibleModules={visibleModules}
+            cadMode={cadMode}
+            selectedPartName={selectedPart?.name ?? null}
+            onPartSelect={(name, module) => setSelectedPart({ name, module })}
             onTick={setTick}
             onComplete={handleComplete}
+          />
+
+          <SceneControls
+            view={viewPreset}
+            onView={setViewPreset}
+            panelMode={panelMode}
+            onPanelMode={setPanelMode}
+            orthographic={orthographic}
+            onOrthographic={setOrthographic}
+            explode={explode}
+            onExplode={setExplode}
+            modules={visibleModules}
+            onToggleModule={(id) => setVisibleModules((m) => ({ ...m, [id]: m[id] === false }))}
+            cadMode={cadMode}
+            onCadMode={setCadMode}
           />
 
           <div className="stage-top">
@@ -264,6 +300,19 @@ export default function App() {
               <small>bed Z {tick.bedZ.toFixed(1)} mm</small>
             </div>
           </div>
+
+          {selectedPart && (
+            <PartInspector
+              partId={selectedPart.name}
+              module={selectedPart.module}
+              onClose={() => setSelectedPart(null)}
+              onHide={(module) => setVisibleModules((m) => ({ ...m, [module]: false }))}
+              onFocus={(module) => {
+                setViewPreset(module === 'TOOLHEAD' ? 'toolhead' : module === 'BUILD_PLATFORM' ? 'interior' : 'interior');
+                setSelectedPart(null);
+              }}
+            />
+          )}
 
           <div className="stage-bottom">
             <div className="legend">

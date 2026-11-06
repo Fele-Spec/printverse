@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T06:22:02.137448+00:00",
+  "generated_at": "2026-11-06T08:25:50.095034+00:00",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "machine": "AMD64",
@@ -111,7 +111,8 @@
     "wcwidth==0.9.4",
     "webcolors==24.8.0",
     "websockets==17.4",
-    "wrapt==2.5.2"
+    "wrapt==2.5.2",
+    "fast-simplification==0.2.0"
   ],
   "python_cadquery_lock": [
     "\ufeffUsing Python 3.12.13 environment at: .venv-cadquery",
@@ -655,6 +656,11 @@
       "name": "wrapt",
       "version": "2.5.2",
       "license": "BSD-2-Clause"
+    },
+    {
+      "name": "fast-simplification",
+      "version": "0.2.0",
+      "license": "MIT"
     },
     {
       "name": "aiohappyeyeballs",

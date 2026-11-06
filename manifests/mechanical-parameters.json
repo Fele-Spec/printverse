@@ -10,25 +10,145 @@
     "explanation": "280 is the official Klipper 300-build Z maximum and the configurator build Z. 275 is OrcaSlicer's vendor safety ceiling. The 5 mm headroom is inferred from the difference and is not a CAD dimension."
   },
   "parameters": [
-    {"id": "frame_x", "value": 460, "unit": "mm", "status": "DERIVED", "source": "configurator frame_x=build_x+160"},
-    {"id": "frame_y", "value": 460, "unit": "mm", "status": "DERIVED", "source": "configurator frame_y=build_y+160"},
-    {"id": "frame_z", "value": 480, "unit": "mm", "status": "DERIVED", "source": "configurator frame_z=build_z+200"},
-    {"id": "build_x", "value": 300, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Klipper 300 X/Y; Orca printable_area"},
-    {"id": "build_y", "value": 300, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Klipper 300 X/Y; Orca printable_area"},
-    {"id": "z_travel", "value": 280, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Voron2_Octopus_Config.cfg [stepper_z] position_max 280"},
-    {"id": "z_printable", "value": 275, "unit": "mm", "status": "VENDOR_SAFETY", "source": "configs/machine/voron-v2.4r2-300-0.4.json printable_height"},
-    {"id": "z_min", "value": -5, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Voron2_Octopus_Config.cfg position_min"},
-    {"id": "z_endstop", "value": -0.5, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Voron2_Octopus_Config.cfg position_endstop"},
-    {"id": "z_rail", "value": 350, "unit": "mm", "status": "DERIVED", "source": "BOM MGN9H 350 mm"},
-    {"id": "x_rail", "value": 350, "unit": "mm", "status": "DERIVED", "source": "BOM MGN12H 350 mm"},
-    {"id": "x_gantry_extrusion", "value": 380, "unit": "mm", "status": "DERIVED", "source": "BOM HFSB5-2020-380"},
-    {"id": "y_gantry_extrusion", "value": 400, "unit": "mm", "status": "DERIVED", "source": "BOM HFSB5-2020-400"},
-    {"id": "frame_extrusion", "value": 420, "unit": "mm", "status": "DERIVED", "source": "BOM HFSB5-2020-420-TPW"},
-    {"id": "bed_plate", "value": [305, 305, 7.76], "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "MIC6_Bed_V2_300.step FreeCAD import"},
-    {"id": "bed_heater", "value": [250, 250], "unit": "mm", "status": "DERIVED", "source": "BOM Keenovo 250x250"},
-    {"id": "z_gear_ratio", "value": "80:16", "status": "VERIFIED_OFFICIAL", "source": "Klipper [stepper_z] gear_ratio"},
-    {"id": "z_rotation_distance", "value": 40, "unit": "mm", "status": "VERIFIED_OFFICIAL", "source": "Klipper [stepper_z] rotation_distance"},
-    {"id": "toolhead_clearance", "value": 275, "unit": "mm", "status": "PHYSICAL_PENDING", "source": "Orca + community report"}
+    {
+      "id": "frame_x",
+      "value": 460,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "configurator frame_x=build_x+160"
+    },
+    {
+      "id": "frame_y",
+      "value": 460,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "configurator frame_y=build_y+160"
+    },
+    {
+      "id": "frame_z",
+      "value": 480,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "configurator frame_z=build_z+200"
+    },
+    {
+      "id": "build_x",
+      "value": 300,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Klipper 300 X/Y; Orca printable_area"
+    },
+    {
+      "id": "build_y",
+      "value": 300,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Klipper 300 X/Y; Orca printable_area"
+    },
+    {
+      "id": "z_travel",
+      "value": 280,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Voron2_Octopus_Config.cfg [stepper_z] position_max 280"
+    },
+    {
+      "id": "z_printable",
+      "value": 275,
+      "unit": "mm",
+      "status": "VENDOR_SAFETY",
+      "source": "configs/machine/voron-v2.4r2-300-0.4.json printable_height"
+    },
+    {
+      "id": "z_min",
+      "value": -5,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Voron2_Octopus_Config.cfg position_min"
+    },
+    {
+      "id": "z_endstop",
+      "value": -0.5,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Voron2_Octopus_Config.cfg position_endstop"
+    },
+    {
+      "id": "z_rail",
+      "value": 350,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM MGN9H 350 mm"
+    },
+    {
+      "id": "x_rail",
+      "value": 350,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM MGN12H 350 mm"
+    },
+    {
+      "id": "x_gantry_extrusion",
+      "value": 380,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM HFSB5-2020-380"
+    },
+    {
+      "id": "y_gantry_extrusion",
+      "value": 400,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM HFSB5-2020-400"
+    },
+    {
+      "id": "frame_extrusion",
+      "value": 420,
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM HFSB5-2020-420-TPW"
+    },
+    {
+      "id": "bed_plate",
+      "value": [
+        305,
+        305,
+        7.76
+      ],
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "MIC6_Bed_V2_300.step FreeCAD import"
+    },
+    {
+      "id": "bed_heater",
+      "value": [
+        250,
+        250
+      ],
+      "unit": "mm",
+      "status": "DERIVED",
+      "source": "BOM Keenovo 250x250"
+    },
+    {
+      "id": "z_gear_ratio",
+      "value": "80:16",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Klipper [stepper_z] gear_ratio"
+    },
+    {
+      "id": "z_rotation_distance",
+      "value": 40,
+      "unit": "mm",
+      "status": "VERIFIED_OFFICIAL",
+      "source": "Klipper [stepper_z] rotation_distance"
+    },
+    {
+      "id": "toolhead_clearance",
+      "value": 275,
+      "unit": "mm",
+      "status": "PHYSICAL_PENDING",
+      "source": "Orca + community report"
+    }
   ],
   "pending": [
     "Physical nozzle-to-bed Z at top of travel",
@@ -36,5 +156,10 @@
     "Bed mesh and quad gantry offsets",
     "Heater actual area vs nominal bed",
     "Exact full-STEP assembly transforms"
-  ]
+  ],
+  "max_printable_z_mm": 275,
+  "max_klipper_travel_z_mm": 280,
+  "verified_physical_z_clearance_mm": null,
+  "clearance_status": "PHYSICAL_PENDING",
+  "clearance_note": "275 mm is the Orca safety ceiling; 280 mm is Klipper travel. No physical top-clearance measurement exists."
 }

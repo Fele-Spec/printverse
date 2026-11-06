@@ -72,14 +72,23 @@ export function VoronMachine({
   bedZ,
   showLabels,
   zRotation,
+  panelMode = 'glass',
+  explode = 0,
+  visibleModules = {},
   children,
 }: {
   toolhead: { x: number; y: number };
   bedZ: number;
   showLabels: boolean;
   zRotation: number;
+  panelMode?: 'glass' | 'clear' | 'hidden';
+  explode?: number;
+  visibleModules?: Record<string, boolean>;
   children?: ReactNode;
 }) {
+  const show = (id: string) => visibleModules[id] !== false;
+  const panelOpacity = panelMode === 'hidden' ? 0 : panelMode === 'clear' ? 0.055 : 0.16;
+  const panelVisible = panelMode !== 'hidden';
   const gantryY = Math.max(-155, Math.min(155, toolhead.y));
   const gantryX = Math.max(-160, Math.min(160, toolhead.x));
   const frame = useMemo(() => {
@@ -119,17 +128,22 @@ export function VoronMachine({
 
   return (
     <group name="VORON_V2_4R2_300">
-      <group name="FRAME">
+      <group name="FRAME" visible={show('FRAME')}>
         {frame.map((p) => (
           <Part key={p.key} size={p.size} position={p.pos} color={p.key === 'brace' ? '#53616d' : '#3b4853'} />
         ))}
-        <Part size={[FRAME.x - 14, 3, FRAME.z - 30]} position={[0, 232, FRAME.z / 2]} color="#154258" transparent opacity={0.13} metalness={0.1} roughness={0.15} />
-        <Part size={[3, FRAME.y - 14, FRAME.z - 30]} position={[-232, 0, FRAME.z / 2]} color="#154258" transparent opacity={0.1} metalness={0.1} roughness={0.15} />
-        <Part size={[3, FRAME.y - 14, FRAME.z - 30]} position={[232, 0, FRAME.z / 2]} color="#154258" transparent opacity={0.1} metalness={0.1} roughness={0.15} />
+        {panelVisible && (
+          <group name="ENCLOSURE">
+            <Part size={[FRAME.x - 14, 3, FRAME.z - 30]} position={[0, 232, FRAME.z / 2]} color="#154258" transparent opacity={panelOpacity} metalness={0.1} roughness={0.12} depthWrite={false} />
+            <Part size={[3, FRAME.y - 14, FRAME.z - 30]} position={[-232, 0, FRAME.z / 2]} color="#154258" transparent opacity={panelOpacity} metalness={0.1} roughness={0.12} depthWrite={false} />
+            <Part size={[3, FRAME.y - 14, FRAME.z - 30]} position={[232, 0, FRAME.z / 2]} color="#154258" transparent opacity={panelOpacity} metalness={0.1} roughness={0.12} depthWrite={false} />
+            <Part size={[FRAME.x - 14, 3, FRAME.z - 30]} position={[0, -232, FRAME.z / 2]} color="#154258" transparent opacity={panelOpacity * 0.65} metalness={0.1} roughness={0.12} depthWrite={false} />
+          </group>
+        )}
         {showLabels && <Label position={[0, 232, 490]}>FRAME 460 × 460 × 480</Label>}
       </group>
 
-      <group name="CORE_XY_GANTRY">
+      <group name="CORE_XY_GANTRY" visible={show('XY_GANTRY')} position={[0, 0, explode * 34]}>
         <Part size={[12, 410, 12]} position={[-190, 0, RAIL_Z - 14]} color="#9aa8b3" metalness={0.9} roughness={0.2} />
         <Part size={[12, 410, 12]} position={[190, 0, RAIL_Z - 14]} color="#9aa8b3" metalness={0.9} roughness={0.2} />
         <Part size={[380, 20, 20]} position={[0, gantryY, RAIL_Z]} color="#7a93a3" transparent opacity={0.5} depthWrite={false} />
@@ -140,7 +154,7 @@ export function VoronMachine({
         {showLabels && <Label position={[0, gantryY + 12, RAIL_Z + 32]}>CORE-XY GANTRY</Label>}
       </group>
 
-      <group name="TOOLHEAD">
+      <group name="TOOLHEAD" visible={show('TOOLHEAD')} position={[0, 0, explode * 80]}>
         <group position={[gantryX, gantryY, 0]}>
           <Part size={[62, 52, 64]} position={[0, 0, 356]} color="#27343d" />
           <Part size={[38, 34, 16]} position={[0, -7, 322]} color="#53616d" />
@@ -170,7 +184,7 @@ export function VoronMachine({
       </mesh>
       {showLabels && <Label position={[0, -215, 100]}>A / B DRIVES · CoreXY</Label>}
 
-      <group name="Z_AXIS">
+      <group name="Z_AXIS" visible={show('Z_DRIVE')}>
         {[-145, 145].map((x) =>
           [-145, 145].map((y) => (
             <group key={`${x}${y}`}>
@@ -189,7 +203,7 @@ export function VoronMachine({
         {showLabels && <Label position={[0, 175, 80]}>4-POINT Z · lead screws</Label>}
       </group>
 
-      <group name="Z_BED" position={[0, 0, bedZ]}>
+      <group name="Z_BED" visible={show('BUILD_PLATFORM')} position={[0, 0, bedZ - explode * 26]}>
         <Part size={[305, 305, 6]} position={[0, 0, -13]} color="#53656d" metalness={0.3} roughness={0.6} />
         <Suspense fallback={<Part size={[305, 305, 8]} position={[0, 0, -4]} color="#94a6ab" metalness={0.25} roughness={0.7} />}>
           <BedMesh />

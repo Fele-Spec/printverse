@@ -4,9 +4,12 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 3D collection / desktop-pet surface, and dual virtual/physical filament accounting.
 
 > Phase 2 functional acceptance: **COMPLETE** — upload→Orca slice→G-code animation→detach→collect
-> passes end to end ([PHASE2_REPORT.md](PHASE2_REPORT.md)). CAD fidelity remains **PARTIAL**:
-> 4,526 FreeCAD placements are extracted but not yet serialized into glTF, so frame/toolhead
-> are verified kinematic proxies; the 300 mm bed is a real CAD mesh.
+> passes end to end ([PHASE2_REPORT.md](PHASE2_REPORT.md)).
+>
+> Phase 3: **PARTIAL** — 4,526 FreeCAD placements, eight real module GLBs (1,686 parts), real
+> CAD default view with part picking, module modes, transparency, explode and studio lighting;
+> the G-code animation still uses the separate kinematic proxy, and InstancedMesh fasteners are
+> not implemented. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
@@ -27,6 +30,7 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 | G-code parser | `scripts/parse_gcode.py` + `docs/reports/gcode_parse.json` |
 | Frontend | `frontend/` — React 19 + Three.js + R3F + Drei; real WebGL screenshots in `assets/previews/phase2_scene_*.png` |
 | Phase-2 loop | upload → Orca slice → parser → CoreXY/Z animation → detach → collect; `PHASE2_REPORT.md` |
+| Phase-3 CAD twin | 8 module GLBs, 1,686 parts, part picker, views, transparency, explode; `PHASE3_COMPLETION_REPORT.md` |
 | Skills | `.dsh/skills/` — six PrintVerse skills recognized by the Harness |
 | Indexes | `CAD_ASSET_INDEX.csv`, `LICENSE_AUDIT.csv`, `manifests/`, `SHA256SUMS.txt` |
 

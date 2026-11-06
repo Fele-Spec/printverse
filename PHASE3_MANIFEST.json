@@ -1,0 +1,47 @@
+{
+  "phase": 3,
+  "status": "PARTIAL",
+  "date": "2026-11-06",
+  "scope": "Precision CAD digital twin and high-fidelity 3D interface",
+  "counts": {
+    "document_objects": 4881,
+    "placements": 4526,
+    "part_features": 1686,
+    "assembly_nodes": 355,
+    "construction_objects": 2485,
+    "modules": 8,
+    "full_faces": 1939867,
+    "lod_faces": 497199
+  },
+  "files": {
+    "full_glb_bytes": 35489880,
+    "lod_glb_bytes": 8919408,
+    "placement_audit": "CAD_PLACEMENT_AUDIT.md",
+    "module_manifest": "CAD_MODULE_MANIFEST.json",
+    "assembly_hierarchy": "ASSEMBLY_HIERARCHY.json",
+    "material_library": "MATERIAL_LIBRARY.json",
+    "model_validation": "MODEL_VALIDATION_REPORT.md",
+    "visual_report": "VISUAL_UPGRADE_REPORT.md",
+    "performance_report": "PERFORMANCE_REPORT.md",
+    "height_report": "HEIGHT_CLEARANCE_ANALYSIS.md",
+    "completion_report": "PHASE3_COMPLETION_REPORT.md",
+    "before_after": "BEFORE_AFTER_SCREENSHOTS/"
+  },
+  "validation": {
+    "twenty_sample_matches": 20,
+    "max_dimension_delta_mm": 0.0001,
+    "duplicate_placements": 0,
+    "zero_volume_solids": 1,
+    "load_errors": 0,
+    "hardware_fps": 60.1,
+    "headless_swiftshader_fps": 0.8,
+    "first_load_seconds": 8.0
+  },
+  "open": [
+    "Unify the real CAD node hierarchy with the G-code motion tree",
+    "InstancedMesh for repeated fasteners",
+    "WIRING module has only one shape-bearing part",
+    "Physical Z clearance measurement",
+    "Image-to-3D deferred by 8 GB VRAM"
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "unit": "m",
+  "source_unit": "mm",
+  "scale_factor": 0.001,
+  "modules": {
+    "BUILD_PLATFORM": {
+      "file": "assets/models/voron/modules/BUILD_PLATFORM.glb",
+      "public_file": "frontend/public/models/voron/modules/BUILD_PLATFORM.glb",
+      "render_file": "frontend/public/models/voron/modules/BUILD_PLATFORM.lod.glb",
+      "bytes": 179952,
+      "merged_bytes": 166500,
+      "lod_bytes": 46368,
+      "parts": 16,
+      "faces": 9194,
+      "merged_faces": 9194,
+      "lod_faces": 2516,
+      "bounds_m": [
+        [
+          -1.1974141216342105e-09,
+          -0.008,
+          -0.021336000442504884
+        ],
+        [
+          0.254,
+          0.262,
+          -8.60000029206276e-05
+        ]
+      ]
+    },
+    "ELECTRONICS": {
+      "file": "assets/models/voron/modules/ELECTRONICS.glb",
+      "public_file": "frontend/public/models/voron/modules/ELECTRONICS.glb",
+      "render_file": "frontend/public/models/voron/modules/ELECTRONICS.lod.glb",
+      "bytes": 3436296,
+      "merged_bytes": 3425332,
+      "lod_bytes": 717144,
+      "parts": 130,
+      "faces": 191532,
+      "merged_faces": 191532,
+      "lod_faces": 40236,
+      "bounds_m": [
+        [
+          -0.05790233612060547,
+          0.051153114318847656,
+          -0.09459600067138672
+        ],
+        [
+          0.317,
+          0.35700006103515625,
+          -0.03309600067138672
+        ]
+      ]
+    },
+    "ENCLOSURE": {
+      "file": "assets/models/voron/modules/ENCLOSURE.glb",
+      "public_file": "frontend/public/models/voron/modules/ENCLOSURE.glb",
+      "render_file": "frontend/public/models/voron/modules/ENCLOSURE.lod.glb",
+      "bytes": 7988592,
+      "merged_bytes": 7738208,
+      "lod_bytes": 1455480,
+      "parts": 392,
+      "faces": 430094,
+      "merged_faces": 430094,
+      "lod_faces": 81057,
+      "bounds_m": [
+        [
+          -0.088,
+          -0.049,
+          -0.12909611511230468
+        ],
+        [
+          0.342,
+          0.3789996032714844,
+          0.37890399169921873
+        ]
+      ]
+    },
+    "FRAME": {
+      "file": "assets/models/voron/modules/FRAME.glb",
+      "public_file": "frontend/public/models/voron/modules/FRAME.glb",
+      "render_file": "frontend/public/models/voron/modules/FRAME.lod.glb",
+      "bytes": 2361248,
+      "merged_bytes": 2241928,
+      "lod_bytes": 726816,
+      "parts": 182,
+      "faces": 124338,
+      "merged_faces": 124338,
+      "lod_faces": 40265,
+      "bounds_m": [
+        [
+          -0.078,
+          -0.038,
+          -0.05809600067138672
+        ],
+        [
+          0.332,
+          0.464,
+          0.37890399169921873
+        ]
+      ]
+    },
+    "TOOLHEAD": {
+      "file": "assets/models/voron/modules/TOOLHEAD.glb",
+      "public_file": "frontend/public/models/voron/modules/TOOLHEAD.glb",
+      "render_file": "frontend/public/models/voron/modules/TOOLHEAD.lod.glb",
+      "bytes": 5616724,
+      "merged_bytes": 5450020,
+      "lod_bytes": 1088640,
+      "parts": 180,
+      "faces": 302583,
+      "merged_faces": 302583,
+      "lod_faces": 60455,
+      "bounds_m": [
+        [
+          0.09670991516113281,
+          0.09149999237060547,
+          0.02764808654785156
+        ],
+        [
+          0.16850135803222657,
+          0.19239999389648438,
+          0.15664585876464845
+        ]
+      ]
+    },
+    "WIRING": {
+      "file": "assets/models/voron/modules/WIRING.glb",
+      "public_file": "frontend/public/models/voron/modules/WIRING.glb",
+      "render_file": "frontend/public/models/voron/modules/WIRING.lod.glb",
+      "bytes": 175952,
+      "merged_bytes": 175760,
+      "lod_bytes": 32236,
+      "parts": 1,
+      "faces": 9714,
+      "merged_faces": 9714,
+      "lod_faces": 1748,
+      "bounds_m": [
+        [
+          0.06548133087158203,
+          0.12889700317382813,
+          0.14071472167968752
+        ],
+        [
+          0.22482015991210938,
+          0.4850680541992188,
+          0.37381768798828124
+        ]
+      ]
+    },
+    "XY_GANTRY": {
+      "file": "assets/models/voron/modules/XY_GANTRY.glb",
+      "public_file": "frontend/public/models/voron/modules/XY_GANTRY.glb",
+      "render_file": "frontend/public/models/voron/modules/XY_GANTRY.lod.glb",
+      "bytes": 8053184,
+      "merged_bytes": 7876260,
+      "lod_bytes": 2188796,
+      "parts": 470,
+      "faces": 438166,
+      "merged_faces": 438166,
+      "lod_faces": 122042,
+      "bounds_m": [
+        [
+          -0.07829996490478516,
+          -0.03610017395019531,
+          -0.03549599838256836
+        ],
+        [
+          0.3323000183105469,
+          0.37040985107421875,
+          0.26450399780273437
+        ]
+      ]
+    },
+    "Z_DRIVE": {
+      "file": "assets/models/voron/modules/Z_DRIVE.glb",
+      "public_file": "frontend/public/models/voron/modules/Z_DRIVE.glb",
+      "render_file": "frontend/public/models/voron/modules/Z_DRIVE.lod.glb",
+      "bytes": 7677932,
+      "merged_bytes": 7801196,
+      "lod_bytes": 2663928,
+      "parts": 315,
+      "faces": 434246,
+      "merged_faces": 434246,
+      "lod_faces": 148880,
+      "bounds_m": [
+        [
+          -0.07863540649414062,
+          -0.03799991607666016,
+          -0.14309602355957032
+        ],
+        [
+          0.33263543701171877,
+          0.3720000915527344,
+          0.3719039916992188
+        ]
+      ]
+    }
+  }
+}

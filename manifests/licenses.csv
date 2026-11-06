@@ -141,6 +141,7 @@ Python: wcwidth,0.9.4,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recor
 Python: webcolors,24.8.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: websockets,17.4,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: wrapt,2.5.2,BSD-2-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: fast-simplification,0.2.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: aiohappyeyeballs,2.7.1,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: aiohttp,3.14.5,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: aiosignal,1.4.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.

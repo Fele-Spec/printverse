@@ -1,0 +1,344 @@
+{
+  "samples": [
+    {
+      "placement_id": "F3136",
+      "part_name": "M5x16 BHCS (1)",
+      "module": "FRAME",
+      "dimensions_mm": [
+        9.567,
+        19.3101,
+        9.5068
+      ],
+      "freecad_bbox_dims_mm": [
+        9.567,
+        9.5068,
+        19.3101
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F3138",
+      "part_name": "2020 Drop-in T-nut, M5 (19)",
+      "module": "FRAME",
+      "dimensions_mm": [
+        4.3,
+        13.0,
+        7.7
+      ],
+      "freecad_bbox_dims_mm": [
+        4.3,
+        7.7,
+        13.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F3687",
+      "part_name": "Panel",
+      "module": "FRAME",
+      "dimensions_mm": [
+        369.1999,
+        369.2,
+        3.0
+      ],
+      "freecad_bbox_dims_mm": [
+        369.1999,
+        369.2,
+        3.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0001",
+      "part_name": "B Drive Frame Upper",
+      "module": "XY_GANTRY",
+      "dimensions_mm": [
+        116.0,
+        57.0274,
+        16.0
+      ],
+      "freecad_bbox_dims_mm": [
+        116.0,
+        57.0274,
+        16.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0004",
+      "part_name": "GT2 20T 6mm",
+      "module": "XY_GANTRY",
+      "dimensions_mm": [
+        16.0,
+        16.0,
+        16.0
+      ],
+      "freecad_bbox_dims_mm": [
+        16.0,
+        16.0,
+        16.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0684",
+      "part_name": "GT2 20T Idler (1)",
+      "module": "XY_GANTRY",
+      "dimensions_mm": [
+        18.0,
+        18.0,
+        8.6
+      ],
+      "freecad_bbox_dims_mm": [
+        18.0,
+        18.0,
+        8.6
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F1697",
+      "part_name": "Z Motor Mount",
+      "module": "Z_DRIVE",
+      "dimensions_mm": [
+        42.5563,
+        30.9472,
+        51.2472
+      ],
+      "freecad_bbox_dims_mm": [
+        51.2472,
+        42.5563,
+        30.9472
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F1408",
+      "part_name": "GT2 20T Idler 9mm (3)",
+      "module": "Z_DRIVE",
+      "dimensions_mm": [
+        18.0,
+        13.0,
+        18.0
+      ],
+      "freecad_bbox_dims_mm": [
+        13.0,
+        18.0,
+        18.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F1687",
+      "part_name": "NEMA17 Stepper",
+      "module": "Z_DRIVE",
+      "dimensions_mm": [
+        42.8381,
+        49.0,
+        42.6601
+      ],
+      "freecad_bbox_dims_mm": [
+        42.6602,
+        42.8381,
+        49.0
+      ],
+      "max_abs_diff_mm": 0.0001,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0182",
+      "part_name": "x_carriage_frame_left",
+      "module": "TOOLHEAD",
+      "dimensions_mm": [
+        21.8416,
+        32.4,
+        68.7521
+      ],
+      "freecad_bbox_dims_mm": [
+        32.4,
+        21.8416,
+        68.7522
+      ],
+      "max_abs_diff_mm": 0.0001,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0183",
+      "part_name": "x_carriage_frame_right",
+      "module": "TOOLHEAD",
+      "dimensions_mm": [
+        22.4729,
+        32.5657,
+        68.9993
+      ],
+      "freecad_bbox_dims_mm": [
+        32.5657,
+        22.4729,
+        68.9993
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0409",
+      "part_name": "Hotend Fan Mount",
+      "module": "TOOLHEAD",
+      "dimensions_mm": [
+        60.5802,
+        15.265,
+        66.3925
+      ],
+      "freecad_bbox_dims_mm": [
+        15.265,
+        60.5803,
+        66.3925
+      ],
+      "max_abs_diff_mm": 0.0001,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0411",
+      "part_name": "4020 Blower Fan",
+      "module": "TOOLHEAD",
+      "dimensions_mm": [
+        41.8,
+        10.8,
+        41.2193
+      ],
+      "freecad_bbox_dims_mm": [
+        10.8,
+        41.8,
+        41.2193
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0539",
+      "part_name": "Dragon Body Rear",
+      "module": "TOOLHEAD",
+      "dimensions_mm": [
+        47.7331,
+        14.98,
+        53.6278
+      ],
+      "freecad_bbox_dims_mm": [
+        47.7332,
+        14.98,
+        53.6278
+      ],
+      "max_abs_diff_mm": 0.0001,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F3563",
+      "part_name": "Bed heater",
+      "module": "BUILD_PLATFORM",
+      "dimensions_mm": [
+        200.0,
+        235.0,
+        3.5
+      ],
+      "freecad_bbox_dims_mm": [
+        235.0,
+        200.0,
+        3.5
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F3560",
+      "part_name": "10in MIC6 Plate",
+      "module": "BUILD_PLATFORM",
+      "dimensions_mm": [
+        254.0,
+        254.0,
+        7.76
+      ],
+      "freecad_bbox_dims_mm": [
+        254.0,
+        254.0,
+        7.76
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F3689",
+      "part_name": "bottom_panel_hinge_x2 (1)",
+      "module": "ENCLOSURE",
+      "dimensions_mm": [
+        23.2,
+        14.4064,
+        7.1263
+      ],
+      "freecad_bbox_dims_mm": [
+        23.2,
+        14.4064,
+        7.1262
+      ],
+      "max_abs_diff_mm": 0.0001,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F2554",
+      "part_name": "RS-25 PSU Bracket (1)",
+      "module": "ELECTRONICS",
+      "dimensions_mm": [
+        10.0,
+        67.0,
+        19.6
+      ],
+      "freecad_bbox_dims_mm": [
+        10.0,
+        19.6,
+        67.0
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F2251",
+      "part_name": "DIN Clips",
+      "module": "ELECTRONICS",
+      "dimensions_mm": [
+        8.0,
+        62.0,
+        16.6
+      ],
+      "freecad_bbox_dims_mm": [
+        8.0,
+        62.0,
+        16.6
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    },
+    {
+      "placement_id": "F0082",
+      "part_name": "Cable Cover",
+      "module": "WIRING",
+      "dimensions_mm": [
+        82.5673,
+        45.1481,
+        35.2929
+      ],
+      "freecad_bbox_dims_mm": [
+        45.1481,
+        82.5673,
+        35.2929
+      ],
+      "max_abs_diff_mm": 0.0,
+      "verification": "MATCH"
+    }
+  ]
+}
