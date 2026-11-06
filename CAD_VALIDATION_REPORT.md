@@ -102,8 +102,30 @@ The STEP text structure (`docs/reports/step_structure.json`) gives:
 The imported bounding box is **not** 460 × 460 × 480 mm. It is evidence that the assembly
 contains geometry/transform outliers or parts that extend beyond the frame; it is **not** used
 as the frame envelope. The authoritative frame envelope remains the configurator/BOM-derived
-460 × 460 × 480 mm. Exact assembly transforms and per-product world positions remain
-**PARTIAL** until a name-preserving XCAF hierarchy import is completed.
+460 × 460 × 480 mm.
+
+### Name-preserving XCAF hierarchy — names COMPLETE, transforms PARTIAL
+
+A separate XCAF traversal (`scripts/step_xcaf_tree.py`, OCP 7.9) recovered the real product
+tree: **1,690 nodes**, depth 7, root `_VORON2.4_Assembly v89`. The nine top-level groups are:
+
+| Group | Direct children |
+|---|---:|
+| Gantry | 12 |
+| Z Assembly | 9 |
+| Electronics | 14 |
+| Skirt | 3 |
+| Frame | 5 |
+| Bed Components | 1 |
+| Panels | 8 |
+| Spool Holder | 5 |
+| Exhaust Filter Assembly | 8 |
+
+The XCAF root bbox is 432 × 536.452 × 524 mm (same anomaly family as the build123d import).
+The local matrices are identity fallback: `XCAFDoc_Location.GetID_s`/`FindAttribute` crashed in
+this OCP 7.9 binding, so exact component world transforms are still **PARTIAL**. The names and
+parent/child relationships are real and are stored in `docs/reports/step_xcaf_tree.json` and
+`manifests/machine-hierarchy.json`.
 
 ## 5. Assembly relationship model
 
@@ -125,8 +147,9 @@ as the frame envelope. The authoritative frame envelope remains the configurator
    whole-machine STEP and one F3D.
 2. The F3D file requires Autodesk Fusion 360; it was integrity-checked as a ZIP container but
    not opened.
-3. Exact STEP assembly transforms/world positions are not yet name-preserving; the Web scene
-   uses a nominal kinematic hierarchy.
+3. XCAF product names/hierarchy are recovered, but component world transforms are identity
+   fallback because the OCP 7.9 location-attribute binding crashes; the Web scene uses a
+   nominal kinematic hierarchy.
 4. BOM line items are purchasing descriptions, not CAD instance IDs.
 5. All dimensions are nominal CAD values; none were measured on a physical Voron.
 
@@ -136,4 +159,5 @@ as the frame envelope. The authoritative frame envelope remains the configurator
 - STL collection structurally validated: **COMPLETE**
 - STEP part import in FreeCAD: **COMPLETE**
 - Full assembly geometry import: **COMPLETE** (1,677 solids, 76 s)
-- Exact assembly transform / dimensional audit: **PARTIAL** (STEP bbox anomaly; nominal scene hierarchy)
+- Name-preserving product hierarchy: **COMPLETE** (1,690 XCAF nodes, 9 top groups)
+- Exact assembly transforms / dimensional audit: **PARTIAL** (XCAF location-attribute binding crash; nominal scene hierarchy)

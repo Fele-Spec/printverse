@@ -28,9 +28,11 @@ VORON_V2_4R2_300 (world, millimetres, Z-up)
 └── ELECTRONICS_BAY (static)
 ```
 
-The node names are mirrored in `manifests/machine-hierarchy.json`, derived from 1,534 STEP
-product names. The Web scene is a **kinematic proxy**: dimensions are verified, but exact
-STEP world transforms are not yet applied (see the bbox anomaly in `CAD_VALIDATION_REPORT.md`).
+The node names are mirrored in `manifests/machine-hierarchy.json`. XCAF recovered 1,690 real
+product nodes and 9 top-level groups; exact world transforms are still an identity fallback
+because the OCP 7.9 location-attribute binding crashes. The Web scene is therefore a
+**kinematic proxy** with verified dimensions, not exact STEP placement (see
+`CAD_VALIDATION_REPORT.md`).
 
 ## 2. Coordinate systems
 

@@ -8,7 +8,7 @@ Date: 2026-11-06 · Root: `C:\Users\someb\Desktop\printverse`
 |---|---|---|
 | 275 vs 280 mm mechanical conflict | **COMPLETE** | `MECHANICAL_PARAMETERS.md`; Klipper 300 config `position_max: 280`; Orca `printable_height: 275` |
 | Full STEP geometry import | **COMPLETE** | build123d/OCP imported 267 MB / 1,677 solids in 76.17 s |
-| Exact STEP assembly transforms | **PARTIAL** | Imported bbox 430 × 534 × 522 mm is inconsistent with nominal frame; Web scene uses verified nominal kinematic hierarchy |
+| Exact STEP assembly transforms | **PARTIAL** | XCAF names/hierarchy recovered (1,690 nodes, 9 top groups); location-attribute binding crashes, so matrices remain identity; imported bbox 430 × 534 × 522 mm is inconsistent with nominal frame |
 | Mechanical scene hierarchy + articulation | **COMPLETE (proxy)** | frame / CoreXY gantry / toolhead / four-point Z / bed / printed-object nodes; `docs/architecture/MECHANICAL_SCENE.md` |
 | STL → Orca → G-code → parser → animation | **COMPLETE** | real upload slice; 100 layers; 7,853 toolpath moves; WebGL E2E |
 | Detach / translate / rotate / scale / collect | **COMPLETE** | `TransformControls`; E2E status `DETACHED`; collection item created |
@@ -41,11 +41,14 @@ remains **PHYSICAL_PENDING**.
 - **Anomaly:** imported bbox is 430 × 534.154 × 522 mm, not the 460 × 460 × 480 mm frame.
   It is retained as an explicit anomaly and not silently normalized. Likely causes: assembly
   transform/outlier parts; name-preserving XCAF traversal is the next audit.
-- **Product hierarchy:** 1,534 STEP products categorized in
-  `manifests/machine-hierarchy.json`: FRAME 234, CORE_XY_GANTRY 119, Z_AXIS 18, TOOLHEAD 46,
-  ELECTRONICS_BAY 33, MOTION_HARDWARE 228, OTHER 856.
-- **Web scene:** uses this hierarchy and nominal BOM dimensions; no claim of exact STEP
-  placement. See `docs/architecture/MECHANICAL_SCENE.md`.
+- **Product hierarchy:** text-level categories cover 1,534 products; the XCAF traversal
+  recovered **1,690 real nodes** with 9 top groups (`Gantry`, `Z Assembly`, `Electronics`,
+  `Skirt`, `Frame`, `Bed Components`, `Panels`, `Spool Holder`, `Exhaust Filter Assembly`).
+  Evidence: `docs/reports/step_xcaf_tree.json`, `manifests/machine-hierarchy.json`.
+- **Transforms:** the XCAF location attribute binding crashes in this OCP 7.9 build; matrices
+  are identity fallback. Exact world placement therefore remains **PARTIAL**.
+- **Web scene:** uses the recovered hierarchy and nominal BOM dimensions; no claim of exact
+  STEP placement. See `docs/architecture/MECHANICAL_SCENE.md`.
 
 ## 4. Real G-code loop
 
@@ -138,8 +141,9 @@ Runtime artifacts are served at `/runtime/jobs/...`; source and generated files 
 
 ## 9. Known limitations
 
-1. Exact STEP assembly transforms are not name-preserving; the scene uses nominal kinematic
-   placement. This is the main remaining gap to a “full CAD” claim.
+1. XCAF names/hierarchy are now recovered, but exact STEP world transforms are still missing
+   (location-attribute binding crash); the scene uses nominal kinematic placement. This is the
+   main remaining gap to a “full CAD” claim.
 2. Toolhead and frame are simplified procedural geometry, not the full 1,677-solid mesh;
    selected actual STL/STEP data is used for validation, not for every Web mesh.
 3. Full imported STEP bbox anomaly (430×534×522) needs investigation.
@@ -150,8 +154,9 @@ Runtime artifacts are served at `/runtime/jobs/...`; source and generated files 
 
 ## 10. Next smallest steps
 
-1. Name-preserving XCAF traversal: map STEP product names to world transforms, then compare
-   frame bbox and generate a glTF hierarchy.
+1. XCAF transform extraction without the crashing `XCAFDoc_Location` binding: walk component
+   labels through a stable attribute iterator or use FreeCAD/OCCT C++ helper, then generate a
+   real glTF hierarchy and compare its frame bbox.
 2. Replace the procedural toolhead/frame with selected real meshes at the verified joints.
 3. Add 40–60% mid-print screenshot and a layer scrub control.
 4. Deploy the backend with a proper PostgreSQL migration and auth.

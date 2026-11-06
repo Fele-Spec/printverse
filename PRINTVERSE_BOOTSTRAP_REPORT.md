@@ -13,7 +13,7 @@ separately rather than disguised as a completed test.
 | B | 300 mm BOM generated or blocked reason | **COMPLETE** | 120 line items replayed from official configurator JS; `BOM_300MM.csv/.html/.pdf` |
 | C | Required software installed or verified fallback | **COMPLETE** | FreeCAD, Blender + Print3D, OrcaSlicer, Python 3.12 + `build123d` 0.13.0/OCP 8.0.1.1.0, Node installed and exercised; `cadquery` 2.8 requires OCP <8.0 and is incompatible with build123d's OCP 8.0, so it is evaluated and deferred to a separate venv |
 | D | Project Skills loaded | **COMPLETE** | six skills in catalog and loadable; `SKILL_AUDIT.md` |
-| E | FreeCAD imports test CAD | **COMPLETE** | STL 60×34×2 mm and STEP bed 305×305×7.76 mm imported; phase 2 also loaded the full 267 MB STEP (1,677 solids) with build123d/OCP; exact transform audit PARTIAL |
+| E | FreeCAD imports test CAD | **COMPLETE** | STL 60×34×2 mm and STEP bed 305×305×7.76 mm imported; phase 2 also loaded the full 267 MB STEP (1,677 solids) and recovered 1,690 XCAF hierarchy nodes; exact world transforms still PARTIAL |
 | F | OrcaSlicer completes a test slice | **COMPLETE** | 20 mm cube, 100 layers, exit 0, G-code + 3MF |
 | G | G-code parsed successfully | **COMPLETE** | 100 layers, 3.978 g vs 3.98 g slicer, bounds consistent |
 | H | Three.js test scene actually runs | **COMPLETE** | real headless Edge WebGL 2.0 render, 1440×898 canvas, 802 triangles, three screenshots, background toggle, 0 console errors/404 |

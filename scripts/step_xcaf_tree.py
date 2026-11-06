@@ -1,0 +1,140 @@
+"""Name-preserving XCAF traversal of the Voron STEP assembly.
+
+Uses OCP 7.9 in .venv-cadquery because its TDF_LabelSequence binding is available.
+Records product names, parent/child relationships and local 4x4 transforms.
+"""
+from __future__ import annotations
+
+import json
+import time
+from pathlib import Path
+
+from OCP.BRepBndLib import BRepBndLib
+from OCP.Bnd import Bnd_Box
+from OCP.STEPCAFControl import STEPCAFControl_Reader
+from OCP.TCollection import TCollection_ExtendedString
+from OCP.TDataStd import TDataStd_Name
+from OCP.TDF import TDF_Label, TDF_LabelSequence
+from OCP.TDocStd import TDocStd_Document
+from OCP.TopLoc import TopLoc_Location
+from OCP.XCAFDoc import XCAFDoc_DocumentTool, XCAFDoc_Location, XCAFDoc_ShapeTool
+
+ROOT = Path(__file__).resolve().parents[1]
+STEP = ROOT / "assets/source/voron-v2.4r2-300/CAD/VORON2.4_Assembly.step"
+OUT = ROOT / "docs/reports/step_xcaf_tree.json"
+
+
+def name_of(label) -> str:
+    try:
+        attr = TDataStd_Name()
+        if label.FindAttribute(TDataStd_Name.GetID_s(), attr):
+            return attr.Get().ToExtString()
+    except Exception:
+        pass
+    return ""
+
+
+def local_transform(label) -> list[list[float]]:
+    # XCAFDoc_Location.GetID_s() crashes on this OCCT/OCP build when queried on the
+    # full assembly, so use the shape's own TopLoc_Location when available. A missing
+    # component placement is recorded as identity, not guessed.
+    try:
+        shape = XCAFDoc_ShapeTool.GetShape_s(label)
+        loc = shape.Location()
+        if not loc.IsIdentity():
+            trsf = loc.Transformation()
+            return [[round(trsf.Value(r, c), 6) for c in range(1, 5)] for r in range(1, 5)]
+    except Exception:
+        pass
+    return [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]]
+
+
+def main() -> int:
+    t0 = time.time()
+    doc = TDocStd_Document(TCollection_ExtendedString("XCAF"))
+    reader = STEPCAFControl_Reader()
+    reader.SetNameMode(True)
+    reader.SetColorMode(True)
+    print("XCAF_READ_START", flush=True)
+    status = reader.ReadFile(str(STEP))
+    print("XCAF_READ_DONE", status, flush=True)
+    if status != 1:
+        raise SystemExit(f"XCAF ReadFile status {status}")
+    print("XCAF_TRANSFER_START", flush=True)
+    reader.Transfer(doc)
+    print("XCAF_TRANSFER_DONE", flush=True)
+    tool = XCAFDoc_DocumentTool.ShapeTool_s(doc.Main())
+    roots = TDF_LabelSequence()
+    tool.GetFreeShapes(roots)
+    print("XCAF_ROOTS", roots.Length(), flush=True)
+    nodes = []
+    max_depth = 8
+    max_nodes = 1800
+
+    def walk(label, parent: int | None, depth: int, index: int):
+        if depth > max_depth or len(nodes) >= max_nodes:
+            return
+        name = name_of(label)
+        target = label
+        if XCAFDoc_ShapeTool.IsComponent_s(label):
+            ref = TDF_Label()
+            if XCAFDoc_ShapeTool.GetReferredShape_s(label, ref):
+                target = ref
+        n_children = int(XCAFDoc_ShapeTool.NbComponents_s(target, False))
+        node = {
+            "id": index,
+            "parent": parent,
+            "depth": depth,
+            "name": name or f"<unnamed:{index}>",
+            "children": n_children,
+            "transform": local_transform(label),
+        }
+        nodes.append(node)
+        if len(nodes) % 100 == 0:
+            print("nodes", len(nodes), "depth", depth, "name", node["name"][:60], flush=True)
+        if n_children:
+            seq = TDF_LabelSequence()
+            XCAFDoc_ShapeTool.GetComponents_s(target, seq, False)
+            for i in range(1, seq.Length() + 1):
+                walk(seq.Value(i), index, depth + 1, len(nodes))
+
+    for i in range(1, roots.Length() + 1):
+        walk(roots.Value(i), None, 0, len(nodes))
+
+    # Bounding box of all free shapes (top-level only, for a quick sanity check).
+    box = Bnd_Box()
+    for i in range(1, roots.Length() + 1):
+        try:
+            shape = XCAFDoc_ShapeTool.GetShape_s(roots.Value(i))
+            BRepBndLib.Add_s(shape, box)
+        except Exception:
+            pass
+    try:
+        b = box.Get()
+        bbox = {"min": [round(b[0], 3), round(b[1], 3), round(b[2], 3)],
+                "max": [round(b[3], 3), round(b[4], 3), round(b[5], 3)],
+                "size": [round(b[3] - b[0], 3), round(b[4] - b[1], 3), round(b[5] - b[2], 3)]}
+    except Exception as exc:
+        bbox = {"error": repr(exc)}
+
+    report = {
+        "ok": True,
+        "file": str(STEP.relative_to(ROOT)).replace("\\", "/"),
+        "bytes": STEP.stat().st_size,
+        "read_status": str(status),
+        "elapsed_s": round(time.time() - t0, 2),
+        "root_count": roots.Length(),
+        "node_count": len(nodes),
+        "max_depth": max((n["depth"] for n in nodes), default=0),
+        "bbox": bbox,
+        "transform_status": "Local matrices are identity fallback: XCAFDoc_Location.GetID_s/FindAttribute crashed in this OCP 7.9 binding. Names/hierarchy are real; world transforms remain PARTIAL.",
+        "nodes": nodes,
+    }
+    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({k: report[k] for k in ("ok", "root_count", "node_count", "bbox", "elapsed_s")}, indent=2))
+    print("wrote", OUT)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

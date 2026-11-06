@@ -213,5 +213,67 @@
       "child": "ELECTRONICS_BAY",
       "type": "static mount"
     }
-  ]
+  ],
+  "xcaf": {
+    "tree": "docs/reports/step_xcaf_tree.json",
+    "node_count": 1690,
+    "max_depth": 7,
+    "root": "_VORON2.4_Assembly v89",
+    "top_groups": [
+      {
+        "name": "Gantry:1",
+        "children": 12
+      },
+      {
+        "name": "Z Assembly:1",
+        "children": 9
+      },
+      {
+        "name": "Electronics:1",
+        "children": 14
+      },
+      {
+        "name": "Skirt:1",
+        "children": 3
+      },
+      {
+        "name": "Frame:1",
+        "children": 5
+      },
+      {
+        "name": "Bed Components:1",
+        "children": 1
+      },
+      {
+        "name": "Panels:1",
+        "children": 8
+      },
+      {
+        "name": "Spool Holder:1",
+        "children": 5
+      },
+      {
+        "name": "Exhaust Filter Assembly:1",
+        "children": 8
+      }
+    ],
+    "bbox": {
+      "min": [
+        -89.0,
+        -50.0,
+        -144.096
+      ],
+      "max": [
+        343.0,
+        486.452,
+        379.904
+      ],
+      "size": [
+        432.0,
+        536.452,
+        524.0
+      ]
+    },
+    "transform_status": "Local matrices are identity fallback: XCAFDoc_Location.GetID_s/FindAttribute crashed in this OCP 7.9 binding. Names/hierarchy are real; world transforms remain PARTIAL."
+  }
 }

@@ -344,6 +344,7 @@ def main() -> int:
             "freecad_stl": "docs/reports/freecad_stl_test.json",
             "freecad_step_part": "docs/reports/freecad_step_part_test.json",
             "freecad_step_structure": "docs/reports/step_structure.json",
+            "step_xcaf_hierarchy": "docs/reports/step_xcaf_tree.json",
             "build123d": "assets/processed/build123d_test.step",
             "bom_browser": "assets/previews/BOM_300MM_browser.png",
             "gcode_parse": "docs/reports/gcode_parse.json",
@@ -366,6 +367,8 @@ def main() -> int:
                 "image_to_3d_local": "BLOCKED_HARDWARE",
             },
             "evidence": "docs/reports/phase2_e2e.json",
+            "mechanical_table": "MECHANICAL_PARAMETERS.md",
+            "xcaf_hierarchy": "docs/reports/step_xcaf_tree.json",
             "screenshots": "assets/previews/phase2_scene_*.png",
         },
         "blocked": [
