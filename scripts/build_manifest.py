@@ -421,6 +421,7 @@ def main() -> int:
             "deployment": "DEPLOYMENT.md",
             "status": "PARTIAL",
             "colour_glb": "PASS",
+            "multiview": "PASS_LOCAL_VISUAL_HULL",
             "mesh_api": "PASS (inspect/repair/export)",
             "chinese_ui": "PASS (main flow)",
             "pet_browser": "PASS",

@@ -15,18 +15,17 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 > TripoSR CPU, explicit cost authorization, frontend studio and 10-image benchmark are runnable.
 > Kimi account and TokenHub are external gates.
 >
-> Phase 5 full-product correction: **PARTIAL** — colour GLB primary, 3MF/OBJ/GLB import,
-> Chinese UI, browser desktop pet and colour finished object are implemented; Tauri build,
-> PostgreSQL adapter is locally verified; Docker and Tauri builds remain blocked/unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md). TripoSR now runs on the CPU fallback (7/10 quick printability passes);
-> TokenHub keys are absent; Kimi account is suspended (HTTP 429). See
-> [IMAGE_TO_3D_PROVIDERS.md](IMAGE_TO_3D_PROVIDERS.md), [MODEL_BENCHMARK_REPORT.md](MODEL_BENCHMARK_REPORT.md)
-> and [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md).
+> Phase 5 full-product correction: **PARTIAL** — colour GLB primary, local three-view
+> visual hull, STEP/3MF/OBJ/GLB import, Chinese UI, browser desktop pet and colour finished
+> object are implemented; PostgreSQL adapter is locally verified. Docker Compose and Tauri
+> MSI builds remain blocked; engineering-drawing-to-CAD and exact wall/support analysis remain
+> unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md).
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
 > six project Skills, a real Orca slice, a parsed G-code file, and real headless-Edge WebGL
-> screenshots are ready. The only remaining item is optional local image-to-3D, which is
-> The local TripoSR CPU path now works; Hunyuan3D/TRELLIS remain blocked by the 8 GB GPU.
+> screenshots are ready. The optional local image-to-3D path is implemented (TripoSR CPU /
+> visual hull / Mock); Hunyuan3D/TRELLIS remain blocked by the 8 GB GPU.
 > Kimi is additionally blocked by account balance (HTTP 429), documented rather than hidden.
 
 ## What is already available
@@ -61,7 +60,7 @@ npm run dev --prefix frontend
 
 桌面宠物：`http://127.0.0.1:4173/?pet=1`（浏览器透明视图）；Tauri 壳在 `desktop/`。
 
-图片 → 彩色 3D：右上角 **图片 → 3D**；生成后点击 **用于虚拟打印**，完成打印后 **放到桌面**。
+图片 → 彩色 3D：右上角 **图片 → 3D**；多视角请选 **正面/侧面/顶面 3 张**；生成后点击 **用于虚拟打印**，完成打印后 **放到桌面**。
 
 The built UI is `frontend/dist/`; do not double-click `index.html` — serve it with
 `npm run preview --prefix frontend` or `npm run dev --prefix frontend`.

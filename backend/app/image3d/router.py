@@ -106,6 +106,53 @@ async def create_job(
     return _public_job(store.get_job(job_id))
 
 
+@router.post("/multiview")
+async def create_multiview_job(
+    request: Request,
+    background: BackgroundTasks,
+    files: list[UploadFile] = File(...),
+    prompt: str = Form(""),
+) -> dict:
+    if len(files) != 3:
+        raise HTTPException(422, "需要正面、侧面、顶面三张图片")
+    user_id = resolve_user(request)
+    provider = "multiview_local"
+    job = store.create_job(user_id=user_id, provider=provider, model=registry.get_provider(provider).model,
+                           input_path="", prompt=prompt, authorized=False)
+    job_id = job["id"]
+    job_dir = RUNTIME / job_id
+    job_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[str] = []
+    for index, upload in enumerate(files):
+        data = await upload.read()
+        if len(data) > 20 * 1024 * 1024:
+            raise HTTPException(413, "单张图片超过 20 MB")
+        suffix = Path(upload.filename or f"view{index}.png").suffix.lower() or ".png"
+        path = job_dir / f"view{index}{suffix}"
+        path.write_bytes(data)
+        paths.append(str(path.relative_to(ROOT)).replace("\\", "/"))
+        if index == 0:
+            with closing(db.connect()) as conn, conn:
+                conn.execute("UPDATE image3d_jobs SET input_path=? WHERE id=?", (paths[0], job_id))
+    store.update_job(job_id, status="queued",
+                     metadata={"views": ["front", "side", "top"], "image_paths": paths})
+    background.add_task(_execute_multiview, job_id, paths, prompt)
+    return _public_job(store.get_job(job_id))
+
+
+def _execute_multiview(job_id: str, image_paths: list[str], prompt: str) -> None:
+    store.update_job(job_id, status="running", task_status="running")
+    req = GenerationRequest(job_id=job_id, image_path=image_paths[0], prompt=prompt,
+                            options={"image_paths": image_paths})
+    try:
+        result = registry.run("multiview_local", req)
+        store.update_job(job_id, status="completed", **result.to_dict())
+    except ProviderError as exc:
+        store.update_job(job_id, status=exc.status, error=str(exc), task_status=exc.status)
+    except Exception as exc:  # noqa: BLE001
+        store.update_job(job_id, status="failed", error=str(exc)[-4000:], task_status="failed")
+
+
 def _execute(job_id: str, image_path: str, prompt: str, authorized: bool, budget_cny: float, provider_id: str) -> None:
     store.update_job(job_id, status="running", task_status="running")
     req = GenerationRequest(job_id=job_id, image_path=image_path, prompt=prompt,

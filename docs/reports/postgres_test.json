@@ -25,5 +25,14 @@
     "container healthcheck with postgres:17-alpine",
     "production backup/restore"
   ],
-  "note": "Local portable PostgreSQL is a verification fixture; the repository uses PRINTVERSE_DATABASE_URL and SQLite remains the zero-config default."
+  "note": "Local portable PostgreSQL is a verification fixture; the repository uses PRINTVERSE_DATABASE_URL and SQLite remains the zero-config default.",
+  "automated_tests": {
+    "command": "pytest backend/tests/test_postgres.py -q",
+    "result": "3 passed",
+    "cases": [
+      "roundtrip/first-free",
+      "second-charge/cancel-refund",
+      "admin-unlimited"
+    ]
+  }
 }

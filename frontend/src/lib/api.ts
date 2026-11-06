@@ -82,6 +82,13 @@ export async function createImage3DJob(file: File, provider: string, prompt: str
   return request('/api/image3d/jobs', { method: 'POST', body: form });
 }
 
+export async function createImage3DMultiJob(files: File[], prompt: string): Promise<Image3DJob> {
+  const form = new FormData();
+  for (const f of files) form.append('files', f, f.name);
+  form.append('prompt', prompt);
+  return request('/api/image3d/multiview', { method: 'POST', body: form });
+}
+
 export async function getImage3DJob(id: string): Promise<Image3DJob> {
   return request(`/api/image3d/jobs/${id}`);
 }

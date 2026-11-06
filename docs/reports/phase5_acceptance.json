@@ -13,7 +13,7 @@
     }
   },
   "acceptance": {
-    "1_colour_glb": "PASS",
+    "1_colour_glb": "PASS (Mock/TripoSR/3-view)",
     "2_sliceable_stl_3mf": "PASS (STL/3MF/STEP)",
     "3_voron_machine": "PASS",
     "4_real_gcode_motion": "PASS",
@@ -34,10 +34,11 @@
     "docs/reports/image3d_benchmark.json",
     "docs/reports/triposr_test.json",
     "docs/reports/phase5_step_test.json",
-    "docs/reports/postgres_test.json"
+    "docs/reports/postgres_test.json",
+    "BEFORE_AFTER_SCREENSHOTS/phase5_multiview.png"
   ],
   "tests": {
-    "pytest": "15 passed",
+    "pytest": "16 passed, 3 skipped (Postgres integration skipped by default)",
     "browser_page_errors": 0,
     "browser_console_errors": 0
   },
@@ -55,5 +56,6 @@
     "export_glb_stl_3mf_obj": "PASS",
     "wall_thickness": "APPROX",
     "support": "APPROX"
-  }
+  },
+  "multi_view": "PASS_LOCAL_VISUAL_HULL"
 }

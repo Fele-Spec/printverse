@@ -27,7 +27,7 @@ def test_providers_schema():
         r = client.get("/api/image3d/providers")
         assert r.status_code == 200
         ids = {p["id"] for p in r.json()["providers"]}
-        assert {"mock_relief", "triposr_local", "stable_fast_3d", "tripo_cloud", "hy3d_cloud", "kimi_analysis"} <= ids
+        assert {"mock_relief", "multiview_local", "triposr_local", "stable_fast_3d", "tripo_cloud", "hy3d_cloud", "kimi_analysis"} <= ids
         mock = next(p for p in r.json()["providers"] if p["id"] == "mock_relief")
         assert mock["cost_class"] == "free" and mock["available"] is True
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { analyzeImage, assetUrl, createImage3DJob, getImage3DJob, getImage3DProviders } from '../lib/api';
+import { analyzeImage, assetUrl, createImage3DJob, createImage3DMultiJob, getImage3DJob, getImage3DProviders } from '../lib/api';
 import type { Image3DJob, Image3DProvider } from '../types';
 import { AssetPreview } from './AssetPreview';
 
@@ -22,12 +22,16 @@ const REASON_ZH: Record<string, string> = {
 };
 const zhProvider = (p: Image3DProvider) => PROVIDER_ZH[p.id] ?? p.label;
 const zhReason = (p: Image3DProvider) => REASON_ZH[p.id] ?? p.reason;
+const STATUS_ZH: Record<string, string> = { queued: '排队中', running: '生成中', completed: '已完成', failed: '失败', not_configured: '未配置', authorization_required: '需要授权' };
+const COST_ZH: Record<string, string> = { free: '免费', low: '低成本', high: '高成本', unknown: '未知' };
+const zhStatus = (s: string) => STATUS_ZH[s] ?? s;
 
 type Props = { onClose: () => void; onUseModel?: (stlUrl: string, colorUrl: string) => void };
 
 export function Image3DPanel({ onClose, onUseModel }: Props) {
   const [providers, setProviders] = useState<Image3DProvider[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const [multiFiles, setMultiFiles] = useState<File[]>([]);
   const [preview, setPreview] = useState('');
   const [provider, setProvider] = useState('auto');
   const [prompt, setPrompt] = useState('一个轮廓清晰、适合打印的桌面摆件。');
@@ -64,10 +68,16 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
   }, [job]);
 
   async function run() {
-    if (!file) { setError('Choose an image first.'); return; }
+    if (!file) { setError('请先选择图片。'); return; }
+    if ((provider === 'multiview_local' || multiFiles.length > 1) && multiFiles.length !== 3) {
+      setError('多视角需要正面、侧面、顶面 3 张图片。');
+      return;
+    }
     setBusy(true); setError(''); setJob(null);
     try {
-      const created = await createImage3DJob(file, provider, prompt, authorized, budget);
+      const created = (provider === 'multiview_local' || multiFiles.length > 1)
+        ? await createImage3DMultiJob(multiFiles, prompt)
+        : await createImage3DJob(file, provider, prompt, authorized, budget);
       setJob(created);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Image-to-3D request failed');
@@ -92,8 +102,13 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
         <div className="image3d-body">
           <div className="image3d-left">
             <label className={`image3d-drop ${preview ? 'has-image' : ''}`}>
-              <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} data-testid="image3d-file" />
-              {preview ? <img src={preview} alt="输入图片预览" /> : <><b>选择一张图片</b><small>PNG / JPEG / WebP · 一个主体更清晰</small></>}
+              <input ref={fileRef} type="file" multiple accept="image/png,image/jpeg,image/webp" onChange={(e) => {
+                const list = Array.from(e.target.files ?? []);
+                setMultiFiles(list);
+                setFile(list[0] ?? null);
+              }} data-testid="image3d-file" />
+              {preview ? <img src={preview} alt="输入图片预览" /> : <><b>选择图片</b><small>PNG / JPEG / WebP · 多视角请选正面/侧面/顶面 3 张</small></>}
+              {multiFiles.length > 1 && <small>{multiFiles.length} 张 · 多视角轮廓重建</small>}
             </label>
             <label className="image3d-field"><span>生成引擎</span>
               <select value={provider} onChange={(e) => setProvider(e.target.value)} data-testid="image3d-provider">
@@ -120,7 +135,7 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
               {providers.map((p) => (
                 <div key={p.id} className={`provider-row ${p.available ? 'available' : ''}`}>
                   <i />
-                  <div><b>{zhProvider(p)}</b><small>{p.model} · {p.cost_class} · {p.available ? '就绪' : zhReason(p)}</small></div>
+                  <div><b>{zhProvider(p)}</b><small>{p.model} · {COST_ZH[p.cost_class] ?? p.cost_class} · {p.available ? '就绪' : zhReason(p)}</small></div>
                 </div>
               ))}
             </div>
@@ -130,7 +145,7 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
                 <h3>生成结果</h3>
                 {outputUrl && job.status === 'completed' && <AssetPreview url={outputUrl} />}
                 <div className="image3d-result-grid">
-                  <div><span>状态</span><b>{job.status}</b></div>
+                  <div><span>状态</span><b>{zhStatus(job.status)}</b></div>
                   <div><span>引擎</span><b>{job.provider}</b></div>
                   <div><span>模型</span><b>{job.model}</b></div>
                   <div><span>费用</span><b>{job.generation_cost == null ? '未知' : `${job.generation_cost.toFixed(4)} ${job.cost_currency ?? ''}`}</b></div>

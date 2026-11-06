@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T12:12:35.748713+00:00",
+  "generated_at": "2026-11-06T12:25:02.421181+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3819,
-    "checksum_bytes": 4144448047,
+    "checksum_files": 3829,
+    "checksum_bytes": 4145009167,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -97,6 +97,7 @@
     "deployment": "DEPLOYMENT.md",
     "status": "PARTIAL",
     "colour_glb": "PASS",
+    "multiview": "PASS_LOCAL_VISUAL_HULL",
     "mesh_api": "PASS (inspect/repair/export)",
     "chinese_ui": "PASS (main flow)",
     "pet_browser": "PASS",

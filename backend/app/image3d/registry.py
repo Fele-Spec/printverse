@@ -6,6 +6,7 @@ from pathlib import Path
 from .base import Image3DProvider
 from .kimi import KimiClient
 from .mock_relief import MockReliefProvider
+from .multiview import MultiViewProvider
 from .stablefast3d import StableFast3DProvider
 from .tokenhub import TokenHubProvider
 from .triposr import TripoSRProvider
@@ -16,6 +17,7 @@ KIMI = KimiClient()
 
 _PROVIDERS: dict[str, Image3DProvider] = {
     "mock_relief": MockReliefProvider(),
+    "multiview_local": MultiViewProvider(),
     "triposr_local": TripoSRProvider(),
     "stable_fast_3d": StableFast3DProvider(),
     "tripo_cloud": TokenHubProvider("tripo"),
