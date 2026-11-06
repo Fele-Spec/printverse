@@ -3,7 +3,7 @@
   "file": "assets/source/voron-v2.4r2-300/CAD/VORON2.4_Assembly.step",
   "bytes": 267315729,
   "read_status": "IFSelect_ReturnStatus.IFSelect_RetDone",
-  "elapsed_s": 71.09,
+  "elapsed_s": 82.41,
   "root_count": 1,
   "node_count": 1690,
   "max_depth": 7,
@@ -24,7 +24,198 @@
       524.0
     ]
   },
-  "transform_status": "Local matrices are identity fallback: XCAFDoc_Location.GetID_s/FindAttribute crashed in this OCP 7.9 binding. Names/hierarchy are real; world transforms remain PARTIAL.",
+  "top_groups": [
+    {
+      "name": "Gantry:1",
+      "children": 12,
+      "bbox": {
+        "min": [
+          -85.917,
+          -37.1,
+          -36.496
+        ],
+        "max": [
+          339.917,
+          374.896,
+          265.504
+        ],
+        "size": [
+          425.833,
+          411.997,
+          302.0
+        ]
+      }
+    },
+    {
+      "name": "Z Assembly:1",
+      "children": 9,
+      "bbox": {
+        "min": [
+          -81.253,
+          -42.409,
+          -143.105
+        ],
+        "max": [
+          335.253,
+          376.409,
+          371.913
+        ],
+        "size": [
+          416.506,
+          418.817,
+          515.017
+        ]
+      }
+    },
+    {
+      "name": "Electronics:1",
+      "children": 14,
+      "bbox": {
+        "min": [
+          -57.933,
+          51.123,
+          -94.626
+        ],
+        "max": [
+          317.03,
+          357.031,
+          -33.066
+        ],
+        "size": [
+          374.963,
+          305.908,
+          61.561
+        ]
+      }
+    },
+    {
+      "name": "Skirt:1",
+      "children": 3,
+      "bbox": {
+        "min": [
+          -82.412,
+          -43.822,
+          -129.402
+        ],
+        "max": [
+          336.212,
+          372.012,
+          -41.084
+        ],
+        "size": [
+          418.624,
+          415.834,
+          88.318
+        ]
+      }
+    },
+    {
+      "name": "Frame:1",
+      "children": 5,
+      "bbox": {
+        "min": [
+          -78.0,
+          -38.0,
+          -58.096
+        ],
+        "max": [
+          332.0,
+          372.0,
+          371.904
+        ],
+        "size": [
+          410.001,
+          410.001,
+          430.001
+        ]
+      }
+    },
+    {
+      "name": "Bed Components:1",
+      "children": 1,
+      "bbox": {
+        "min": [
+          -0.0,
+          -8.0,
+          -21.336
+        ],
+        "max": [
+          254.0,
+          262.0,
+          -0.086
+        ],
+        "size": [
+          254.0,
+          270.0,
+          21.25
+        ]
+      }
+    },
+    {
+      "name": "Panels:1",
+      "children": 8,
+      "bbox": {
+        "min": [
+          -88.009,
+          -49.009,
+          -127.119
+        ],
+        "max": [
+          342.009,
+          379.009,
+          378.913
+        ],
+        "size": [
+          430.018,
+          428.018,
+          506.033
+        ]
+      }
+    },
+    {
+      "name": "Spool Holder:1",
+      "children": 5,
+      "bbox": {
+        "min": [
+          199.994,
+          356.529,
+          271.098
+        ],
+        "max": [
+          332.717,
+          464.006,
+          378.91
+        ],
+        "size": [
+          132.723,
+          107.477,
+          107.812
+        ]
+      }
+    },
+    {
+      "name": "Exhaust Filter Assembly:1",
+      "children": 8,
+      "bbox": {
+        "min": [
+          41.577,
+          128.37,
+          140.678
+        ],
+        "max": [
+          224.834,
+          485.46,
+          374.066
+        ],
+        "size": [
+          183.257,
+          357.09,
+          233.388
+        ]
+      }
+    }
+  ],
+  "transform_status": "XCAFDoc_ShapeTool.GetLocation_s returned identity for all nodes; XCAFDoc_Location.FindAttribute crashes in this OCP 7.9 binding. Product names, hierarchy and top-group bounding boxes are real; exact per-component transforms remain PARTIAL.",
   "nodes": [
     {
       "id": 0,

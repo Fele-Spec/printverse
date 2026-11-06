@@ -8,7 +8,7 @@ Date: 2026-11-06 · Root: `C:\Users\someb\Desktop\printverse`
 |---|---|---|
 | 275 vs 280 mm mechanical conflict | **COMPLETE** | `MECHANICAL_PARAMETERS.md`; Klipper 300 config `position_max: 280`; Orca `printable_height: 275` |
 | Full STEP geometry import | **COMPLETE** | build123d/OCP imported 267 MB / 1,677 solids in 76.17 s |
-| Exact STEP assembly transforms | **PARTIAL** | XCAF names/hierarchy recovered (1,690 nodes, 9 top groups); location-attribute binding crashes, so matrices remain identity; imported bbox 430 × 534 × 522 mm is inconsistent with nominal frame |
+| Exact STEP assembly transforms | **PARTIAL** | XCAF names/hierarchy recovered (1,690 nodes); FreeCAD 4,526 objects with 2,977 non-identity placements; Web scene does not yet serialize those placements |
 | Mechanical scene hierarchy + articulation | **COMPLETE (proxy)** | frame / CoreXY gantry / toolhead / four-point Z / bed / printed-object nodes; `docs/architecture/MECHANICAL_SCENE.md` |
 | STL → Orca → G-code → parser → animation | **COMPLETE** | real upload slice; 100 layers; 7,853 toolpath moves; WebGL E2E |
 | Detach / translate / rotate / scale / collect | **COMPLETE** | `TransformControls`; E2E status `DETACHED`; collection item created |
@@ -45,10 +45,13 @@ remains **PHYSICAL_PENDING**.
   recovered **1,690 real nodes** with 9 top groups (`Gantry`, `Z Assembly`, `Electronics`,
   `Skirt`, `Frame`, `Bed Components`, `Panels`, `Spool Holder`, `Exhaust Filter Assembly`).
   Evidence: `docs/reports/step_xcaf_tree.json`, `manifests/machine-hierarchy.json`.
-- **Transforms:** the XCAF location attribute binding crashes in this OCP 7.9 build; matrices
-  are identity fallback. Exact world placement therefore remains **PARTIAL**.
-- **Web scene:** uses the recovered hierarchy and nominal BOM dimensions; no claim of exact
-  STEP placement. See `docs/architecture/MECHANICAL_SCENE.md`.
+- **FreeCAD object placements:** the second full import completed in 230.83 s with 4,526
+  objects (1,686 `Part::Feature`, 355 `App::Part`, the rest construction geometry) and
+  **2,977 non-identity placements**. See `docs/reports/freecad_full_tree.json`.
+- **XCAF names:** 1,690 nodes / 9 top groups. `GetLocation_s` returned identity for every
+  node, and `XCAFDoc_Location` binding crashes; it is not used for transforms.
+- **Web scene:** uses the recovered hierarchy and nominal BOM dimensions; it does not yet
+  serialize the 4,526 FreeCAD placements into glTF. See `docs/architecture/MECHANICAL_SCENE.md`.
 
 ## 4. Real G-code loop
 
@@ -154,9 +157,9 @@ Runtime artifacts are served at `/runtime/jobs/...`; source and generated files 
 
 ## 10. Next smallest steps
 
-1. XCAF transform extraction without the crashing `XCAFDoc_Location` binding: walk component
-   labels through a stable attribute iterator or use FreeCAD/OCCT C++ helper, then generate a
-   real glTF hierarchy and compare its frame bbox.
+1. Serialize the 4,526 FreeCAD object placements into a glTF hierarchy (use the 355
+   `App::Part` groups for naming), then compare its frame bbox against 460×460×480 and replace
+   the nominal proxy meshes module by module.
 2. Replace the procedural toolhead/frame with selected real meshes at the verified joints.
 3. Add 40–60% mid-print screenshot and a layer scrub control.
 4. Deploy the backend with a proper PostgreSQL migration and auth.

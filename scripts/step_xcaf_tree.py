@@ -35,12 +35,11 @@ def name_of(label) -> str:
 
 
 def local_transform(label) -> list[list[float]]:
-    # XCAFDoc_Location.GetID_s() crashes on this OCCT/OCP build when queried on the
-    # full assembly, so use the shape's own TopLoc_Location when available. A missing
-    # component placement is recorded as identity, not guessed.
+    # XCAFDoc_Location.GetID_s/FindAttribute crashes in this binding, but the shape
+    # tool exposes the instance location directly. Keep the local matrix; consumers
+    # compose it through the parent chain.
     try:
-        shape = XCAFDoc_ShapeTool.GetShape_s(label)
-        loc = shape.Location()
+        loc = XCAFDoc_ShapeTool.GetLocation_s(label)
         if not loc.IsIdentity():
             trsf = loc.Transformation()
             return [[round(trsf.Value(r, c), 6) for c in range(1, 5)] for r in range(1, 5)]
@@ -68,6 +67,7 @@ def main() -> int:
     tool.GetFreeShapes(roots)
     print("XCAF_ROOTS", roots.Length(), flush=True)
     nodes = []
+    top_labels: dict[int, object] = {}
     max_depth = 8
     max_nodes = 1800
 
@@ -90,6 +90,8 @@ def main() -> int:
             "transform": local_transform(label),
         }
         nodes.append(node)
+        if depth == 1:
+            top_labels[index] = label
         if len(nodes) % 100 == 0:
             print("nodes", len(nodes), "depth", depth, "name", node["name"][:60], flush=True)
         if n_children:
@@ -117,6 +119,27 @@ def main() -> int:
     except Exception as exc:
         bbox = {"error": repr(exc)}
 
+    top_groups = []
+    for node_id, label in top_labels.items():
+        node = next((n for n in nodes if n["id"] == node_id), None)
+        if not node:
+            continue
+        try:
+            b = Bnd_Box()
+            BRepBndLib.Add_s(XCAFDoc_ShapeTool.GetShape_s(label), b)
+            v = b.Get()
+            top_groups.append({
+                "name": node["name"],
+                "children": node["children"],
+                "bbox": {
+                    "min": [round(v[0], 3), round(v[1], 3), round(v[2], 3)],
+                    "max": [round(v[3], 3), round(v[4], 3), round(v[5], 3)],
+                    "size": [round(v[3] - v[0], 3), round(v[4] - v[1], 3), round(v[5] - v[2], 3)],
+                },
+            })
+        except Exception as exc:
+            top_groups.append({"name": node["name"], "children": node["children"], "bbox": {"error": repr(exc)}})
+
     report = {
         "ok": True,
         "file": str(STEP.relative_to(ROOT)).replace("\\", "/"),
@@ -127,7 +150,8 @@ def main() -> int:
         "node_count": len(nodes),
         "max_depth": max((n["depth"] for n in nodes), default=0),
         "bbox": bbox,
-        "transform_status": "Local matrices are identity fallback: XCAFDoc_Location.GetID_s/FindAttribute crashed in this OCP 7.9 binding. Names/hierarchy are real; world transforms remain PARTIAL.",
+        "top_groups": top_groups,
+        "transform_status": "XCAFDoc_ShapeTool.GetLocation_s returned identity for all nodes; XCAFDoc_Location.FindAttribute crashes in this OCP 7.9 binding. Product names, hierarchy and top-group bounding boxes are real; exact per-component transforms remain PARTIAL.",
         "nodes": nodes,
     }
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

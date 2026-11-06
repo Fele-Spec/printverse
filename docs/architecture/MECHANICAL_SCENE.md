@@ -29,10 +29,10 @@ VORON_V2_4R2_300 (world, millimetres, Z-up)
 ```
 
 The node names are mirrored in `manifests/machine-hierarchy.json`. XCAF recovered 1,690 real
-product nodes and 9 top-level groups; exact world transforms are still an identity fallback
-because the OCP 7.9 location-attribute binding crashes. The Web scene is therefore a
-**kinematic proxy** with verified dimensions, not exact STEP placement (see
-`CAD_VALIDATION_REPORT.md`).
+product nodes and 9 top-level groups. A second FreeCAD import produced 4,526 objects and 2,977
+non-identity placements, so object-level transforms exist; they are not yet serialized into the
+Web scene. The Web scene is therefore a **kinematic proxy** with verified dimensions, not exact
+STEP placement (see `CAD_VALIDATION_REPORT.md`).
 
 ## 2. Coordinate systems
 

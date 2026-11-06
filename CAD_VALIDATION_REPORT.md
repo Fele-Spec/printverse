@@ -122,10 +122,34 @@ tree: **1,690 nodes**, depth 7, root `_VORON2.4_Assembly v89`. The nine top-leve
 | Exhaust Filter Assembly | 8 |
 
 The XCAF root bbox is 432 × 536.452 × 524 mm (same anomaly family as the build123d import).
-The local matrices are identity fallback: `XCAFDoc_Location.GetID_s`/`FindAttribute` crashed in
-this OCP 7.9 binding, so exact component world transforms are still **PARTIAL**. The names and
-parent/child relationships are real and are stored in `docs/reports/step_xcaf_tree.json` and
-`manifests/machine-hierarchy.json`.
+`XCAFDoc_ShapeTool.GetLocation_s` returned identity for all 1,690 nodes, and
+`XCAFDoc_Location.FindAttribute` crashes in this OCP 7.9 binding. Top-group bboxes are recorded
+in `docs/reports/step_xcaf_tree.json` (e.g. Frame group 410 × 410 × 430 mm), but they are not
+used to overwrite the configurator frame envelope. Names and parent/child relationships are
+real and stored in `docs/reports/step_xcaf_tree.json` and `manifests/machine-hierarchy.json`.
+
+### FreeCAD full object tree — geometry and placements (complete audit)
+
+A second independent full import with FreeCAD 1.1.4 completed in **230.83 s** and yielded
+**4,526 objects** (`docs/reports/freecad_full_tree.json`):
+
+| Object type | Count | Meaning |
+|---|---:|---|
+| `Part::Feature` | 1,686 | actual solid/part shapes |
+| `App::Part` | 355 | named sub-assemblies |
+| `App::Line` / `App::Plane` / `App::Point` | 1,065 / 1,065 / 355 | construction geometry |
+| Other | 1 | — |
+
+The tree includes named assemblies such as `Gantry`, `Z Assembly`, `Frame`, `Bed Components`,
+`Toolheads`, `X Carriage`, `XY Joint - Left`, `XY Joint - Right`, `A/B Drives`, and
+`X Axis (MGN12)`. **2,977 objects have a non-identity `Placement`** (translation + rotation),
+so object-level assembly placements now exist. The finite `Part::Feature` union is
+714.58 × 801.98 × 826.99 mm, which includes outliers (spool/exhaust/construction geometry);
+it is not used as the frame envelope.
+
+The Web scene still uses nominal BOM dimensions and the verified kinematic hierarchy; it does
+not yet serialize all 4,526 FreeCAD placements into glTF. This is a **PARTIAL integration**, not
+a missing CAD import.
 
 ## 5. Assembly relationship model
 
@@ -160,4 +184,6 @@ parent/child relationships are real and are stored in `docs/reports/step_xcaf_tr
 - STEP part import in FreeCAD: **COMPLETE**
 - Full assembly geometry import: **COMPLETE** (1,677 solids, 76 s)
 - Name-preserving product hierarchy: **COMPLETE** (1,690 XCAF nodes, 9 top groups)
-- Exact assembly transforms / dimensional audit: **PARTIAL** (XCAF location-attribute binding crash; nominal scene hierarchy)
+- Object-level placements: **COMPLETE** (4,526 FreeCAD objects, 2,977 non-identity placements)
+- Exact placements serialized into the Web scene: **PARTIAL** (scene still nominal proxy)
+- Dimensional audit against a physical machine: **PHYSICAL_PENDING**
