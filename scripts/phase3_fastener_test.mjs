@@ -1,0 +1,18 @@
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { chromium } = require('../frontend/node_modules/playwright-core');
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 980 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(String(e)));
+page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle', timeout: 120000 });
+await page.waitForFunction(() => typeof window.__PV_VIEW === 'function', null, { timeout: 60000 });
+await page.waitForTimeout(5000);
+await page.screenshot({ path: 'BEFORE_AFTER_SCREENSHOTS/after_front.png' });
+await page.click('[data-testid="fasteners-toggle"]');
+await page.waitForTimeout(2500);
+await page.screenshot({ path: 'BEFORE_AFTER_SCREENSHOTS/after_fasteners.png' });
+console.log(JSON.stringify({ label: await page.locator('[data-testid="fasteners-toggle"]').innerText(), errors }));
+await browser.close();

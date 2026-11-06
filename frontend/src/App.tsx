@@ -56,6 +56,7 @@ export default function App() {
   const [panelMode, setPanelMode] = useState<PanelMode>('glass');
   const [explode, setExplode] = useState(0);
   const [cadMode, setCadMode] = useState(() => !new URLSearchParams(window.location.search).has('sim'));
+  const [showFasteners, setShowFasteners] = useState(false);
   const [selectedPart, setSelectedPart] = useState<{ name: string; module: string } | null>(null);
   const [visibleModules, setVisibleModules] = useState<Record<string, boolean>>({
     FRAME: true, ENCLOSURE: true, XY_GANTRY: true, Z_DRIVE: true,
@@ -264,6 +265,7 @@ export default function App() {
             explode={explode}
             visibleModules={visibleModules}
             cadMode={cadMode}
+            showFasteners={showFasteners}
             selectedPartName={selectedPart?.name ?? null}
             onPartSelect={(name, module) => setSelectedPart({ name, module })}
             onTick={setTick}
@@ -283,6 +285,8 @@ export default function App() {
             onToggleModule={(id) => setVisibleModules((m) => ({ ...m, [id]: m[id] === false }))}
             cadMode={cadMode}
             onCadMode={setCadMode}
+            showFasteners={showFasteners}
+            onShowFasteners={setShowFasteners}
           />
 
           <div className="stage-top">

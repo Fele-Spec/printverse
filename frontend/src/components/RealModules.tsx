@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei';
-import type { ThreeEvent } from '@react-three/fiber';
-import { useEffect, useMemo, useState } from 'react';
+import { useLoader, type ThreeEvent } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 
 export const MODULE_URLS: Record<string, string> = {
   FRAME: '/models/voron/modules/FRAME.lod.glb',
@@ -20,6 +21,55 @@ export const MODULE_URLS_HIGH: Record<string, string> = Object.fromEntries(
 
 type PartRange = { placement_id: string; part_name: string; start: number; count: number };
 type PartRecord = { bbox?: number[] | null };
+type InstanceGroup = {
+  id: string; base_name: string; module: string; count: number;
+  geometry: string; placement_ids: string[]; matrices: number[];
+};
+
+function InstanceFastener({ group, visible, onSelect }: {
+  group: InstanceGroup; visible: boolean;
+  onSelect?: (name: string, module: string) => void;
+}) {
+  const source = useLoader(STLLoader, group.geometry);
+  const mesh = useRef<THREE.InstancedMesh>(null);
+  const geometry = useMemo(() => {
+    const g = source.clone();
+    g.scale(0.001, 0.001, 0.001);
+    return g;
+  }, [source]);
+  const material = useMemo(() => new THREE.MeshStandardMaterial({
+    color: group.module === 'ENCLOSURE' ? '#9aa9ae' : '#aeb9bf',
+    metalness: 0.88, roughness: 0.28,
+  }), [group.module]);
+  useLayoutEffect(() => {
+    const m = new THREE.Matrix4();
+    for (let i = 0; i < group.count; i += 1) {
+      const v = group.matrices.slice(i * 16, i * 16 + 16);
+      // build_instances emits row-major matrices (numpy); Matrix4.set expects
+      // row-major arguments and stores them column-major internally.
+      v[3] /= 1000;
+      v[7] /= 1000;
+      v[11] /= 1000;
+      m.set(v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11], v[12], v[13], v[14], v[15]);
+      mesh.current?.setMatrixAt(i, m);
+    }
+    if (mesh.current) mesh.current.instanceMatrix.needsUpdate = true;
+  }, [group]);
+  return (
+    <instancedMesh
+      ref={mesh}
+      args={[geometry, material, group.count]}
+      visible={visible}
+      frustumCulled={false}
+      matrixAutoUpdate={false}
+      onClick={(event: ThreeEvent<MouseEvent>) => {
+        event.stopPropagation();
+        if (event.instanceId == null) return;
+        onSelect?.(group.placement_ids[event.instanceId], group.module);
+      }}
+    />
+  );
+}
 
 function rangeFor(ranges: PartRange[], faceIndex: number | null | undefined): PartRange | null {
   if (faceIndex == null) return null;
@@ -88,7 +138,7 @@ function Module({ id, url, visible, panelMode, ranges, onSelect }: {
 }
 
 export function RealModules({
-  visibleModules, panelMode, onSelect, zOffset = 0, explode = 0, highDetail = false, selectedPartId,
+  visibleModules, panelMode, onSelect, zOffset = 0, explode = 0, highDetail = false, showFasteners = false, selectedPartId,
   toolhead, bedZ,
 }: {
   visibleModules: Record<string, boolean>;
@@ -97,17 +147,26 @@ export function RealModules({
   zOffset?: number;
   explode?: number;
   highDetail?: boolean;
+  showFasteners?: boolean;
   selectedPartId?: string | null;
   toolhead?: { x: number; y: number };
   bedZ?: number;
 }) {
   const [ranges, setRanges] = useState<Record<string, PartRange[]>>({});
+  const [instances, setInstances] = useState<InstanceGroup[]>([]);
   const [selected, setSelected] = useState<PartRecord | null>(null);
   useEffect(() => {
     fetch(highDetail ? '/models/voron/module-face-ranges.json' : '/models/voron/module-face-ranges-lod.json')
       .then((r) => r.json())
       .then(setRanges)
       .catch(() => setRanges({}));
+  }, [highDetail]);
+  useEffect(() => {
+    if (highDetail) { setInstances([]); return; }
+    fetch('/models/voron/instances.json')
+      .then((r) => r.json())
+      .then((data) => setInstances(data.groups ?? []))
+      .catch(() => setInstances([]));
   }, [highDetail]);
   useEffect(() => {
     if (!selectedPartId) { setSelected(null); return; }
@@ -137,6 +196,14 @@ export function RealModules({
           </group>
         );
       })}
+      {showFasteners && instances.map((group) => (
+        <InstanceFastener
+          key={group.id}
+          group={group}
+          visible={visibleModules[group.module] !== false}
+          onSelect={onSelect}
+        />
+      ))}
       {selection && (
         <lineSegments geometry={edges} position={selection.center} scale={selection.size}>
           <lineBasicMaterial color="#79f2c0" transparent opacity={0.95} depthTest={false} />

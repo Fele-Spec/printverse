@@ -23,7 +23,7 @@ const MODULES = [
 
 export function SceneControls({
   view, onView, panelMode, onPanelMode, orthographic, onOrthographic,
-  explode, onExplode, modules, onToggleModule, cadMode, onCadMode,
+  explode, onExplode, modules, onToggleModule, cadMode, onCadMode, showFasteners, onShowFasteners,
 }: {
   view: ViewPreset;
   onView: (v: ViewPreset) => void;
@@ -37,6 +37,8 @@ export function SceneControls({
   onToggleModule: (m: string) => void;
   cadMode: boolean;
   onCadMode: (v: boolean) => void;
+  showFasteners: boolean;
+  onShowFasteners: (v: boolean) => void;
 }) {
   return (
     <div className="scene-dock" data-testid="scene-controls">
@@ -76,6 +78,10 @@ export function SceneControls({
           </button>
         ))}
       </div>
+      <div className="dock-sep" />
+      <button className={`fastener-toggle ${showFasteners ? 'on' : ''}`} onClick={() => onShowFasteners(!showFasteners)} data-testid="fasteners-toggle">
+        FASTENERS · instanced
+      </button>
       <div className="dock-sep" />
       <label className="explode-row">
         <span>EXPLODE</span>

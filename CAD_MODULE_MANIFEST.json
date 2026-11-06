@@ -9,11 +9,11 @@
       "render_file": "frontend/public/models/voron/modules/BUILD_PLATFORM.lod.glb",
       "bytes": 179952,
       "merged_bytes": 166500,
-      "lod_bytes": 46368,
+      "lod_bytes": 25856,
       "parts": 16,
       "faces": 9194,
       "merged_faces": 9194,
-      "lod_faces": 2516,
+      "lod_faces": 1382,
       "bounds_m": [
         [
           -1.1974141216342105e-09,
@@ -33,11 +33,11 @@
       "render_file": "frontend/public/models/voron/modules/ELECTRONICS.lod.glb",
       "bytes": 3436296,
       "merged_bytes": 3425332,
-      "lod_bytes": 717144,
+      "lod_bytes": 671532,
       "parts": 130,
       "faces": 191532,
       "merged_faces": 191532,
-      "lod_faces": 40236,
+      "lod_faces": 37742,
       "bounds_m": [
         [
           -0.05790233612060547,
@@ -57,11 +57,11 @@
       "render_file": "frontend/public/models/voron/modules/ENCLOSURE.lod.glb",
       "bytes": 7988592,
       "merged_bytes": 7738208,
-      "lod_bytes": 1455480,
+      "lod_bytes": 909432,
       "parts": 392,
       "faces": 430094,
       "merged_faces": 430094,
-      "lod_faces": 81057,
+      "lod_faces": 50885,
       "bounds_m": [
         [
           -0.088,
@@ -81,11 +81,11 @@
       "render_file": "frontend/public/models/voron/modules/FRAME.lod.glb",
       "bytes": 2361248,
       "merged_bytes": 2241928,
-      "lod_bytes": 726816,
+      "lod_bytes": 294380,
       "parts": 182,
       "faces": 124338,
       "merged_faces": 124338,
-      "lod_faces": 40265,
+      "lod_faces": 16364,
       "bounds_m": [
         [
           -0.078,
@@ -105,11 +105,11 @@
       "render_file": "frontend/public/models/voron/modules/TOOLHEAD.lod.glb",
       "bytes": 5616724,
       "merged_bytes": 5450020,
-      "lod_bytes": 1088640,
+      "lod_bytes": 875124,
       "parts": 180,
       "faces": 302583,
       "merged_faces": 302583,
-      "lod_faces": 60455,
+      "lod_faces": 48633,
       "bounds_m": [
         [
           0.09670991516113281,
@@ -153,11 +153,11 @@
       "render_file": "frontend/public/models/voron/modules/XY_GANTRY.lod.glb",
       "bytes": 8053184,
       "merged_bytes": 7876260,
-      "lod_bytes": 2188796,
+      "lod_bytes": 1587512,
       "parts": 470,
       "faces": 438166,
       "merged_faces": 438166,
-      "lod_faces": 122042,
+      "lod_faces": 88849,
       "bounds_m": [
         [
           -0.07829996490478516,
@@ -177,11 +177,11 @@
       "render_file": "frontend/public/models/voron/modules/Z_DRIVE.lod.glb",
       "bytes": 7677932,
       "merged_bytes": 7801196,
-      "lod_bytes": 2663928,
+      "lod_bytes": 1543960,
       "parts": 315,
       "faces": 434246,
       "merged_faces": 434246,
-      "lod_faces": 148880,
+      "lod_faces": 86858,
       "bounds_m": [
         [
           -0.07863540649414062,

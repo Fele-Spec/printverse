@@ -18,12 +18,14 @@ PUBLIC = ROOT / "frontend/public/models/voron/modules"
 MANIFEST = ROOT / "CAD_MODULE_MANIFEST.json"
 RANGES = ROOT / "frontend/public/models/voron/module-face-ranges.json"
 LOD_RANGES = ROOT / "frontend/public/models/voron/module-face-ranges-lod.json"
+INSTANCED_IDS = ROOT / "frontend/public/models/voron/instanced-ids.json"
 
 
 def main() -> int:
     groups = json.loads(PARTS.read_text(encoding="utf-8"))
     OUT.mkdir(parents=True, exist_ok=True)
     PUBLIC.mkdir(parents=True, exist_ok=True)
+    skip_ids = set(json.loads(INSTANCED_IDS.read_text(encoding="utf-8"))) if INSTANCED_IDS.exists() else set()
     manifest = {"unit": "m", "source_unit": "mm", "scale_factor": 0.001, "modules": {}}
     all_ranges = {}
     lod_ranges = {}
@@ -57,9 +59,10 @@ def main() -> int:
                         lod_mesh = simplified
                 except Exception:
                     lod_mesh = mesh
-            lod_meshes.append(lod_mesh)
-            lod_part_ranges.append({"placement_id": p["placement_id"], "part_name": p["part_name"], "start": lod_cursor, "count": len(lod_mesh.faces)})
-            lod_cursor += len(lod_mesh.faces)
+            if p["placement_id"] not in skip_ids:
+                lod_meshes.append(lod_mesh)
+                lod_part_ranges.append({"placement_id": p["placement_id"], "part_name": p["part_name"], "start": lod_cursor, "count": len(lod_mesh.faces)})
+                lod_cursor += len(lod_mesh.faces)
             scene.add_geometry(
                 mesh,
                 node_name=p["placement_id"],

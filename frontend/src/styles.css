@@ -95,6 +95,8 @@ h1 span { color: #7b95a4; font-weight: 400; }
 .module-grid button { display: flex; align-items: center; gap: 4px; text-align: left; }
 .module-grid button i { width: 4px; height: 4px; border-radius: 50%; background: #46616e; }
 .module-grid button.on i { background: #0d3a2d; }
+.fastener-toggle { width: 100%; border: 1px solid #263f4b; background: #0a161d; color: #8fa8b5; border-radius: 4px; padding: 4px 5px; font: 7px ui-monospace, Consolas, monospace; letter-spacing: 0.08em; }
+.fastener-toggle.on { background: #b7f3da; border-color: #b7f3da; color: #07120e; font-weight: 700; }
 .explode-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; }
 .explode-row span { font: 7.5px ui-monospace, Consolas, monospace; color: #7f9aa8; letter-spacing: 0.08em; }
 .explode-row input { width: 100%; accent-color: #79f2c0; height: 3px; }

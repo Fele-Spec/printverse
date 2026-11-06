@@ -93,6 +93,7 @@ export function PrintScene({
   explode,
   visibleModules,
   cadMode,
+  showFasteners,
   selectedPartName,
   onPartSelect,
   onTick,
@@ -113,6 +114,7 @@ export function PrintScene({
   explode: number;
   visibleModules: Record<string, boolean>;
   cadMode: boolean;
+  showFasteners: boolean;
   selectedPartName?: string | null;
   onPartSelect?: (name: string, module: string) => void;
   onTick: (tick: PrintTick) => void;
@@ -187,6 +189,7 @@ export function PrintScene({
             panelMode={panelMode}
             explode={explode}
             highDetail={viewPreset === 'toolhead' || viewPreset === 'interior'}
+            showFasteners={showFasteners}
             selectedPartId={selectedPartName}
             toolhead={machineToolhead}
             bedZ={tick.bedZ}

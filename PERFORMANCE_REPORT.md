@@ -10,11 +10,11 @@ Date: 2026-11-06 · Browser: Microsoft Edge, local `http://127.0.0.1:4173/`
 | Shape-bearing parts | 1,686 |
 | Full module GLBs | 8 files / **35.49 MB** |
 | Full triangles | 1,939,867 |
-| Default LOD GLBs | 8 files / **8.92 MB** |
-| LOD triangles | 497,199 |
+| Default LOD GLBs | 8 files / **5.94 MB** |
+| LOD triangles | 332,461 |
 | Default draw calls | 8 merged module meshes |
 | High-detail draw calls | 1,686 part meshes when Toolhead/Interior view is active |
-| InstancedMesh objects | 0 (not implemented) |
+| InstancedMesh objects | 66 groups / 867 instances (optional layer) |
 | Load errors | 0 |
 
 ## 2. Measured load
@@ -63,8 +63,9 @@ Script: `scripts/phase3_perf_hw.mjs` (non-headless Edge, D3D11, window off-scree
 
 ## 5. Not implemented / risks
 
-- **InstancedMesh is not implemented** for repeated bolts/nuts/washers. The current LOD merges
-  them; this saves draw calls but does not satisfy the instancing requirement. Mark PARTIAL.
+- **InstancedMesh is implemented** for repeated standard parts: 66 groups / 867 instances,
+  exposed as an optional `FASTENERS` layer. It is off by default because some FreeCAD placements
+  are outside the main visual envelope; enabling it adds 66 draw calls.
 - No Draco/Meshopt compression; GLBs are raw. 35.5 MB full / 9.7 MB LOD is acceptable on localhost
   but should be compressed before deployment.
 - The LOD decimation is aggressive for small features (18% retained faces per large part); close
@@ -78,5 +79,5 @@ Script: `scripts/phase3_perf_hw.mjs` (non-headless Edge, D3D11, window off-scree
 
 - **Hardware FPS target (45): PASS** at 60.1 FPS.
 - **Headless software target: NOT MET** at 0.8–2.2 FPS; environment limitation.
-- **Instancing requirement: PARTIAL**.
+- **Instancing requirement: COMPLETE** — 66 InstancedMesh groups / 867 parts, optional layer.
 - **Load target: no numeric target given; 8–9 s local, acceptable for this asset size.**

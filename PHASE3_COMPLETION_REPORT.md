@@ -13,13 +13,13 @@ Date: 2026-11-06 · Project: PrintVerse · Machine: Voron V2.4r2 300
 | Part selection / inspector | **COMPLETE** |
 | View presets / ortho / transparency / explode / module visibility | **COMPLETE** |
 | 45 FPS target | **PASS on hardware (60.1 FPS); software headless PARTIAL** |
-| InstancedMesh fasteners | **PARTIAL — not implemented** |
+| InstancedMesh fasteners | **COMPLETE — 66 groups / 867 parts; optional FASTENERS layer** |
 | Exact 275/280 resolution | **COMPLETE; physical clearance remains PHYSICAL_PENDING** |
 | Image-to-3D | **DEFERRED / BLOCKED by 8 GB VRAM** |
 
 Overall: **PARTIAL**. The real CAD toolhead and platform now follow the G-code, but the XY
-crossbeam is still one merged static module and repeated fasteners are not instanced. Neither
-is hidden.
+crossbeam is still one merged static module; the instanced fastener layer is implemented but
+optional. This is stated rather than hidden.
 
 ## 2. Current project state
 
@@ -60,7 +60,7 @@ Files: `CAD_PLACEMENT_AUDIT.md`, `docs/reports/placements_audit.json`,
 | BUILD_PLATFORM | 16 | 0.17 | 0.04 |
 | ELECTRONICS | 130 | 3.28 | 0.68 |
 | WIRING | 1 | 0.17 | 0.03 |
-| **Total** | **1,686** | **35.49** | **8.92** |
+| **Total** | **1,686** | **35.49** | **5.94** |
 
 - Full GLBs: one node per placement, node metadata.
 - LOD GLBs: merged module mesh + `module-face-ranges-lod.json` face-to-placement map for picking.
@@ -85,7 +85,7 @@ Files: `CAD_PLACEMENT_AUDIT.md`, `docs/reports/placements_audit.json`,
 - First visible scene: **8.0–9.1 s** local.
 - Load errors / page errors: **0**.
 - Default draw calls: 8 merged modules; high detail: 1,686 parts.
-- No InstancedMesh; no Draco/Meshopt.
+- InstancedMesh: 66 groups / 867 parts, optional `FASTENERS` layer; no Draco/Meshopt.
 
 ## 4. Functional regression
 
@@ -119,8 +119,8 @@ Evidence: `docs/reports/phase2_e2e.json`.
 1. **Split the XY gantry crossbeam from its static rails.** The toolhead and platform now move
    inside the real CAD hierarchy, but the whole XY_GANTRY module is still static. Split the
    crossbeam into a movable node to complete CoreXY visualization.
-2. **InstancedMesh for fasteners.** Deduplicate screw/nut/washer geometry and use instanced
-   matrices for the hundreds of repeated standard parts; keep part metadata in an instance map.
+2. **Fastener layer default state.** Instancing is implemented and toggleable; some source
+   placements are outside the visual envelope, so the layer defaults off.
 3. **Wire harness.** WIRING currently has only one solid; cable-chain and wire geometry are
    mostly construction objects. Add sourced cable geometry or explicitly mark the module as
    partial in the UI.
@@ -135,5 +135,5 @@ Evidence: `docs/reports/phase2_e2e.json`.
 The printer is no longer a decorative parts collage: the real frame, enclosure, gantry, Z drive,
 toolhead, platform, electronics and the one available wiring part are loaded from the official
 FreeCAD assembly. The toolhead and platform now move inside that real hierarchy during G-code
-playback. The XY crossbeam remains static and fasteners are not instanced, so the overall phase
-status is **PARTIAL**, not COMPLETE.
+playback. The XY crossbeam remains static; the fastener instancing layer is implemented as an optional
+toggle, so the overall phase status is **PARTIAL**, not COMPLETE.

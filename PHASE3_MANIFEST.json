@@ -11,11 +11,11 @@
     "construction_objects": 2485,
     "modules": 8,
     "full_faces": 1939867,
-    "lod_faces": 497199
+    "lod_faces": 332461
   },
   "files": {
     "full_glb_bytes": 35489880,
-    "lod_glb_bytes": 8919408,
+    "lod_glb_bytes": 5940032,
     "placement_audit": "CAD_PLACEMENT_AUDIT.md",
     "module_manifest": "CAD_MODULE_MANIFEST.json",
     "assembly_hierarchy": "ASSEMBLY_HIERARCHY.json",
@@ -37,11 +37,10 @@
     "headless_swiftshader_fps": 0.8,
     "first_load_seconds": 8.0,
     "motion_hierarchy": "PARTIAL / toolhead+bed CAD motion; XY crossbeam static",
-    "instancing": "PARTIAL / not implemented"
+    "instancing": "COMPLETE / 66 InstancedMesh groups, 867 parts; optional toggle"
   },
   "open": [
     "Split the XY crossbeam from static rails to complete CoreXY motion",
-    "InstancedMesh for repeated fasteners",
     "WIRING module has only one shape-bearing part",
     "Physical Z clearance measurement",
     "Image-to-3D deferred by 8 GB VRAM"

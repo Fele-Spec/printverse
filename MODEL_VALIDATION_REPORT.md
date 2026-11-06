@@ -42,7 +42,7 @@ not an independent physical measurement. Details: `docs/reports/placement_sample
 | BUILD_PLATFORM | 16 | 9,194 | 0.17 | 2,516 | 0.04 |
 | ELECTRONICS | 130 | 191,532 | 3.28 | 40,236 | 0.68 |
 | WIRING | 1 | 9,714 | 0.17 | 1,748 | 0.03 |
-| **Total** | **1,686** | **1,939,867** | **35.49** | **497,199** | **8.92** |
+| **Total** | **1,686** | **1,939,867** | **35.49** | **332,461** | **5.94** |
 
 - Full `.glb` files preserve one node per placement and node metadata (placement ID, name, path,
   module, source unit, faces). Full hierarchy is 1,686 nodes plus module roots in `trimesh`.
@@ -80,5 +80,5 @@ not an independent physical measurement. Details: `docs/reports/placement_sample
    and assembly coordinates mean it must not be used as the frame envelope.
 4. Exact FreeCAD global coordinates are applied to the CAD display. Toolhead and BUILD_PLATFORM
    now take G-code motion inside that hierarchy; XY_GANTRY remains static.
-5. InstancedMesh is not used for repeated fasteners yet; this is a performance/quality item,
-   not hidden.
+5. InstancedMesh is implemented as an optional FASTENERS layer (66 groups / 867 parts).
+   It is off by default because some FreeCAD placements sit outside the main visual envelope.
