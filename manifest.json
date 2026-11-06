@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T08:25:50.095034+00:00",
+  "generated_at": "2026-11-06T08:31:42.860023+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 20,
     "cad_index_rows": 223,
-    "checksum_files": 3633,
-    "checksum_bytes": 4141638538,
+    "checksum_files": 3634,
+    "checksum_bytes": 4142888780,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -75,7 +75,7 @@
     "lod_bytes": 8919408,
     "hardware_fps": 60.1,
     "instancing": "PARTIAL / NOT_IMPLEMENTED",
-    "motion_hierarchy": "PARTIAL / CAD static display + proxy simulation",
+    "motion_hierarchy": "PARTIAL / toolhead+bed CAD motion; XY crossbeam static",
     "physical_z_clearance": "PHYSICAL_PENDING"
   },
   "blocked": [

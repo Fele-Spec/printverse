@@ -134,7 +134,6 @@ export default function App() {
       setResetKey((n) => n + 1);
     }
     setError('');
-    setCadMode(false);
     setStatus('printing');
     setPlaying(true);
   }, [status, toolpath]);

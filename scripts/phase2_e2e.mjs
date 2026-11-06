@@ -47,7 +47,10 @@ result.steps.layer_count = await page.locator('[data-testid="current-layer"]').i
 
 await page.click('[data-testid="speed-120"]');
 await page.click('[data-testid="start-print"]');
-await page.waitForTimeout(1400);
+await page.waitForFunction(() => {
+  const el = document.querySelector('[data-testid="progress-percent"]');
+  return el && parseInt(el.textContent || '0', 10) >= 30;
+}, null, { timeout: 30000 }).catch(() => null);
 result.steps.mid_status = await statusText();
 result.steps.mid_progress = await page.locator('[data-testid="progress-percent"]').innerText();
 result.steps.mid_layer = await page.locator('[data-testid="current-layer"]').innerText();

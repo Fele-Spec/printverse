@@ -8,8 +8,8 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 >
 > Phase 3: **PARTIAL** — 4,526 FreeCAD placements, eight real module GLBs (1,686 parts), real
 > CAD default view with part picking, module modes, transparency, explode and studio lighting;
-> the G-code animation still uses the separate kinematic proxy, and InstancedMesh fasteners are
-> not implemented. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
+> the real CAD toolhead and platform follow the G-code (XY crossbeam static), and InstancedMesh
+> fasteners are not implemented. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,

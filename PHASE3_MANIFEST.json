@@ -35,10 +35,12 @@
     "load_errors": 0,
     "hardware_fps": 60.1,
     "headless_swiftshader_fps": 0.8,
-    "first_load_seconds": 8.0
+    "first_load_seconds": 8.0,
+    "motion_hierarchy": "PARTIAL / toolhead+bed CAD motion; XY crossbeam static",
+    "instancing": "PARTIAL / not implemented"
   },
   "open": [
-    "Unify the real CAD node hierarchy with the G-code motion tree",
+    "Split the XY crossbeam from static rails to complete CoreXY motion",
     "InstancedMesh for repeated fasteners",
     "WIRING module has only one shape-bearing part",
     "Physical Z clearance measurement",

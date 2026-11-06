@@ -69,8 +69,8 @@ Script: `scripts/phase3_perf_hw.mjs` (non-headless Edge, D3D11, window off-scree
   but should be compressed before deployment.
 - The LOD decimation is aggressive for small features (18% retained faces per large part); close
   inspection uses the full module mesh, but the merged LOD can show faceting at product scale.
-- The CAD mode and the print-simulation mode are still separate component trees; motion is not
-  yet driven by the 4,526-node CAD hierarchy.
+- The CAD mode now drives the real TOOLHEAD and BUILD_PLATFORM nodes; the XY crossbeam remains
+  static and is not yet a separate movable component.
 - Hardware FPS was measured with the CAD display only; the combined print animation plus CAD
   mode was not benchmarked on hardware.
 

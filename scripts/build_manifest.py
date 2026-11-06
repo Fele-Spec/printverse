@@ -394,7 +394,7 @@ def main() -> int:
             "lod_bytes": 8919408,
             "hardware_fps": 60.1,
             "instancing": "PARTIAL / NOT_IMPLEMENTED",
-            "motion_hierarchy": "PARTIAL / CAD static display + proxy simulation",
+            "motion_hierarchy": "PARTIAL / toolhead+bed CAD motion; XY crossbeam static",
             "physical_z_clearance": "PHYSICAL_PENDING",
         },
         "blocked": [

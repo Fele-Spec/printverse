@@ -59,7 +59,7 @@ The CAD mode uses a different target Z than the proxy so the real assembly is no
 
 After screenshots: `BEFORE_AFTER_SCREENSHOTS/after_front.png`, `after_interior.png`,
 `after_toolhead.png`, `after_top.png`, `after_z.png`, `after_bed.png`, `after_clear.png`,
-`after_exploded.png`, `after_part_inspector.png`, `after_cad_product.png`.
+`after_exploded.png`, `after_part_inspector.png`, `after_cad_product.png`, `after_printing_cad.png`.
 
 ## 3. Honest comparison
 
@@ -77,12 +77,12 @@ After screenshots: `BEFORE_AFTER_SCREENSHOTS/after_front.png`, `after_interior.p
 | Part identity | none | clickable placement with dimensions/path |
 | Transparency | fixed panel slab | glass/clear/hidden modes |
 | Explode | none | slider + preset |
-| Motion | proxy tree | proxy tree for print; real CAD tree is static |
+| Motion | proxy tree | real CAD toolhead and platform move with G-code; XY crossbeam static |
 
 ## 4. Still not complete
 
-1. The **real CAD tree is a static display**. The print animation still moves the proxy tree.
-   The requirement that motion and CAD share one hierarchy is **PARTIAL**.
+1. The real CAD toolhead and BUILD_PLATFORM now follow the G-code. The XY crossbeam is still
+   part of a static merged module, so the CoreXY gantry motion is **PARTIAL**.
 2. LOD is visible at close range on non-Toolhead modules; full detail is loaded only for
    Toolhead/Interior.
 3. `InstancedMesh` is not implemented; fasteners are merged into the LOD.

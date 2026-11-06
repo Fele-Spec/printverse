@@ -89,6 +89,7 @@ function Module({ id, url, visible, panelMode, ranges, onSelect }: {
 
 export function RealModules({
   visibleModules, panelMode, onSelect, zOffset = 0, explode = 0, highDetail = false, selectedPartId,
+  toolhead, bedZ,
 }: {
   visibleModules: Record<string, boolean>;
   panelMode: 'glass' | 'clear' | 'hidden';
@@ -97,6 +98,8 @@ export function RealModules({
   explode?: number;
   highDetail?: boolean;
   selectedPartId?: string | null;
+  toolhead?: { x: number; y: number };
+  bedZ?: number;
 }) {
   const [ranges, setRanges] = useState<Record<string, PartRange[]>>({});
   const [selected, setSelected] = useState<PartRecord | null>(null);
@@ -121,11 +124,19 @@ export function RealModules({
   } : null;
   return (
     <group position={[-127, -127, 58 + zOffset]} scale={1000}>
-      {Object.keys(MODULE_URLS).map((id) => (
-        <group key={id} position={[0, 0, explode * (id === 'TOOLHEAD' ? 0.25 : id === 'XY_GANTRY' ? 0.11 : id === 'Z_DRIVE' ? 0.055 : id === 'BUILD_PLATFORM' ? -0.08 : id === 'ELECTRONICS' ? 0.03 : 0)]}>
-          <Module id={id} url={(highDetail ? MODULE_URLS_HIGH : MODULE_URLS)[id]} visible={visibleModules[id] !== false} panelMode={panelMode} ranges={ranges[id] ?? []} onSelect={onSelect} />
-        </group>
-      ))}
+      {Object.keys(MODULE_URLS).map((id) => {
+        const motion: [number, number, number] = id === 'TOOLHEAD' && toolhead
+          ? [(toolhead.x - 6) / 1000, (toolhead.y - 15.5) / 1000, 0]
+          : id === 'BUILD_PLATFORM' && bedZ != null
+            ? [0, 0, (bedZ - 300) / 1000]
+            : [0, 0, 0];
+        const explodeZ = explode * (id === 'TOOLHEAD' ? 0.25 : id === 'XY_GANTRY' ? 0.11 : id === 'Z_DRIVE' ? 0.055 : id === 'BUILD_PLATFORM' ? -0.08 : id === 'ELECTRONICS' ? 0.03 : 0);
+        return (
+          <group key={id} position={[motion[0], motion[1], motion[2] + explodeZ]}>
+            <Module id={id} url={(highDetail ? MODULE_URLS_HIGH : MODULE_URLS)[id]} visible={visibleModules[id] !== false} panelMode={panelMode} ranges={ranges[id] ?? []} onSelect={onSelect} />
+          </group>
+        );
+      })}
       {selection && (
         <lineSegments geometry={edges} position={selection.center} scale={selection.size}>
           <lineBasicMaterial color="#79f2c0" transparent opacity={0.95} depthTest={false} />

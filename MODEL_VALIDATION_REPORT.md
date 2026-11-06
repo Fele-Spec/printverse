@@ -78,7 +78,7 @@ not an independent physical measurement. Details: `docs/reports/placement_sample
    open/inverted detail.
 3. The raw assembly envelope is 430×534.45×522 mm, not 460×460×480; spool/exhaust/cable outliers
    and assembly coordinates mean it must not be used as the frame envelope.
-4. Exact FreeCAD global coordinates are applied to the static CAD display; the print simulation
-   still uses the separate kinematic proxy for toolhead/bed motion.
+4. Exact FreeCAD global coordinates are applied to the CAD display. Toolhead and BUILD_PLATFORM
+   now take G-code motion inside that hierarchy; XY_GANTRY remains static.
 5. InstancedMesh is not used for repeated fasteners yet; this is a performance/quality item,
    not hidden.

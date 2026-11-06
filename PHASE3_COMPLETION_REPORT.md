@@ -6,7 +6,7 @@ Date: 2026-11-06 · Project: PrintVerse · Machine: Voron V2.4r2 300
 
 | Goal | Status |
 |---|---|
-| A. Replace proxy geometry with real FreeCAD modules | **PARTIAL — major geometry COMPLETE; motion hierarchy not unified** |
+| A. Replace proxy geometry with real FreeCAD modules | **PARTIAL — real modules + toolhead/bed motion; XY crossbeam still static** |
 | B. High-end industrial 3D visual upgrade | **COMPLETE for the reviewed desktop views** |
 | 4,526 placements audit | **COMPLETE** |
 | Eight modular GLBs | **COMPLETE** |
@@ -17,9 +17,9 @@ Date: 2026-11-06 · Project: PrintVerse · Machine: Voron V2.4r2 300
 | Exact 275/280 resolution | **COMPLETE; physical clearance remains PHYSICAL_PENDING** |
 | Image-to-3D | **DEFERRED / BLOCKED by 8 GB VRAM** |
 
-Overall: **PARTIAL**. The visual and CAD conversion goals are substantially met, but two
-requirements are still open: the real CAD tree does not drive the G-code print animation, and
-repeated fasteners are merged rather than instanced. Neither is hidden.
+Overall: **PARTIAL**. The real CAD toolhead and platform now follow the G-code, but the XY
+crossbeam is still one merged static module and repeated fasteners are not instanced. Neither
+is hidden.
 
 ## 2. Current project state
 
@@ -116,10 +116,9 @@ Evidence: `docs/reports/phase2_e2e.json`.
 
 ## 6. Open items and next smallest steps
 
-1. **Unify motion tree (highest priority).** Use the real GLB module nodes for the G-code
-   animation instead of the proxy. The current `CAD` toggle switches to a static real model;
-   `SIM` switches to the proxy. Need one hierarchy with the moving toolhead/gantry/bed driven by
-   the same placement IDs and transforms.
+1. **Split the XY gantry crossbeam from its static rails.** The toolhead and platform now move
+   inside the real CAD hierarchy, but the whole XY_GANTRY module is still static. Split the
+   crossbeam into a movable node to complete CoreXY visualization.
 2. **InstancedMesh for fasteners.** Deduplicate screw/nut/washer geometry and use instanced
    matrices for the hundreds of repeated standard parts; keep part metadata in an instance map.
 3. **Wire harness.** WIRING currently has only one solid; cable-chain and wire geometry are
@@ -135,5 +134,6 @@ Evidence: `docs/reports/phase2_e2e.json`.
 
 The printer is no longer a decorative parts collage: the real frame, enclosure, gantry, Z drive,
 toolhead, platform, electronics and the one available wiring part are loaded from the official
-FreeCAD assembly. The default view is the real CAD model; the print animation still uses the
-separate kinematic proxy. This is why the overall phase status is **PARTIAL**, not COMPLETE.
+FreeCAD assembly. The toolhead and platform now move inside that real hierarchy during G-code
+playback. The XY crossbeam remains static and fasteners are not instanced, so the overall phase
+status is **PARTIAL**, not COMPLETE.

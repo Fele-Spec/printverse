@@ -182,7 +182,21 @@ export function PrintScene({
 
       {cadMode ? (
         <Suspense fallback={null}>
-          <RealModules visibleModules={visibleModules} panelMode={panelMode} explode={explode} highDetail={viewPreset === 'toolhead' || viewPreset === 'interior'} selectedPartId={selectedPartName} onSelect={onPartSelect} />
+          <RealModules
+            visibleModules={visibleModules}
+            panelMode={panelMode}
+            explode={explode}
+            highDetail={viewPreset === 'toolhead' || viewPreset === 'interior'}
+            selectedPartId={selectedPartName}
+            toolhead={machineToolhead}
+            bedZ={tick.bedZ}
+            onSelect={onPartSelect}
+          />
+          {showPaths && (
+            <group position={[0, 0, tick.bedZ - 242]}>
+              <PrintPaths toolpath={toolpath} deposited={tick.deposited} />
+            </group>
+          )}
         </Suspense>
       ) : (
         <VoronMachine
@@ -194,7 +208,11 @@ export function PrintScene({
           explode={explode}
           visibleModules={visibleModules}
         >
-          {showPaths && <PrintPaths toolpath={toolpath} deposited={tick.deposited} />}
+          {showPaths && (
+            <group position={[0, 0, tick.bedZ]}>
+              <PrintPaths toolpath={toolpath} deposited={tick.deposited} />
+            </group>
+          )}
         </VoronMachine>
       )}
 
@@ -202,7 +220,7 @@ export function PrintScene({
         <Suspense fallback={null}>
           <FinishedObject
             modelUrl={modelUrl}
-            bedZ={tick.bedZ}
+            bedZ={cadMode ? tick.bedZ - 242 : tick.bedZ}
             detached={detached}
             mode={transformMode}
             showLabel={showLabels}
