@@ -1,0 +1,25 @@
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { chromium } = require('../frontend/node_modules/playwright-core');
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 980 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(String(e)));
+page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle', timeout: 120000 });
+await page.waitForTimeout(3000);
+await page.click('[data-testid="open-image3d"]');
+await page.waitForTimeout(600);
+await page.setInputFiles('[data-testid="image3d-file"]', 'assets/test-models/image3d/01_cube.png');
+await page.selectOption('[data-testid="image3d-provider"]', 'triposr_local');
+await page.click('[data-testid="image3d-run"]');
+await page.waitForFunction(() => {
+  const el = document.querySelector('[data-testid="image3d-result"]');
+  return el && /completed|failed|not_configured|authorization_required/.test(el.textContent || '');
+}, null, { timeout: 120000 }).catch(() => null);
+await page.waitForTimeout(1200);
+await page.screenshot({ path: 'BEFORE_AFTER_SCREENSHOTS/after_image3d_triposr.png' });
+const text = await page.locator('[data-testid="image3d-result"]').innerText().catch(() => '');
+console.log(JSON.stringify({ result: text.slice(0, 700), errors }));
+await browser.close();

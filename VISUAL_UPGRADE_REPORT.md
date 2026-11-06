@@ -59,7 +59,7 @@ The CAD mode uses a different target Z than the proxy so the real assembly is no
 
 After screenshots: `BEFORE_AFTER_SCREENSHOTS/after_front.png`, `after_interior.png`,
 `after_toolhead.png`, `after_top.png`, `after_z.png`, `after_bed.png`, `after_clear.png`,
-`after_exploded.png`, `after_part_inspector.png`, `after_cad_product.png`, `after_printing_cad.png`.
+`after_exploded.png`, `after_part_inspector.png`, `after_cad_product.png`, `after_printing_cad.png`, `after_image3d_panel.png`, `after_image3d_result.png`, `after_image3d_triposr.png`.
 
 ## 3. Honest comparison
 

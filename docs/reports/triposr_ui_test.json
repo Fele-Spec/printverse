@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "panel": "BEFORE_AFTER_SCREENSHOTS/after_image3d_panel.png",
+  "result_screenshot": "BEFORE_AFTER_SCREENSHOTS/after_image3d_triposr.png",
+  "provider": "triposr_local",
+  "model": "TripoSR (stabilityai/TripoSR)",
+  "status": "completed",
+  "geometry_status": "REPAIRED",
+  "texture_status": "VERTEX_COLOR",
+  "generation_cost_cny": 0.0,
+  "errors": []
+}
