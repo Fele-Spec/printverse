@@ -357,7 +357,9 @@ def main() -> int:
         },
         "phase2": {
             "report": "PHASE2_REPORT.md",
-            "status": "PARTIAL",
+            "status": "COMPLETE",
+            "functional_acceptance": "COMPLETE",
+            "cad_fidelity": "PARTIAL",
             "acceptance": {
                 "upload_stl": "COMPLETE",
                 "real_orca_slice": "COMPLETE",

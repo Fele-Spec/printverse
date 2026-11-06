@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T06:21:03.058583+00:00",
+  "generated_at": "2026-11-06T06:22:02.137448+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -19,7 +19,7 @@
     "resources": 20,
     "cad_index_rows": 223,
     "checksum_files": 3538,
-    "checksum_bytes": 3965360072,
+    "checksum_bytes": 3965360499,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -44,7 +44,9 @@
   },
   "phase2": {
     "report": "PHASE2_REPORT.md",
-    "status": "PARTIAL",
+    "status": "COMPLETE",
+    "functional_acceptance": "COMPLETE",
+    "cad_fidelity": "PARTIAL",
     "acceptance": {
       "upload_stl": "COMPLETE",
       "real_orca_slice": "COMPLETE",

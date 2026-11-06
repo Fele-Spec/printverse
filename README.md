@@ -3,9 +3,10 @@
 AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual printing,
 3D collection / desktop-pet surface, and dual virtual/physical filament accounting.
 
-> Phase 2 status: **PARTIAL** — upload→Orca slice→G-code animation→detach→collect passes end to end
-> ([PHASE2_REPORT.md](PHASE2_REPORT.md)); exact STEP assembly transforms remain pending, so the
-> Web scene is a verified kinematic proxy rather than exact CAD placement.
+> Phase 2 functional acceptance: **COMPLETE** — upload→Orca slice→G-code animation→detach→collect
+> passes end to end ([PHASE2_REPORT.md](PHASE2_REPORT.md)). CAD fidelity remains **PARTIAL**:
+> 4,526 FreeCAD placements are extracted but not yet serialized into glTF, so frame/toolhead
+> are verified kinematic proxies; the 300 mm bed is a real CAD mesh.
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,

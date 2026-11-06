@@ -6,6 +6,7 @@ Date: 2026-11-06 · Root: `C:\Users\someb\Desktop\printverse`
 
 | Area | Status | Evidence |
 |---|---|---|
+| Phase-2 functional acceptance | **COMPLETE** | upload → real Orca slice → animation → detach → collect; `docs/reports/phase2_e2e.json` |
 | 275 vs 280 mm mechanical conflict | **COMPLETE** | `MECHANICAL_PARAMETERS.md`; Klipper 300 config `position_max: 280`; Orca `printable_height: 275` |
 | Full STEP geometry import | **COMPLETE** | build123d/OCP imported 267 MB / 1,677 solids in 76.17 s |
 | Exact STEP assembly transforms | **PARTIAL** | XCAF names/hierarchy recovered (1,690 nodes); FreeCAD 4,526 objects with 2,977 non-identity placements; Web scene does not yet serialize those placements |
@@ -16,9 +17,11 @@ Date: 2026-11-06 · Root: `C:\Users\someb\Desktop\printverse`
 | CadQuery/build123d isolation | **COMPLETE** | build123d/OCP 8 main venv; CadQuery 2.8/OCP 7.9 in `.venv-cadquery`; both `box` tests pass |
 | Image-to-3D | **DEFERRED / BLOCKED** | 8 GB VRAM; Hunyuan3D 10–29 GB, TRELLIS ≥16 GB; no paid API used |
 
-Overall phase verdict: **PARTIAL** — the requested upload→virtual print→detach→collect loop passes,
-but the exact STEP transform hierarchy is not yet name-preserving and the scene uses verified
-nominal dimensions for major modules. Do not present the kinematic proxy as exact CAD placement.
+Overall phase verdict: **COMPLETE (functional acceptance)** — upload → real slice → G-code
+animation → detach → collect passes end to end, with tests and screenshots. A separate
+**CAD-fidelity item remains PARTIAL**: the 4,526 FreeCAD object placements are extracted but
+not yet serialized into glTF, so frame/toolhead remain verified kinematic proxies. Do not call
+the proxy exact CAD placement.
 
 ## 2. Mechanical height resolution
 
