@@ -1,29 +1,29 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T04:08:30.652317+00:00",
+  "generated_at": "2026-11-06T05:08:58.929778+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
-  "bootstrap_status": "PARTIAL",
+  "bootstrap_status": "COMPLETE",
   "criteria": {
     "A_official_voron_assets": "COMPLETE",
     "B_300mm_bom": "COMPLETE",
-    "C_software": "PARTIAL",
+    "C_software": "COMPLETE",
     "D_skills_loaded": "COMPLETE",
     "E_freecad_cad_import": "COMPLETE",
     "F_orcaslicer_test_slice": "COMPLETE",
     "G_gcode_parsed": "COMPLETE",
-    "H_threejs_scene": "PARTIAL",
+    "H_threejs_scene": "COMPLETE",
     "I_licenses_recorded": "COMPLETE",
     "J_reports": "COMPLETE"
   },
   "counts": {
-    "resources": 17,
-    "cad_index_rows": 220,
-    "checksum_files": 3465,
-    "checksum_bytes": 3863113839,
+    "resources": 18,
+    "cad_index_rows": 221,
+    "checksum_files": 3484,
+    "checksum_bytes": 3912547093,
     "stl_files": 190,
     "dxf_files": 12,
-    "step_files": 4,
-    "licenses": 101
+    "step_files": 5,
+    "licenses": 142
   },
   "evidence": {
     "bom": "BOM_300MM.csv",
@@ -32,14 +32,19 @@
     "freecad_stl": "docs/reports/freecad_stl_test.json",
     "freecad_step_part": "docs/reports/freecad_step_part_test.json",
     "freecad_step_structure": "docs/reports/step_structure.json",
+    "build123d": "assets/processed/build123d_test.step",
+    "bom_browser": "assets/previews/BOM_300MM_browser.png",
     "gcode_parse": "docs/reports/gcode_parse.json",
     "threejs_glb": "docs/reports/threejs_glb_test.json",
+    "threejs_smoke": "docs/reports/threejs_smoke.json",
     "skills": "SKILL_AUDIT.md",
     "checksums": "manifests/checksums.sha256"
   },
   "blocked": [
-    "Headless browser render: Chromium/Edge cannot create its required named-pipe channel under this DSH sandbox (mojo platform_channel, access denied). Build and HTTP preview pass; screenshot is blocked.",
-    "build123d/cadquery: not installed because the PyPI download averaged roughly 50 KB/s; FreeCAD/OCP covers the CAD import tests for this bootstrap.",
-    "Image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded."
+    "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded."
+  ],
+  "partial": [
+    "Full 267 MB Voron assembly FreeCAD import timed out after 261.7 CPU seconds / about 1.2 GB working set; STEP text structure was parsed instead (1,534 products, 1,662 solids).",
+    "cadquery 2.8 requires OCP <8.0 and cannot share the verified build123d OCP 8.0 environment; deferred to a separate venv."
   ]
 }

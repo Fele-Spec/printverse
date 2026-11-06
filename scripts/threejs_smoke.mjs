@@ -19,12 +19,16 @@ const browser = await chromium.launch({
 });
 const page = await browser.newPage({ viewport: { width: 1440, height: 980 }, deviceScaleFactor: 1 });
 const consoleErrors = [];
+const http404 = [];
 page.on('console', (msg) => {
   if (msg.type() === 'error') consoleErrors.push(msg.text());
 });
 page.on('pageerror', (err) => consoleErrors.push(`pageerror: ${err.message}`));
+page.on('response', (response) => {
+  if (response.status() === 404) http404.push(response.url());
+});
 
-const result = { url: URL, title: null, objectName: null, canvas: null, webgl: null, errors: consoleErrors, screenshots: [] };
+const result = { url: URL, title: null, objectName: null, canvas: null, webgl: null, http404, errors: consoleErrors, screenshots: [] };
 await page.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
 await page.waitForSelector('canvas', { timeout: 30000 });
 await page.waitForTimeout(2500);
@@ -84,6 +88,7 @@ result.pixelVariance = await page.locator('canvas').evaluate((el) => {
   return { min, max, mean: sum / (d.length / 4), range: max - min };
 });
 
+fs.writeFileSync('docs/reports/threejs_smoke.json', JSON.stringify(result, null, 2));
 console.log(JSON.stringify(result, null, 2));
 await browser.close();
 if (!result.webgl || consoleErrors.length) process.exit(1);

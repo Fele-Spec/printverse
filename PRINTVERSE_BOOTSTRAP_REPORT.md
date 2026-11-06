@@ -1,8 +1,9 @@
 # PrintVerse Bootstrap Report
 
 Date: 2026-11-06 (Asia/Shanghai) · Root: `C:\Users\someb\Desktop\printverse`
-Overall status: **PARTIAL** — the engineering foundation is usable, but three environmental
-limits are reported openly rather than disguised as success.
+Overall status: **COMPLETE (A–J)** — all ten completion criteria pass. One optional
+hardware-gated capability, local image-to-3D, remains BLOCKED on this 8 GB GPU and is reported
+separately rather than disguised as a completed test.
 
 ## 1. Completion criteria
 
@@ -10,16 +11,17 @@ limits are reported openly rather than disguised as success.
 |---|---|---|---|
 | A | Official Voron V2.4r2 engineering data acquired | **COMPLETE** | 342 MB tag archive, 185 STL, 267 MB assembly STEP, DXF, F3D, manuals; no LFS pointers |
 | B | 300 mm BOM generated or blocked reason | **COMPLETE** | 120 line items replayed from official configurator JS; `BOM_300MM.csv/.html/.pdf` |
-| C | Required software installed or verified fallback | **PARTIAL** | FreeCAD, Blender + Print3D, OrcaSlicer, Python, Node installed and exercised; `build123d`/`cadquery` not installed because PyPI throughput was ~50 KB/s; FreeCAD/OCP is the working CAD fallback |
+| C | Required software installed or verified fallback | **COMPLETE** | FreeCAD, Blender + Print3D, OrcaSlicer, Python 3.12 + `build123d` 0.13.0/OCP 8.0.1.1.0, Node installed and exercised; `cadquery` 2.8 requires OCP <8.0 and is incompatible with build123d's OCP 8.0, so it is evaluated and deferred to a separate venv |
 | D | Project Skills loaded | **COMPLETE** | six skills in catalog and loadable; `SKILL_AUDIT.md` |
 | E | FreeCAD imports test CAD | **COMPLETE** | STL 60×34×2 mm and STEP bed 305×305×7.76 mm imported; full assembly import PARTIAL |
 | F | OrcaSlicer completes a test slice | **COMPLETE** | 20 mm cube, 100 layers, exit 0, G-code + 3MF |
 | G | G-code parsed successfully | **COMPLETE** | 100 layers, 3.978 g vs 3.98 g slicer, bounds consistent |
-| H | Three.js test scene actually runs | **PARTIAL** | production build + Vite HTTP 200 + real Three.js `GLTFLoader` scene graph; pixel screenshot blocked by sandbox named pipes |
+| H | Three.js test scene actually runs | **COMPLETE** | real headless Edge WebGL 2.0 render, 1440×898 canvas, 802 triangles, three screenshots, background toggle, 0 console errors/404 |
 | I | Source and license recorded | **COMPLETE** | `OFFICIAL_RESOURCES.md`, `LICENSE_AUDIT.csv`, 3,400+ file checksum manifest |
 | J | All reports generated | **COMPLETE** | ten required deliverables plus manifests |
 
-The honest overall verdict is **PARTIAL**, not COMPLETE.
+All A–J criteria now pass. The single BLOCKED item is optional local image-to-3D, which cannot
+run on 8 GB VRAM; it is not counted as a completed test.
 
 ## 2. Environment
 
@@ -58,9 +60,11 @@ executes the published `bom_2.4.js` + `configurator_2.4.js` in a VM with the exa
 V2.4 / 300 / New Build / Direct Feed / Blind Joints / Generic Cable Chains. Result: 120 line
 items, total quantity 1,244, build volume 300×300×280 mm, frame 460×460×480 mm.
 
-The page screenshot is **BLOCKED** by the same browser limitation as H. The HTML snapshot is
-generated from the result; `assets/previews/BOM_300MM_page1.png` is a generated table preview,
-not a browser screenshot.
+A real headless-Edge screenshot of the generated BOM page is saved at
+`assets/previews/BOM_300MM_browser.png` (browser result: 120 rows, 0 console errors). The
+official configurator UI itself was not visually automated; its raw HTML/JS is archived under
+`assets/source/voron-v2.4r2-300/BOM/raw/` and its BOM logic was replayed exactly.
+`assets/previews/BOM_300MM_page1.png` is an additional generated table preview.
 
 ### Docs / firmware
 
@@ -77,31 +81,48 @@ not a browser screenshot.
 | Blender | 4.5.12 LTS | STL imported, GLB exported, mesh 60×34×2 |
 | 3D Print Toolbox | 1.5.0 | addon enabled; `print3d_check_all` returned `{'FINISHED'}` |
 | OrcaSlicer | 2.4.2 | cube sliced, 100 layers, 3MF written |
-| Python venv | 3.12.10 + 61 locked packages | trimesh/meshio/FastAPI imports pass |
+| Python venv | 3.12.10 + 100 locked packages | trimesh/meshio/FastAPI and build123d Box→STEP pass |
 | Three.js | 0.187.0 | GLB parsed: 1 mesh, 802 triangles, 60×34×2 mm |
 | Frontend | React 19.3 + R3F 9.8 + Drei 10.7 | `vite build` pass; preview HTTP 200 |
 
-## 5. What is blocked, and why
+## 5. Remaining limits and one blocked optional capability
 
-### 5.1 Browser screenshot / WebGL render — BLOCKED
+### 5.1 Browser screenshot / WebGL render — COMPLETE
 
-The frontend builds and is served at `http://127.0.0.1:4173/`. Headless Edge/Chromium cannot
-start under this DSH sandbox: it fails at
+The default workspace sandbox cannot launch Chromium: it fails at
 `mojo\public\cpp\platform\platform_channel.cc: Check failed: ... 拒绝访问` because the sandbox
-denies the named-pipe IPC Chrome requires. The ACL diagnostic classified the cache path
-`NOT_THIS_CLASS` and made no changes. Playwright launch fails with `spawn EPERM`.
+denies the named-pipe IPC Chrome requires (Playwright: `spawn EPERM`). The ACL diagnostic
+classified the cache path `NOT_THIS_CLASS` and made no changes.
 
-Therefore: **build PASS, HTTP preview PASS, Three.js GLTFLoader PASS, rendered screenshot
-BLOCKED**. No screenshot is fabricated. Running the same scene outside this sandbox (or in a
-full-access session) is the next verification step.
+After an approved one-shot full-access run, the real test completed:
 
-### 5.2 build123d / cadquery — NOT INSTALLED
+| Result | Value |
+|---|---|
+| Browser | system Microsoft Edge, headless, SwiftShader |
+| WebGL | WebGL 2.0 (OpenGL ES 3.0 Chromium), ANGLE SwiftShader |
+| Canvas | 1440 × 898 |
+| Object | `Filament_Card`, 1 mesh, 802 triangles, 60 × 34 × 2 mm |
+| Interactions | drag-orbit and wheel zoom changed the view; light background active |
+| Console errors / 404 | 0 / 0 |
+| Screenshots | `threejs_scene.png`, `threejs_orbited.png`, `threejs_light.png` |
+| Machine evidence | `docs/reports/threejs_smoke.json` |
 
-PyPI downloads averaged roughly 50 KB/s (numpy 12 MB took 4m21s). The OCP wheel needed by
-build123d/cadquery is hundreds of MB. Installing it would consume a disproportionate share of
-the bootstrap window. FreeCAD 1.1.4 is installed and successfully imports STEP/STL, so CAD work
-is not unblocked, only the optional Python-native modelling API is missing. This is a
-**PARTIAL**, not a hidden success.
+This is an actual rendered result, not a fabricated screenshot. The only environment caveat is
+that Chromium still needs full access or a non-sandboxed session to start; the workspace default
+cannot run it.
+
+### 5.2 build123d — installed; cadquery — evaluated, not installed
+
+The `cadquery-ocp-novtk` wheel is 47.7 MB, not the multi-hundred-MB package initially assumed.
+It was fetched through Node, SHA256-verified, and installed; `build123d` 0.13.0 + OCP 8.0.1.1.0
+then installed successfully.
+
+Test: `Box(10, 20, 30)` → volume 6,000 mm³, bounding box 10 × 20 × 30, exported
+`assets/processed/build123d_test.step` (15,430 bytes). **COMPLETE.**
+
+`cadquery` 2.8.0 requires `cadquery-ocp>=7.9.3.1,<8.0`, which conflicts with build123d's OCP
+8.0. It is not installed into the main venv; a separate venv is the correct route if CadQuery's
+API is needed.
 
 ### 5.3 Image-to-3D — PARTIAL / BLOCKED BY HARDWARE
 
@@ -155,6 +176,6 @@ Supporting:
 
 ## 9. Next action
 
-Open `NEXT_DEVELOPMENT_PLAN.md`. The smallest next verification is to run the existing frontend
-and Playwright suite in a non-sandboxed session to capture the 1440×980 rendered screenshot,
-then proceed to STEP→glTF conversion and toolpath streaming.
+Open `NEXT_DEVELOPMENT_PLAN.md`. The next engineering step is STEP→glTF conversion of the
+267 MB assembly and a toolpath streaming renderer; the browser and CAD verification gaps are
+closed. Local image-to-3D remains a separate hardware-gated experiment.

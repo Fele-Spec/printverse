@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T04:08:30.652317+00:00",
+  "generated_at": "2026-11-06T05:08:58.929778+00:00",
   "resources": [
     {
       "id": "7zr-exe",
@@ -161,6 +161,24 @@
       "downloaded_at": "2026-11-06T03:44:13.764Z",
       "license": "GPL-3.0-or-later",
       "homepage": "https://extensions.blender.org/add-ons/print3d-toolbox/",
+      "opens": true
+    },
+    {
+      "id": "cadquery-ocp-novtk-8-0-1-1-0-cp312-cp312-win-amd64-whl",
+      "kind": "download",
+      "title": "cadquery_ocp_novtk-8.0.1.1.0-cp312-cp312-win_amd64.whl",
+      "path": "tools/downloads/cadquery_ocp_novtk-8.0.1.1.0-cp312-cp312-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/29/ad/ffa8c0f9fc2128d77d24e3afdd778cc699365eed66a895ded249cfdca5ac/cadquery_ocp_novtk-8.0.1.1.0-cp312-cp312-win_amd64.whl",
+      "resolved_url": "https://files.pythonhosted.org/packages/29/ad/ffa8c0f9fc2128d77d24e3afdd778cc699365eed66a895ded249cfdca5ac/cadquery_ocp_novtk-8.0.1.1.0-cp312-cp312-win_amd64.whl",
+      "repository": "",
+      "version": "",
+      "commit": null,
+      "bytes": 47747323,
+      "sha256": "af3ecbeaf28ee4df17a07c8a3b88e3009bb820c7f4c7d7d1732745d064c96781",
+      "sha256_matches_download_ledger": true,
+      "downloaded_at": "2026-11-06T04:14:46.392Z",
+      "license": "UNKNOWN_LICENSE",
+      "homepage": "",
       "opens": true
     },
     {

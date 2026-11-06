@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Render BOM snapshots (PDF, PNG table, HTML) from the official-configurator replay.
 
-This is a generated table preview, not a browser screenshot. The browser screenshot is
-blocked by the sandbox's named-pipe restriction and is reported as such.
+The generated page and PDF are paired with a real browser screenshot at
+assets/previews/BOM_300MM_browser.png; the official configurator UI itself is not automated.
 """
 from __future__ import annotations
 
@@ -112,8 +112,8 @@ td,th{{padding:6px 8px;border-bottom:1px solid #dbe5ea}}tr:nth-child(even) td{{b
 Build volume {geo['build_volume']['x']} × {geo['build_volume']['y']} × {geo['build_volume']['z']} mm · Frame {geo['frame_outer']['x']} × {geo['frame_outer']['y']} × {geo['frame_outer']['z']} mm · {len(rows)} line items · total quantity {data['total_quantity']}</div>
 <table><thead><tr><th>Category</th><th>Part description</th><th>Qty</th></tr></thead><tbody>{html_rows}</tbody></table>
 <p class="note">Derived from the public JavaScript at <a href="https://www.vorondesign.com/voron2.4">vorondesign.com/voron2.4</a>;
-official quantities preserved. Fastener quantities are minimums. This is a generated table snapshot; the browser page
-screenshot is blocked by the sandbox and recorded as such in the report.</p></main></body></html>"""
+official quantities preserved. Fastener quantities are minimums. A real browser screenshot is saved at
+<code>assets/previews/BOM_300MM_browser.png</code>; the official configurator UI itself is not automated.</p></main></body></html>"""
 (ROOT / "BOM_300MM.html").write_text(html, encoding="utf-8")
 (PREVIEW / "BOM_300MM_page1.png").replace(PREVIEW / "BOM_300MM_page1.png")
 print(f"wrote {pdf_path}, BOM_300MM.html, {PREVIEW / 'BOM_300MM_page1.png'} ({len(rows)} rows)")

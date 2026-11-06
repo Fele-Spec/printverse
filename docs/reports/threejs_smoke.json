@@ -1,0 +1,31 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "title": "PrintVerse · Voron 2.4r2 Digital Twin",
+  "objectName": "Filament_Card",
+  "canvas": {
+    "width": 1440,
+    "height": 898,
+    "cssWidth": 1440,
+    "cssHeight": 898
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)"
+  },
+  "http404": [],
+  "errors": [],
+  "screenshots": [
+    "assets/previews/threejs_scene.png",
+    "assets/previews/threejs_orbited.png",
+    "assets/previews/threejs_light.png"
+  ],
+  "lightButtonActive": true,
+  "spinTogglePresent": 1,
+  "pixelVariance": {
+    "min": 0,
+    "max": 237.66666666666666,
+    "mean": 213.48185221353197,
+    "range": 237.66666666666666
+  }
+}

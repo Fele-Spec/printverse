@@ -3,12 +3,12 @@
 AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual printing,
 3D collection / desktop-pet surface, and dual virtual/physical filament accounting.
 
-> Bootstrap status: **PARTIAL** (see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md)).
-> The official CAD/BOM/docs stack, FreeCAD/Blender/OrcaSlicer, Python/Node environments,
-> six project Skills, a real Orca slice, a G-code parser, and the Three.js scene build are
-> ready. The browser screenshot is blocked by the DSH sandbox's named-pipe restriction, and
-> `build123d`/`cadquery` plus image-to-3D weights were not installed because of network
-> throughput and the 8 GB GPU limit. Those are reported honestly, not hidden.
+> Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
+> Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
+> six project Skills, a real Orca slice, a parsed G-code file, and real headless-Edge WebGL
+> screenshots are ready. The only remaining item is optional local image-to-3D, which is
+> **BLOCKED** by the 8 GB GPU (Hunyuan3D needs 10–29 GB; TRELLIS ≥16 GB). That is reported,
+> not hidden.
 
 ## What is already available
 
@@ -20,7 +20,7 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 | Slicer profiles | `configs/machine/`, `configs/process/`, `configs/filament/` |
 | Test slice | `assets/test-models/cube.gcode`, `cube.3mf` — 100 layers, 3.98 g PLA |
 | G-code parser | `scripts/parse_gcode.py` + `docs/reports/gcode_parse.json` |
-| Frontend | `frontend/` — React 19 + Three.js + R3F + Drei, built GLB scene |
+| Frontend | `frontend/` — React 19 + Three.js + R3F + Drei; real WebGL screenshots in `assets/previews/threejs_*.png` |
 | Skills | `.dsh/skills/` — six PrintVerse skills recognized by the Harness |
 | Indexes | `CAD_ASSET_INDEX.csv`, `LICENSE_AUDIT.csv`, `manifests/`, `SHA256SUMS.txt` |
 
@@ -44,15 +44,16 @@ npm run preview --prefix frontend
 - FreeCAD 1.1.4: `tools/FreeCAD-1.1.4/FreeCAD_1.1.4-Windows-x86_64-py311/`
 - Blender 4.5.12 LTS: `tools/Blender-4.5.12/blender.exe`
 - OrcaSlicer 2.4.2: `tools/OrcaSlicer-2.4.2/orca-slicer.exe`
-- Python 3.12 venv: `.venv/`
+- Python 3.12 venv: `.venv/` (build123d 0.13.0, OCP 8.0.1.1.0, trimesh 5.2.0)
 - Node 24.16 / npm 11.13; frontend deps in `frontend/node_modules/`
 
 ## Safety boundary
 
 This bootstrap never connected to a real printer, never heated anything, never flashed
 firmware, never exposed Moonraker, and never processed a payment. Moonraker work is
-documentation and read-only design only. The browser screenshot limitation is an
-environment restriction, not a product decision.
+documentation and read-only design only. Chromium needs an approved full-access or
+non-sandboxed session to start because the default sandbox blocks its named-pipe IPC; the
+captured WebGL screenshots are real results from that approved run, not mockups.
 
 ## Repository map
 

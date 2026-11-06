@@ -1,20 +1,20 @@
 # PrintVerse Next Development Plan
 
-The bootstrap is **PARTIAL**. The foundation is real, but the browser render, Python-native
-CAD, and image-to-3D path need the next phase.
+The bootstrap is **COMPLETE (A–J)**. Real browser screenshots and `build123d` verification are
+done. The remaining work is product development plus one optional hardware-gated experiment:
+local image-to-3D on 8 GB VRAM.
 
-## P0 — Close the verification gap (1–2 days)
+## P0 — Close the remaining calibration questions (1–2 days)
 
-1. Run `npm run preview --prefix frontend` and `scripts/threejs_smoke.mjs` in a non-sandboxed
-   session; capture 1440×980 screenshots for dark/light/blueprint and drag/zoom.
-2. Resolve the 275 vs 280 mm printable-height discrepancy against a real Voron or the official
+1. Resolve the 275 vs 280 mm printable-height discrepancy against a real Voron or the official
    Klipper config; do not change the vendor profile silently.
-3. Install `build123d` and `cadquery` in an isolated venv on a faster link; test
-   `Box`/`import_step` and record OCP versions.
-4. Decide whether to pin Three.js 0.185 for `gcode-preview` or isolate a viewer package.
+2. If CadQuery's API is needed, install `cadquery` 2.8 with OCP <8.0 in a **separate venv**;
+   it cannot share the build123d OCP 8.0 environment.
+3. Decide whether to pin Three.js 0.185 for `gcode-preview` or isolate a viewer package.
+4. Optional: test TripoSR on the 8 GB GPU, recording peak VRAM and mesh repair rate.
 
-**Acceptance:** screenshot files exist and are reviewed; both Python CAD libraries import a
-STEP; no profile value is marked calibrated without evidence.
+**Acceptance:** no profile value is marked calibrated without evidence; the CadQuery decision is
+documented; browser screenshots remain reproducible under an approved full-access run.
 
 ## P1 — Digital twin geometry (3–5 days)
 
@@ -100,5 +100,7 @@ client; no secret appears in logs or Git.
 
 The digital twin loads the converted Voron assembly in a browser; a sliced cube drives the
 nozzle and grows material layer by layer; the model can be detached from the plate; the first
-free print and quota ledger pass deterministic tests; and Moonraker remains read-only. Until
-then, this project stays **PARTIAL**, not COMPLETE.
+free print and quota ledger pass deterministic tests; and Moonraker remains read-only.
+
+**Bootstrap vs product:** the A–J bootstrap is COMPLETE. The product itself is not; the
+milestones above define its next completion gate.

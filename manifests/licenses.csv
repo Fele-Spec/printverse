@@ -15,7 +15,10 @@ Drei,10.7.9,MIT,https://github.com/pmndrs/drei,YES,YES,YES,Three.js helpers.
 React / React DOM,19.3.1,MIT,https://github.com/facebook/react,YES,YES,YES,Frontend UI.
 Vite,8.3.6,MIT,https://github.com/vitejs/vite,YES,YES,YES,Frontend build tool.
 TypeScript,5.9.3,Apache-2.0,https://github.com/microsoft/TypeScript,YES,YES,YES,Type checking.
-Playwright Core,1.65.0,Apache-2.0,https://github.com/microsoft/playwright,YES,YES,YES,"Browser test harness; browser launch blocked by sandbox, no browser bundled."
+Playwright Core,1.65.0,Apache-2.0,https://github.com/microsoft/playwright,YES,YES,YES,Browser test harness; no browser bundled. Real Edge WebGL screenshots captured under an approved full-access run.
+build123d,0.13.0,MIT,https://github.com/gumyr/build123d,YES,YES,YES,"Python-native parametric CAD; Box(10,20,30) verified and STEP exported."
+cadquery-ocp-novtk,8.0.1.1.0,Apache-2.0,https://github.com/CadQuery/OCP,YES,YES,YES,OCP 8.0 Python bindings used by build123d; no VTK dependency.
+cadquery,2.8.0,Apache-2.0,https://github.com/CadQuery/cadquery,YES,YES,YES,Evaluated only; requires OCP <8.0 and conflicts with build123d's OCP 8.0. Use a separate venv.
 gcode-preview,2.18.0,MIT,https://github.com/remcoder/gcode-preview,YES,YES,YES,Evaluated MIT G-code preview library; peer range targets Three.js 0.159.
 gcode-parser (cncjs),2.2.0,MIT,https://github.com/cncjs/gcode-parser,YES,YES,YES,Evaluated Node-side parser; not installed.
 gcode-toolpath (cncjs),3.0.0,MIT,https://github.com/cncjs/gcode-toolpath,YES,YES,YES,Evaluated toolpath generator; not installed.
@@ -42,14 +45,23 @@ Matplotlib,3.11.2,PSF-based,https://matplotlib.org/,YES,YES,YES,BOM preview gene
 Python: ﻿annotated-doc,0.0.5,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: annotated-types,0.8.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: anyio,4.16.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: anytree,2.13.0,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: asttokens,3.0.2,Apache 2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: bd-materials,0.2.5,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: beautifulsoup4,4.15.0,MIT License,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: build123d,0.13.0,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: cadquery-ocp-proxy,8.0.1.1.0,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: certifi,2026.10.23,MPL-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: charset-normalizer,3.5.2,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: click,8.5.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: cloudpickle,3.1.2,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: colorama,0.4.6,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: contourpy,1.4.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: cycler,0.12.1,"Copyright (c) 2015, matplotlib project",UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: dataclasses-json,0.6.7,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: deprecated,3.0.1,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: executing,2.3.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: ezdxf,1.4.5,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: fastapi,0.162.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: fonttools,4.68.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: h11,0.16.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
@@ -58,7 +70,12 @@ Python: httptools,0.9.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lo
 Python: httpx,0.28.1,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: idna,3.20,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: iniconfig,2.3.1,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: ipython,9.18.1,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: ipython-pygments-lexers,1.1.1,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: jedi,0.20.1,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: joblib,1.6.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: kiwisolver,1.5.1,=========================,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: lib3mf,2.5.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: lxml,6.1.3,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: manifold3d,3.5.4,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: mapbox-earcut,2.1.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
@@ -66,14 +83,24 @@ Python: markdown-it-py,4.2.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI packag
 Python: markdownify,1.2.3,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: marshmallow,3.26.2,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: matplotlib,3.11.2,License agreement for matplotlib versions 1.3.0 and later,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: matplotlib-inline,0.2.2,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: mdurl,0.1.2,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: meshio,5.3.5,The MIT License (MIT),YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: mpmath,1.3.0,BSD,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: mypy-extensions,1.2.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: narwhals,2.28.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: numpy,2.5.4,BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: ocp-gordon,0.3.1,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: ocpsvg,0.7.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: opentelemetry-api,1.45.2,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: packaging,26.3,Apache-2.0 OR BSD-2-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: parso,0.8.7,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pillow,13.0.0,MIT-CMU,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: platformdirs,4.14.5,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pluggy,1.7.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: prompt-toolkit,3.0.53,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: psutil,7.2.2,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: pure-eval,0.2.4,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pydantic,2.14.3,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pydantic-core,2.50.4,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pygltflib,1.16.5,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
@@ -84,19 +111,33 @@ Python: python-dateutil,4.0.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in 
 Python: python-dotenv,1.2.4,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: python-multipart,0.0.33,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pyyaml,6.0.3,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: requests,2.34.2,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: rich,15.0.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: rtree,1.4.1,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: scikit-learn,1.9.1,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: scipy,1.18.1,"Copyright (c) 2001-2002 Enthought, Inc. 2003, SciPy Developers.",UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: shapely,2.2.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: six,1.17.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: soupsieve,4.0.1,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: stack-data,0.6.3,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: starlette,1.10.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: svgelements,1.9.6,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: svgpathtools,1.8.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: svgwrite,1.4.3,MIT License,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: sympy,1.14.0,BSD,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: threadpoolctl,3.8.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: threejs-materials,1.2.5,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: traitlets,5.16.1,BSD 3-Clause License,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: trianglesolver,1.2,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: trimesh,5.2.0,The MIT License (MIT),YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: typing-extensions,4.16.0,PSF-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: typing-inspect,0.9.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: typing-inspection,0.4.5,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: tzdata,2026.6,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: urllib3,2.8.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: uvicorn,0.54.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: watchfiles,1.3.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: wcwidth,0.9.4,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: webcolors,24.8.0,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: websockets,17.4,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: wrapt,2.5.2,BSD-2-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
