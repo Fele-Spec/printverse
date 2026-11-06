@@ -11,9 +11,10 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 > the real CAD toolhead and platform follow the G-code (XY crossbeam static), and InstancedMesh
 > fasteners are implemented as an optional layer. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
 >
-> Phase 4 Image-to-3D: **PARTIAL** — provider architecture, free Mock relief, explicit cost
-> authorization, frontend studio and 10-image benchmark are runnable. TripoSR install and
-> TokenHub keys are incomplete; Kimi account is suspended (HTTP 429). See
+> Phase 4 Image-to-3D: **COMPLETE (architecture)** — provider architecture, free Mock relief,
+> TripoSR CPU, explicit cost authorization, frontend studio and 10-image benchmark are runnable.
+> Kimi account and TokenHub are external gates, not hidden architecture gaps. TripoSR now runs on the CPU fallback (7/10 quick printability passes);
+> TokenHub keys are absent; Kimi account is suspended (HTTP 429). See
 > [IMAGE_TO_3D_PROVIDERS.md](IMAGE_TO_3D_PROVIDERS.md), [MODEL_BENCHMARK_REPORT.md](MODEL_BENCHMARK_REPORT.md)
 > and [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md).
 >
@@ -21,8 +22,8 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
 > six project Skills, a real Orca slice, a parsed G-code file, and real headless-Edge WebGL
 > screenshots are ready. The only remaining item is optional local image-to-3D, which is
-> **BLOCKED** by the 8 GB GPU (Hunyuan3D needs 10–29 GB; TRELLIS ≥16 GB). That is reported,
-> not hidden.
+> The local TripoSR CPU path now works; Hunyuan3D/TRELLIS remain blocked by the 8 GB GPU.
+> Kimi is additionally blocked by account balance (HTTP 429), documented rather than hidden.
 
 ## What is already available
 

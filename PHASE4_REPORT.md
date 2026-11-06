@@ -1,6 +1,6 @@
 # PrintVerse Image-to-3D Phase Report
 
-Date: 2026-11-06 · Status: **PARTIAL**
+Date: 2026-11-06 · Status: **COMPLETE (architecture)**; external Kimi/TokenHub gates remain BLOCKED
 
 ## 1. Outcome
 
@@ -19,15 +19,14 @@ A multi-provider Image-to-3D architecture is implemented and runnable without an
 
 - NVIDIA RTX 5060 Laptop, **8,151 MiB VRAM**, driver 592.82, CUDA 13.1.
 - Main `.venv`: no torch; build123d/CadQuery environments untouched.
-- `.venv-triposr` created; TripoSR source downloaded; checkpoint incomplete (network); CPU torch wheel download incomplete; CUDA torch wheel (3.27 GB) not feasible in this run.
-- Therefore TripoSR is **not scored** and no VRAM claim is made.
+- `.venv-triposr` created; TripoSR source, complete 1.68 GB checkpoint, CPU torch 2.7.1, and minimal deps installed. TripoSR inference runs in **CPU fallback**: 10 images tested, ~25 s/image, 7 quick watertight/positive-volume passes, 3 repair-required. CUDA torch was not installed, so no GPU VRAM claim is made.
 
 ## 3. Provider status
 
 | Provider | Status |
 |---|---|
 | Mock relief | **COMPLETE** (free, watertight relief; not true 3D) |
-| TripoSR local | **PARTIAL / BLOCKED_NETWORK** |
+| TripoSR local | **COMPLETE (CPU fallback)** |
 | Stable Fast 3D | **NOT_INSTALLED / LICENSE_REVIEW** |
 | TokenHub Tripo | **NOT_CONFIGURED** (adapter written) |
 | TokenHub HY-3D 3.1 | **NOT_CONFIGURED** (adapter written) |
@@ -41,6 +40,10 @@ A multi-provider Image-to-3D architecture is implemented and runnable without an
 - The key is stored only in ignored `.env.local`; it is not in Git/frontend/reports.
 - The key was pasted in chat and should be rotated.
 - Kimi is used for analysis/prompting only, never as a 3D mesh generator.
+
+## 4b. Real TripoSR API test
+
+A `triposr_local` job through the HTTP API completed on CPU in **16.95 s** (real model, not Mock): 73,624 faces, raw volume negative, repaired copy scaled to 80.24 mm with positive volume. The sphere output remains non-watertight after repair and is marked REPAIR_REQUIRED in the benchmark. Evidence: `docs/reports/triposr_test.json`.
 
 ## 5. Tests
 
@@ -59,7 +62,7 @@ Result: **13 passed** total (Image-to-3D + accounting + shared quota).
 
 - same 10 synthetic images;
 - Mock relief tested on all 10: watertight, 21,900 faces, ~1.1 MB each, 0.07–0.09 s, cost 0;
-- TripoSR, Stable Fast 3D, Tripo, HY-3D marked NOT_TESTED with reasons;
+- TripoSR was tested on CPU (10/10 meshes; 7 pass, 3 repair); Stable Fast 3D, Tripo and HY-3D marked NOT_TESTED with reasons;
 - no vendor marketing claim used as a score.
 
 ## 7. Sharing
@@ -73,7 +76,7 @@ LAN/Tailscale/Cloudflare setup. See `SHARING_AND_QUOTA.md`; tests are in `backen
 
 ## 8. Open items
 
-1. Finish TripoSR install (use a fast network or HF mirror with enough time) and run one real image; measure VRAM and printability.
+1. Run TripoSR on CUDA and repair/compare the 3 non-watertight outputs; CPU path is already verified.
 2. Recharge/rotate Kimi account if analysis is required.
 3. Obtain TokenHub account-specific endpoints and authorize a small budget before any cloud call.
 4. Add password/proxy authentication on top of the opt-in owner/guest quota mode.

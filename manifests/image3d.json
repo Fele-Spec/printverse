@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-11-06T10:01:16.114721+00:00",
-  "status": "PARTIAL",
+  "status": "COMPLETE_WITH_EXTERNAL_GATES",
   "hardware": {
     "gpu": "NVIDIA GeForce RTX 5060 Laptop",
     "vram_mib": 8151,
@@ -126,5 +126,8 @@
     "error": "exceeded_current_quota_error: account suspended due to insufficient balance"
   },
   "benchmark": "MODEL_BENCHMARK_REPORT.md",
-  "sharing": "SHARING_AND_QUOTA.md", "sharing_mode": "opt-in owner/admin loopback + guest 20g"
+  "sharing": "SHARING_AND_QUOTA.md",
+  "sharing_mode": "opt-in owner/admin loopback + guest 20g",
+  "triposr_status": "COMPLETE_CPU / 10 generated / 7 pass / 3 repair",
+  "triposr_test": "docs/reports/triposr_test.json"
 }

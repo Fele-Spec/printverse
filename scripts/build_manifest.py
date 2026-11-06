@@ -402,13 +402,13 @@ def main() -> int:
         "phase4": {
             "report": "PHASE4_REPORT.md",
             "manifest": "manifests/image3d.json",
-            "status": "PARTIAL",
+            "status": "COMPLETE_WITH_EXTERNAL_GATES",
             "providers": "backend/app/image3d",
             "ui": "frontend/src/components/Image3DPanel.tsx",
             "benchmark": "MODEL_BENCHMARK_REPORT.md",
             "sharing": "SHARING_AND_QUOTA.md (opt-in owner/guest quota)",
             "kimi": "BLOCKED_ACCOUNT_429",
-            "triposr": "BLOCKED_NETWORK / not tested",
+            "triposr": "COMPLETE CPU / 7 pass / 3 repair",
             "tokenhub": "NOT_CONFIGURED / no cost incurred",
         },
         "blocked": [

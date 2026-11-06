@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "provider": "triposr_local",
+  "model": "TripoSR (stabilityai/TripoSR)",
+  "device": "cpu",
+  "image": "assets/test-models/image3d/02_sphere.png",
+  "job_id": "e9d495d65b864ed3ba3cbea3320f9e25",
+  "task_status": "completed",
+  "geometry_status": "REPAIRED",
+  "seconds": 16.95,
+  "faces": 73624,
+  "vertices": 36805,
+  "raw": {
+    "watertight": false,
+    "volume_mm3": -0.117
+  },
+  "repaired": {
+    "watertight": false,
+    "volume_mm3": 60586.81,
+    "scale_to_mm": 80.244269
+  },
+  "generation_cost_cny": 0.0,
+  "output_url": "/runtime/image3d/e9d495d65b864ed3ba3cbea3320f9e25/triposr.stl",
+  "note": "Real TripoSR CPU inference. The repaired copy has positive volume but this sphere output is still non-watertight; it is not claimed printable without further repair."
+}

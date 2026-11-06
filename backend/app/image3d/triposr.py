@@ -71,14 +71,50 @@ class TripoSRProvider(Image3DProvider):
         if not raw.exists():
             raise ProviderError("TripoSR produced no mesh", status="failed")
         mesh = trimesh.load(raw, force="mesh", process=True)
+        raw = job_dir / "triposr_raw.glb"
+        if not raw.exists():
+            mesh.export(raw)
+        raw_stats = {
+            "watertight": bool(mesh.is_watertight),
+            "volume_mm3": round(float(mesh.volume), 3),
+            "faces": int(len(mesh.faces)),
+        }
+        # Explicit repair of a copy. Never present the raw mesh as printable.
+        repaired = mesh.copy()
+        # TripoSR's normalized reconstruction is about a unit cube. Normalize the
+        # longest side to 80 mm for the PrintVerse print pipeline; raw remains
+        # untouched for provenance.
+        max_extent = float(max(repaired.extents))
+        scale_to_mm = 80.0 / max_extent if max_extent > 0 else 1.0
+        repaired.apply_scale(scale_to_mm)
+        repaired.fix_normals()
+        if not repaired.is_watertight:
+            repaired.fill_holes()
+        import trimesh.repair as trimesh_repair
+        trimesh_repair.fix_winding(repaired)
+        trimesh_repair.fix_normals(repaired)
+        if repaired.volume < 0:
+            repaired.invert()
         stl = job_dir / "triposr.stl"
-        mesh.export(stl)
+        repaired.export(stl)
+        repaired_stats = {
+            "watertight": bool(repaired.is_watertight),
+            "volume_mm3": round(float(repaired.volume), 3),
+            "faces": int(len(repaired.faces)),
+        }
+        changed = raw_stats != repaired_stats
         return GenerationResult(
             provider=self.id, model=self.model, task_id=request.job_id,
             output_format="stl", output_url=f"/runtime/image3d/{request.job_id}/triposr.stl",
             local_path=str(stl.relative_to(ROOT)).replace("\\", "/"),
             generation_cost=0.0, cost_basis="free",
             texture_status="VERTEX_COLOR" if getattr(mesh.visual, "kind", "") == "vertex" else "NONE",
-            geometry_status="GENERATED_UNVALIDATED", task_status="completed",
-            metadata={"triposr": metrics, "watertight": bool(mesh.is_watertight)},
+            geometry_status="REPAIRED" if changed else "GENERATED",
+            task_status="completed",
+            metadata={
+                "triposr": metrics, "raw": raw_stats, "repaired": repaired_stats,
+                "raw_path": str(raw.relative_to(ROOT)).replace("\\", "/"),
+                "scale_to_mm": round(scale_to_mm, 6),
+                "repair_note": "scale to 80 mm longest side + normal/winding/hole repair applied only to a copy",
+            },
         )

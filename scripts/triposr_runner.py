@@ -35,6 +35,28 @@ except Exception:
     shim.marching_cubes = marching_cubes
     sys.modules["torchmcubes"] = shim
 
+# rembg is imported by tsr.utils but we do not use background removal for these
+# controlled benchmark images. Avoid downloading its ONNX stack just for import.
+try:
+    import rembg  # noqa: F401
+except Exception:
+    rembg_shim = types.ModuleType("rembg")
+    rembg_shim.remove = lambda image, *args, **kwargs: image
+    sys.modules["rembg"] = rembg_shim
+
+# TripoSR only downloads the DINO config at construction; the actual ViT weights
+# are inside model.ckpt. Avoid a Hub metadata call by serving the local config.
+import huggingface_hub as _hf  # noqa: E402
+_orig_hf = _hf.hf_hub_download
+_dino_config = Path(__file__).resolve().parents[1] / ".cache" / "TripoSR" / "dino_config.json"
+
+def _local_hf(repo_id, filename, *args, **kwargs):
+    if repo_id == "facebook/dino-vitb16" and filename == "config.json" and _dino_config.exists():
+        return str(_dino_config)
+    return _orig_hf(repo_id, filename, *args, **kwargs)
+
+_hf.hf_hub_download = _local_hf
+
 from tsr.system import TSR  # noqa: E402
 
 

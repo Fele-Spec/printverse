@@ -1,6 +1,6 @@
 # Image-to-3D Provider Architecture
 
-Date: 2026-11-06 · Status: **PARTIAL** (architecture + free mock complete; local TripoSR pending download; cloud adapters unconfigured; Kimi analysis rate-limited)
+Date: 2026-11-06 · Status: **COMPLETE (architecture)**; TripoSR CPU tested; cloud/Kimi external gates BLOCKED
 
 ## 1. Hardware audit
 
@@ -13,16 +13,16 @@ Date: 2026-11-06 · Status: **PARTIAL** (architecture + free mock complete; loca
 | Main venv protected | build123d 0.13 + OCP 8 untouched; CadQuery has its own `.venv-cadquery` |
 | Isolated TripoSR venv | `.venv-triposr` created |
 | TripoSR source | `.cache/triposr-src/TripoSR-main` (MIT) |
-| TripoSR checkpoint | `.cache/TripoSR/model.ckpt.part` — **incomplete** at the time of this report |
+| TripoSR checkpoint | **complete 1.68 GB** `.cache/TripoSR/model.ckpt` |
 
-The GPU meets TripoSR's published ~6 GB target, but a complete run is not claimed until torch + weights finish downloading and an image actually produces a mesh.
+The GPU meets TripoSR's published ~6 GB target. The actual run used the **CPU fallback** because CUDA torch was not installed; no GPU throughput/VRAM claim is made.
 
 ## 2. Provider status
 
 | Provider | Role | Status | Notes |
 |---|---|---|---|
 | **Mock relief** | free local fallback | **COMPLETE** | Heightfield/silhouette STL, watertight, cost 0; **not** genuine image-to-3D |
-| **TripoSR local** | free primary local | **PARTIAL / BLOCKED_NETWORK** | source present, isolated venv present, checkpoint partial, torch not yet complete |
+| **TripoSR local** | free primary local | **COMPLETE (CPU)** | 10/10 meshes generated; 7 pass quick printability, 3 repair-required; ~25 s/image; cost 0 |
 | **Stable Fast 3D** | free high-texture candidate | **NOT_INSTALLED** | Windows-native install not attempted; official weights/license need review |
 | **TokenHub Tripo** | low-cost cloud | **NOT_CONFIGURED** | adapter implemented; needs official account endpoint + key |
 | **TokenHub HY-3D 3.1** | high-quality cloud | **NOT_CONFIGURED** | adapter implemented; needs official account endpoint + key |
@@ -99,7 +99,7 @@ Nothing was called and **no cost was incurred**. Tripo additionally needs a publ
 
 ## 8. Ten-image benchmark
 
-`MODEL_BENCHMARK_REPORT.md` records the same 10 synthetic object images. Only Mock relief was available, so only Mock relief is scored. TripoSR, Stable Fast 3D, Tripo and HY-3D are marked NOT_TESTED with reasons. No vendor claims are used as quality data.
+`MODEL_BENCHMARK_REPORT.md` records the same 10 synthetic object images. Mock relief and TripoSR CPU were actually tested; TripoSR produced 10/10 meshes, 7 quick printability passes and 3 repair-required outputs. Stable Fast 3D, Tripo and HY-3D are marked NOT_TESTED with reasons. No vendor claims are used as quality data.
 
 ## 9. Safety and boundaries
 
