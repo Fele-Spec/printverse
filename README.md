@@ -56,9 +56,9 @@ npm run dev --prefix frontend
 
 The built UI is `frontend/dist/`; do not double-click `index.html` — serve it with
 `npm run preview --prefix frontend` or `npm run dev --prefix frontend`.
-Sharing, owner-unlimited and guest-quota requirements are documented in
-[SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md); the current API is **not authenticated**, so do
-not expose it publicly as-is.
+Sharing is available as the opt-in `PRINTVERSE_SHARE_MODE=1` (owner loopback/admin unlimited,
+remote guest 20 g quota); see [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md). It is not password
+authentication, so use a trusted LAN/Tailscale/Cloudflare setup and do not expose uvicorn directly.
 
 The uploaded STL is sliced by the local OrcaSlicer 2.4.2 with the resolved Voron 300 profiles.
 The browser test can also use the built bundle:

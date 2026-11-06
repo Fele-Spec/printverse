@@ -2,16 +2,18 @@
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from starlette.concurrency import run_in_threadpool
 
 from . import db
+from .access import public_status, resolve_user
 from .image3d import router as image3d_router
 from .image3d import store as image3d_store
 from .slicer import SliceError, slice_stl
@@ -24,9 +26,10 @@ for p in (RUNTIME, UPLOADS, JOBS):
     p.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="PrintVerse API", version="0.2.0")
+_cors = os.environ.get("PRINTVERSE_CORS_ORIGINS", "http://127.0.0.1:4173,http://localhost:4173")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:4173", "http://localhost:4173"],
+    allow_origins=[o.strip() for o in _cors.split(",") if o.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -68,8 +71,14 @@ def machine() -> dict:
     }
 
 
+@app.get("/api/access")
+def access(request: Request) -> dict:
+    return public_status(request)
+
+
 @app.get("/api/wallet")
-def wallet(user_id: str = db.DEMO_USER) -> dict:
+def wallet(request: Request) -> dict:
+    user_id = resolve_user(request)
     try:
         return db.wallet(user_id)
     except KeyError:
@@ -95,7 +104,8 @@ def _job_response(job: dict) -> dict:
 
 
 @app.post("/api/jobs")
-async def create_job(file: UploadFile = File(...)) -> dict:
+async def create_job(request: Request, file: UploadFile = File(...)) -> dict:
+    user_id = resolve_user(request)
     name = file.filename or "upload.stl"
     if not name.lower().endswith(".stl"):
         raise HTTPException(415, "only STL is supported in phase 2")
@@ -109,7 +119,7 @@ async def create_job(file: UploadFile = File(...)) -> dict:
     job_dir.mkdir(parents=True, exist_ok=True)
     stl = job_dir / "model.stl"
     stl.write_bytes(data)
-    db.create_job(db.DEMO_USER, name, str(stl.relative_to(ROOT)).replace("\\", "/"), job_id)
+    db.create_job(user_id, name, str(stl.relative_to(ROOT)).replace("\\", "/"), job_id)
     try:
         sliced = await run_in_threadpool(slice_stl, stl, job_dir, job_id)
         mass_mg = max(1, round(sliced["mass_g"] * 1000))
@@ -117,8 +127,8 @@ async def create_job(file: UploadFile = File(...)) -> dict:
             job_id, sliced["gcode_path"], sliced["toolpath_path"], mass_mg,
             sliced["time_s"], sliced["layers"], sliced["warnings"],
         )
-        job = await run_in_threadpool(db.reserve_for_job, job_id, db.DEMO_USER, mass_mg)
-        return {**_job_response(job), "wallet": db.wallet()}
+        job = await run_in_threadpool(db.reserve_for_job, job_id, user_id, mass_mg)
+        return {**_job_response(job), "wallet": db.wallet(user_id)}
     except db.InsufficientFilament as exc:
         with db.connect() as conn:
             conn.execute("UPDATE jobs SET status='payment_required' WHERE id=?", (job_id,))
@@ -130,45 +140,54 @@ async def create_job(file: UploadFile = File(...)) -> dict:
 
 
 @app.get("/api/jobs/{job_id}")
-def get_job(job_id: str) -> dict:
+def get_job(job_id: str, request: Request) -> dict:
+    user_id = resolve_user(request)
     try:
         job = db.get_job(job_id)
     except KeyError:
         raise HTTPException(404, "unknown job")
-    return {**_job_response(job), "wallet": db.wallet()}
+    if job["user_id"] != user_id:
+        raise HTTPException(404, "unknown job")
+    return {**_job_response(job), "wallet": db.wallet(user_id)}
 
 
 @app.post("/api/jobs/{job_id}/complete")
-def complete(job_id: str, body: CompleteRequest) -> dict:
+def complete(job_id: str, request: Request) -> dict:
+    user_id = resolve_user(request)
     try:
-        job = db.complete_job(job_id, body.user_id)
+        job = db.complete_job(job_id, user_id)
     except KeyError:
         raise HTTPException(404, "unknown job")
-    return {**_job_response(job), "wallet": db.wallet(body.user_id)}
+    return {**_job_response(job), "wallet": db.wallet(user_id)}
 
 
 @app.post("/api/jobs/{job_id}/cancel")
-def cancel(job_id: str, body: CompleteRequest) -> dict:
+def cancel(job_id: str, request: Request) -> dict:
+    user_id = resolve_user(request)
     try:
-        job = db.cancel_job(job_id, body.user_id)
+        job = db.cancel_job(job_id, user_id)
     except KeyError:
         raise HTTPException(404, "unknown job")
-    return {**_job_response(job), "wallet": db.wallet(body.user_id)}
+    return {**_job_response(job), "wallet": db.wallet(user_id)}
 
 
 @app.get("/api/collection")
-def collection(user_id: str = db.DEMO_USER) -> dict:
+def collection(request: Request) -> dict:
+    user_id = resolve_user(request)
     return {"items": db.list_collection(user_id), "wallet": db.wallet(user_id)}
 
 
 @app.post("/api/collection")
-def add_collection(body: CollectionRequest) -> dict:
+def add_collection(body: CollectionRequest, request: Request) -> dict:
+    user_id = resolve_user(request)
     try:
         job = db.get_job(body.job_id)
     except KeyError:
         raise HTTPException(404, "unknown job")
+    if job["user_id"] != user_id:
+        raise HTTPException(404, "unknown job")
     if job["status"] != "completed":
         raise HTTPException(409, "only completed prints can be collected")
-    item = db.add_collection(body.user_id, body.job_id, job["name"], job["mass_mg"],
+    item = db.add_collection(user_id, body.job_id, job["name"], job["mass_mg"],
                              str((JOBS / body.job_id / "model.stl").relative_to(ROOT)).replace("\\", "/"))
-    return {"item": item, "wallet": db.wallet(body.user_id)}
+    return {"item": item, "wallet": db.wallet(user_id)}

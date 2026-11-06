@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T10:02:40.261187+00:00",
+  "generated_at": "2026-11-06T10:05:12.212964+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 21,
     "cad_index_rows": 223,
-    "checksum_files": 3745,
-    "checksum_bytes": 4141000127,
+    "checksum_files": 3751,
+    "checksum_bytes": 4141194409,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -85,7 +85,7 @@
     "providers": "backend/app/image3d",
     "ui": "frontend/src/components/Image3DPanel.tsx",
     "benchmark": "MODEL_BENCHMARK_REPORT.md",
-    "sharing": "SHARING_AND_QUOTA.md",
+    "sharing": "SHARING_AND_QUOTA.md (opt-in owner/guest quota)",
     "kimi": "BLOCKED_ACCOUNT_429",
     "triposr": "BLOCKED_NETWORK / not tested",
     "tokenhub": "NOT_CONFIGURED / no cost incurred"

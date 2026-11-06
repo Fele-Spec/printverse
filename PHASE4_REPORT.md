@@ -64,16 +64,19 @@ Result: **4 passed** (plus the existing accounting suite).
 
 ## 7. Sharing
 
-Current build is **local-only and unauthenticated**. `frontend/dist/index.html` must be served over HTTP; double-clicking is not supported. See `SHARING_AND_QUOTA.md`.
+`frontend/dist/index.html` must be served over HTTP; double-clicking is not supported.
 
-The SQLite ledger supports an `admin` unlimited role, but there is no login/share-token layer. Do not expose the API publicly as-is; owner-unlimited / guest-quota requires auth and a tunnel.
+A shared mode is implemented (`PRINTVERSE_SHARE_MODE=1`): loopback is owner/admin unlimited;
+remote LAN clients are guest with a 20 g wallet and no first-print-free. An optional
+`PV_GUEST_TOKEN`/`X-PV-Member` gate exists. This is not password authentication; use a trusted
+LAN/Tailscale/Cloudflare setup. See `SHARING_AND_QUOTA.md`; tests are in `backend/tests/test_share.py`.
 
 ## 8. Open items
 
 1. Finish TripoSR install (use a fast network or HF mirror with enough time) and run one real image; measure VRAM and printability.
 2. Recharge/rotate Kimi account if analysis is required.
 3. Obtain TokenHub account-specific endpoints and authorize a small budget before any cloud call.
-4. Add authentication + per-user quota for sharing.
+4. Add password/proxy authentication on top of the opt-in owner/guest quota mode.
 5. Add photographed object benchmark and multi-view tests.
 
 ## 9. Files

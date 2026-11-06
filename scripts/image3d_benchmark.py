@@ -93,7 +93,7 @@ def main() -> int:
         "- TripoSR is the intended free local candidate; hardware (RTX 5060, 8 GB) meets its ~6 GB claim, but the isolated environment/model download did not complete in this run. It is **not scored**.",
         "- Stable Fast 3D was not installed on Windows; its license/weights require review. It is **not scored**.",
         "- TokenHub Tripo and HY-3D were **not called**: no TokenHub key/endpoint was provided. They are **not scored**, and no cost was incurred.",
-        "- Kimi was verified as a vision/text analysis provider only; it is not a 3D mesh API. One chat request returned HTTP 429, so no Kimi analysis is claimed.",
+        "- Kimi was verified as a vision/text analysis provider only; it is not a 3D mesh API. One chat request returned HTTP 429 with `exceeded_current_quota_error` (account suspended due to insufficient balance), so no Kimi analysis is claimed.",
         "- Visual appeal is not treated as printability: only watertight + positive-volume meshes pass the quick printability check in this report.",
         "",
         "## Next smallest steps", "",

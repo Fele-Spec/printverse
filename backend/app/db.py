@@ -104,6 +104,23 @@ def init_db() -> None:
                 "INSERT INTO ledger(user_id,kind,mg,operation_id,actor,reason,created_at) VALUES(?,?,?,?,?,?,?)",
                 (DEMO_USER, "grant", DEMO_GRANT_MG, "seed:demo:grant", "system", "bootstrap virtual credit", now()),
             )
+        # Shared-mode identities: owner is admin/unlimited and is selected only
+        # from loopback; guest has a finite wallet and no free-print entitlement.
+        conn.execute("INSERT OR IGNORE INTO users(id,name,role,created_at) VALUES(?,?,?,?)",
+                     ("owner", "Owner", "admin", now()))
+        conn.execute("INSERT OR IGNORE INTO wallets(user_id,balance_mg,first_print_used,updated_at) VALUES(?,?,?,?)",
+                     ("owner", DEMO_GRANT_MG, 0, now()))
+        conn.execute("INSERT OR IGNORE INTO users(id,name,role,created_at) VALUES(?,?,?,?)",
+                     ("guest", "Shared Guest", "user", now()))
+        conn.execute("INSERT OR IGNORE INTO wallets(user_id,balance_mg,first_print_used,updated_at) VALUES(?,?,?,?)",
+                     ("guest", 20_000, 1, now()))
+        for uid, op, reason in (("owner", "seed:owner:grant", "owner unlimited virtual credit"),
+                                ("guest", "seed:guest:grant", "guest quota virtual credit")):
+            if not conn.execute("SELECT 1 FROM ledger WHERE operation_id=?", (op,)).fetchone():
+                conn.execute(
+                    "INSERT INTO ledger(user_id,kind,mg,operation_id,actor,reason,created_at) VALUES(?,?,?,?,?,?,?)",
+                    (uid, "grant", 100_000 if uid == "owner" else 20_000, op, "system", reason, now()),
+                )
 
 
 def wallet(user_id: str = DEMO_USER) -> dict:

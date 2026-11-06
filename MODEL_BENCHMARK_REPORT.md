@@ -22,16 +22,16 @@ The 10 images are intentionally simple synthetic objects (cube, sphere, cylinder
 
 | Image | Watertight | Faces | Volume mm³ | Bytes | Time s | Cost CNY | Verdict |
 |---|---:|---:|---:|---:|---:|---:|---|
-| 01_cube.png | True | 21900 | 6819.399 | 1095084 | 0.07 | 0.0 | PASS |
-| 02_sphere.png | True | 21900 | 8607.846 | 1095084 | 0.07 | 0.0 | PASS |
-| 03_cylinder.png | True | 21900 | 6549.591 | 1095084 | 0.09 | 0.0 | PASS |
-| 04_cone.png | True | 21900 | 5118.846 | 1095084 | 0.07 | 0.0 | PASS |
-| 05_torus.png | True | 21900 | 8647.078 | 1095084 | 0.07 | 0.0 | PASS |
-| 06_mug.png | True | 21900 | 5957.947 | 1095084 | 0.07 | 0.0 | PASS |
-| 07_tree.png | True | 21900 | 4381.749 | 1095084 | 0.08 | 0.0 | PASS |
-| 08_rocket.png | True | 21900 | 455.725 | 1095084 | 0.07 | 0.0 | PASS |
-| 09_ring.png | True | 21900 | 2277.205 | 1095084 | 0.07 | 0.0 | PASS |
-| 10_vase.png | True | 21900 | 3342.862 | 1095084 | 0.07 | 0.0 | PASS |
+| 01_cube.png | True | 21900 | 6819.399 | 1095084 | 0.06 | 0.0 | PASS |
+| 02_sphere.png | True | 21900 | 8607.846 | 1095084 | 0.06 | 0.0 | PASS |
+| 03_cylinder.png | True | 21900 | 6549.591 | 1095084 | 0.07 | 0.0 | PASS |
+| 04_cone.png | True | 21900 | 5118.846 | 1095084 | 0.06 | 0.0 | PASS |
+| 05_torus.png | True | 21900 | 8647.078 | 1095084 | 0.06 | 0.0 | PASS |
+| 06_mug.png | True | 21900 | 5957.947 | 1095084 | 0.06 | 0.0 | PASS |
+| 07_tree.png | True | 21900 | 4381.749 | 1095084 | 0.07 | 0.0 | PASS |
+| 08_rocket.png | True | 21900 | 455.725 | 1095084 | 0.06 | 0.0 | PASS |
+| 09_ring.png | True | 21900 | 2277.205 | 1095084 | 0.06 | 0.0 | PASS |
+| 10_vase.png | True | 21900 | 3342.862 | 1095084 | 0.06 | 0.0 | PASS |
 
 ## Honest interpretation
 

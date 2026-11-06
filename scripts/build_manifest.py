@@ -406,7 +406,7 @@ def main() -> int:
             "providers": "backend/app/image3d",
             "ui": "frontend/src/components/Image3DPanel.tsx",
             "benchmark": "MODEL_BENCHMARK_REPORT.md",
-            "sharing": "SHARING_AND_QUOTA.md",
+            "sharing": "SHARING_AND_QUOTA.md (opt-in owner/guest quota)",
             "kimi": "BLOCKED_ACCOUNT_429",
             "triposr": "BLOCKED_NETWORK / not tested",
             "tokenhub": "NOT_CONFIGURED / no cost incurred",

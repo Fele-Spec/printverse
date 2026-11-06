@@ -5,10 +5,11 @@ import io
 from contextlib import closing
 from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Request, UploadFile
 from PIL import Image
 
 from .. import db
+from ..access import resolve_user
 from . import registry, store
 from .types import GenerationRequest, ProviderError
 
@@ -38,8 +39,8 @@ def list_providers() -> dict:
 
 
 @router.get("/jobs")
-def list_jobs(user_id: str = db.DEMO_USER) -> dict:
-    return {"jobs": [_public_job(j) for j in store.list_jobs(user_id)]}
+def list_jobs(request: Request) -> dict:
+    return {"jobs": [_public_job(j) for j in store.list_jobs(resolve_user(request))]}
 
 
 @router.get("/jobs/{job_id}")
@@ -52,14 +53,15 @@ def get_job(job_id: str) -> dict:
 
 @router.post("/jobs")
 async def create_job(
+    request: Request,
     background: BackgroundTasks,
     file: UploadFile = File(...),
     provider: str = Form("auto"),
     prompt: str = Form(""),
     authorized: bool = Form(False),
     budget_cny: float = Form(0.0),
-    user_id: str = Form(db.DEMO_USER),
 ) -> dict:
+    user_id = resolve_user(request)
     if provider != "auto":
         try:
             info = registry.get_provider(provider).info()
