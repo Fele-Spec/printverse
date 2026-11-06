@@ -17,7 +17,7 @@
 | 图片→彩色 GLB | **PASS** | Mock、TripoSR、三视图视觉外壳都输出 glb；`texture_status=VERTEX_COLOR` |
 | GLB + STL + 3MF + OBJ 同源导出 | **PASS** | `backend/app/mesh_prep.py`，`test_mesh_prep` 2 项 |
 | 3MF 上传并真实 Orca 切片 | **PASS** | 3MF 上传返回 200、61 层、10.04 g、display.stl |
-| OBJ/GLB/STEP 导入 | **PASS** | OBJ/GLB 转 display.stl；20 mm STEP 经 FreeCAD 转换并由 Orca 切成 100 层 / 3.978 g |
+| STEP/DXF 工程图导入 | **PASS（基础）** | 20 mm STEP → 100 层/3.978 g；40×20 mm DXF 拉伸 → 15 层/1.934 g |
 | 三视图本地重建 | **PASS** | `multiview_local`，正面/侧面/顶面；`phase5_multiview.png` |
 | 彩色成品显示 | **PASS** | `phase5_finished_color.png`：彩色模型在热床 |
 | 成品→收藏→桌宠 | **PASS（浏览器）** | `phase5_pet.png`；零 page/console error |
@@ -25,6 +25,8 @@
 | 正文 ≥16px / 主按钮 ≥44px | **PASS（主流程）** | `styles.css` Phase-5 overrides |
 | 彩色 GLB 不再被 STL 替代 | **PASS** | Image3D `output_format=glb`；STL 只作为切片派生 |
 | 虚拟耗材/首件免费/admin/扣费 | **PASS（既有测试）** | `test_ledger.py` 6 项；16 passed（默认）；3 个 PostgreSQL 集成测试按环境变量跳过 |
+| 独立 Worker | **PASS** | `WORKER_ONCE=1` 消费队列任务完成；`docs/reports/worker_test.json` |
+| Compose 配置 | **PASS** | 独立 `docker-compose config` 退出 0；镜像构建仍 BLOCKED |
 | 真实 G-code 机械运动/逐层沉积 | **PASS（既有证据）** | `GCODE_TEST_REPORT.md`、`phase2_e2e.json` |
 
 ## 2. 12 项验收矩阵
@@ -46,7 +48,7 @@
 
 ## 3. 未能宣称完成的部分
 
-1. **工程图转 CAD**：未实现；当前导入是 STL/3MF/OBJ/GLB/STEP。多视角已有本地三视图轮廓视觉外壳。
+1. **工程图转 CAD**：已支持封闭 DXF 轮廓拉伸为网格；尚未实现从扫描图片识别尺寸/约束并生成参数化 CAD。
 2. **精确壁厚/支撑**：mesh API 提供 ray-cast 近似壁厚与悬垂面积，不是 Orca 切片器标定结果，子项为 **PARTIAL**。
 3. **Tauri Windows 客户端**：源码 scaffolding 已写，构建 `BLOCKED`（本机无 cargo/MSVC）。
 4. **Docker Compose**：文件已提供，`BLOCKED`（本机无 docker）；容器内没有 Orca，真实切片需 Windows 工具。

@@ -427,7 +427,10 @@ def main() -> int:
             "pet_browser": "PASS",
             "tauri": "BLOCKED (no cargo)",
             "docker": "BLOCKED (no docker)",
-            "postgres": "PASS_LOCAL (portable 17.2); Docker unverified",
+            "postgres": "PASS_LOCAL (portable 17.2); Docker container unverified",
+            "compose_config": "PASS",
+            "docker_build": "BLOCKED (no daemon)",
+            "tauri_build": "BLOCKED (no cargo/MSVC)",
         },
         "blocked": [
             "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded.",

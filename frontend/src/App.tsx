@@ -108,8 +108,8 @@ export default function App() {
   }, [toolpath]);
 
   const handleUpload = useCallback(async (file: File, sourceColorUrl?: string | null) => {
-    if (!/\.(stl|3mf|obj|glb|gltf|step|stp)$/i.test(file.name)) {
-      setError('请选择 STL / 3MF / OBJ / GLB / STEP 文件。');
+    if (!/\.(stl|3mf|obj|glb|gltf|step|stp|dxf)$/i.test(file.name)) {
+      setError('请选择 STL / 3MF / OBJ / GLB / STEP / DXF 文件。');
       return;
     }
     setError('');
@@ -373,7 +373,7 @@ export default function App() {
               <input
                 ref={fileRef}
                 type="file"
-                accept=".stl,.3mf,.obj,.glb,.gltf,.step,.stp"
+                accept=".stl,.3mf,.obj,.glb,.gltf,.step,.stp,.dxf"
                 data-testid="upload-input"
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleUpload(f); }}
               />

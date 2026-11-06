@@ -11,7 +11,7 @@
 
 | 模块 | 现状 | 证据 / 缺口 |
 |---|---|---|
-| A AI 三维创作 | **PARTIAL** | 图片→彩色 GLB、TripoSR/Mock、TokenHub/Kimi 适配器；三视图本地重建与 STEP/STL/3MF/OBJ/GLB 导入已接；工程图转 CAD 仍缺 |
+| A AI 三维创作 | **PARTIAL** | 图片→彩色 GLB、TripoSR/Mock、TokenHub/Kimi 适配器；三视图本地重建、STEP/DXF/STL/3MF/OBJ/GLB 导入已接；扫描工程图→参数化 CAD 仍缺 |
 | B 模型处理 | **PARTIAL** | 统一 analyze/repair/export；近似 ray-cast 壁厚与悬垂面积；支撑仍需切片器标定 |
 | C 数字孪生 | **COMPLETE（有已声明缺陷）** | 4,526 placements、8 个 GLB、真实 CAD 层级、零件选择、PBR、爆炸/模块/高速紧固件；XY 横梁仍静态，WIRING 仅 1 个实体 |
 | D G-code 虚拟打印 | **COMPLETE（有已声明限制）** | 真实 Orca 切片、G-code 解析、CoreXY/Z/E 驱动、逐层沉积、暂停/继续/取消/倍速、完成/脱离；冷却/加速度仍为估算 |

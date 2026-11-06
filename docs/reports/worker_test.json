@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "command": "WORKER_ONCE=1 python -m backend.app.worker",
+  "job_id": "ca7d1cf1ab8247e1bda71b77a7327051",
+  "provider": "mock_relief",
+  "result": "completed",
+  "note": "The independent Worker consumed a queued Image3D job without the API BackgroundTasks path."
+}

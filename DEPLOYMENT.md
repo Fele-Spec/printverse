@@ -30,7 +30,7 @@ docker compose up --build
 
 **当前缺口（不掩盖）：**
 
-1. 本机没有 `docker` 命令，Compose 未构建验证，状态 `BLOCKED`。
+1. 本机没有 `docker` 命令；已用独立 `docker-compose config` 验证 YAML/变量/服务依赖（PASS），但 **镜像构建与运行仍 BLOCKED**。
 2. **PostgreSQL 适配器已实现并验证**（`backend/app/db_postgres.py`，由 `PRINTVERSE_DATABASE_URL` 选择；本地 PostgreSQL 17.2 已跑通账本与 Image3D；Compose 已接入 `postgres:17-alpine`）。Docker 容器内的 Postgres 尚未验证。
 3. 容器内没有 Windows `OrcaSlicer` 二进制，真实切片依赖宿主机/Windows 工具；云容器可用于图片生成与模型处理，不能在容器内直接完成 Orca 切片。
 4. Tauri 客户端需要 Rust/Cargo 和 Windows C++ Build Tools；本机没有 `cargo`，无法构建 MSI/NSIS。

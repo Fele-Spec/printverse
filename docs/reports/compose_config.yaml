@@ -1,0 +1,117 @@
+﻿name: printverse
+services:
+  api:
+    restart: unless-stopped
+    environment:
+      KIMI_ANALYSIS_ENABLED: "false"
+      KIMI_API_KEY: ""
+      PRINTVERSE_CORS_ORIGINS: http://localhost:8080
+      PRINTVERSE_DATABASE_URL: postgresql://printverse:printverse@postgres:5432/printverse
+      PRINTVERSE_SHARE_MODE: "0"
+      TOKENHUB_API_KEY: ""
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: printverse-runtime
+        target: /app/runtime
+        volume: {}
+      - type: volume
+        source: printverse-logs
+        target: /app/logs
+        volume: {}
+    build:
+      context: C:\Users\someb\Desktop\printverse
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')
+      timeout: 5s
+      interval: 20s
+      retries: 5
+  postgres:
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: printverse
+      POSTGRES_PASSWORD: printverse
+      POSTGRES_USER: printverse
+    image: postgres:17-alpine
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgresql/data
+        volume: {}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U printverse -d printverse
+      timeout: 5s
+      interval: 5s
+      retries: 20
+  web:
+    restart: unless-stopped
+    networks:
+      default: null
+    build:
+      context: C:\Users\someb\Desktop\printverse
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_BASE: ""
+    depends_on:
+      api:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8080"
+        protocol: tcp
+  worker:
+    restart: unless-stopped
+    command:
+      - python
+      - -m
+      - backend.app.worker
+    environment:
+      PRINTVERSE_DATABASE_URL: postgresql://printverse:printverse@postgres:5432/printverse
+      WORKER_POLL_S: "2"
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: printverse-runtime
+        target: /app/runtime
+        volume: {}
+      - type: volume
+        source: printverse-logs
+        target: /app/logs
+        volume: {}
+    build:
+      context: C:\Users\someb\Desktop\printverse
+      dockerfile: Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+        required: true
+      postgres:
+        condition: service_healthy
+        required: true
+networks:
+  default:
+    name: printverse_default
+volumes:
+  postgres-data:
+    name: printverse_postgres-data
+  printverse-logs:
+    name: printverse_printverse-logs
+  printverse-runtime:
+    name: printverse_printverse-runtime

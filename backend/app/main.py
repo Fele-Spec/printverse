@@ -20,6 +20,7 @@ from .image3d import store as image3d_store
 from .mesh_router import router as mesh_router
 from .slicer import SliceError, slice_stl
 from .step_import import StepImportError, convert_step
+from .dxf_import import DxfImportError, convert_dxf
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME = ROOT / "runtime"
@@ -113,8 +114,8 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
     user_id = resolve_user(request)
     name = file.filename or "upload.stl"
     suffix = Path(name).suffix.lower()
-    if suffix not in {".stl", ".3mf", ".obj", ".glb", ".gltf", ".step", ".stp"}:
-        raise HTTPException(415, "支持 STL/3MF/OBJ/GLB/STEP")
+    if suffix not in {".stl", ".3mf", ".obj", ".glb", ".gltf", ".step", ".stp", ".dxf"}:
+        raise HTTPException(415, "支持 STL/3MF/OBJ/GLB/STEP/DXF")
     data = await file.read()
     if len(data) < 84:
         raise HTTPException(422, "模型文件过小")
@@ -130,6 +131,11 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
             convert_step(model, job_dir / "display.stl")
         except StepImportError as exc:
             raise HTTPException(422, f"STEP 无法转换: {exc}")
+    elif suffix == ".dxf":
+        try:
+            convert_dxf(model, job_dir / "display.stl")
+        except DxfImportError as exc:
+            raise HTTPException(422, f"DXF 无法拉伸: {exc}")
     elif suffix in {".3mf", ".obj", ".glb", ".gltf"}:
         try:
             import trimesh
@@ -147,7 +153,7 @@ async def create_job(request: Request, file: UploadFile = File(...), color_url: 
             shutil.copy2(source, target)
             db.set_job_color(job_id, str(target.relative_to(ROOT)).replace("\\", "/"))
     try:
-        slice_input = job_dir / "display.stl" if suffix in {".obj", ".glb", ".gltf", ".step", ".stp"} else model
+        slice_input = job_dir / "display.stl" if suffix in {".obj", ".glb", ".gltf", ".step", ".stp", ".dxf"} else model
         sliced = await run_in_threadpool(slice_stl, slice_input, job_dir, job_id)
         mass_mg = max(1, round(sliced["mass_g"] * 1000))
         job = db.set_job_sliced(

@@ -20,6 +20,7 @@ def main() -> None:
     db.init_db()
     store.init_db()
     poll = float(os.environ.get("WORKER_POLL_S", "2"))
+    once = os.environ.get("WORKER_ONCE", "0").lower() in {"1", "true", "yes"}
     print("printverse worker ready", flush=True)
     while True:
         try:
@@ -28,6 +29,9 @@ def main() -> None:
                     "SELECT * FROM image3d_jobs WHERE status='queued' ORDER BY created_at LIMIT 1"
                 ).fetchone()
             if not row:
+                if once:
+                    print("worker once: no queued job", flush=True)
+                    return
                 time.sleep(poll)
                 continue
             job = dict(row)
@@ -44,8 +48,13 @@ def main() -> None:
                                  task_status=exc.status, generation_cost=exc.cost)
             except Exception as exc:  # noqa: BLE001
                 store.update_job(job["id"], status="failed", error=str(exc)[-4000:], task_status="failed")
+            if once:
+                print("worker once: processed", job["id"], flush=True)
+                return
         except Exception as exc:  # noqa: BLE001
             print("worker error", type(exc).__name__, exc, flush=True)
+            if once:
+                return
             time.sleep(poll)
 
 

@@ -1,0 +1,4 @@
+docker-compose config: PASS
+docker-compose build: BLOCKED
+failed to connect to the docker API at npipe:////./pipe/docker_engine
+The system cannot find the file specified.

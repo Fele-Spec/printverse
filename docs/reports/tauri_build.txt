@@ -1,0 +1,6 @@
+Tauri build: BLOCKED
+cargo: MISSING
+rustc: MISSING
+MSVC cl.exe/link.exe: MISSING
+WebView2 runtime: present (156.0.4314.58)
+Tauri source/config: desktop/src-tauri/tauri.conf.json (transparent, alwaysOnTop, URL http://127.0.0.1:4173/?pet=1)
