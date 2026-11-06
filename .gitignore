@@ -28,3 +28,7 @@ Thumbs.db
 
 pytest-cache-files-*
 
+
+.env.local
+.env.*.local
+

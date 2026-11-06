@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T09:19:52.524931+00:00",
+  "generated_at": "2026-11-06T10:02:40.261187+00:00",
   "resources": [
     {
       "id": "7zr-exe",
@@ -195,6 +195,24 @@
       "sha256": "af37f7368d3b64344469227d109380f76215698d9511fdf8364689a23089cc47",
       "sha256_matches_download_ledger": true,
       "downloaded_at": "2026-11-06T05:43:45.362Z",
+      "license": "UNKNOWN_LICENSE",
+      "homepage": "",
+      "opens": true
+    },
+    {
+      "id": "triposr-main-zip",
+      "kind": "download",
+      "title": "TripoSR-main.zip",
+      "path": ".cache/TripoSR-main.zip",
+      "url": "https://github.com/VAST-AI-Research/TripoSR/archive/refs/heads/main.zip",
+      "resolved_url": "https://github.com/VAST-AI-Research/TripoSR/archive/refs/heads/main.zip",
+      "repository": "",
+      "version": "",
+      "commit": null,
+      "bytes": 31279896,
+      "sha256": "36d52cae3cd2ae323e19f76b49246db60e6f09c3971f05d5784c4cd47656986a",
+      "sha256_matches_download_ledger": true,
+      "downloaded_at": "2026-11-06T09:49:26.106Z",
       "license": "UNKNOWN_LICENSE",
       "homepage": "",
       "opens": true

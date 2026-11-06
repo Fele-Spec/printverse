@@ -1,3 +1,5 @@
+> **Phase-4 update:** The multi-provider implementation and current status are in `IMAGE_TO_3D_PROVIDERS.md` and `PHASE4_REPORT.md`. This file is retained as the original hardware evaluation. The Kimi key was tested: model listing succeeded but chat returned HTTP 429 due to insufficient account balance. No cloud 3D call was made.
+
 # Image-to-3D Evaluation for PrintVerse
 
 Evaluated 2026-11-06. Host GPU: **NVIDIA RTX 5060 Laptop, 8,151 MiB VRAM**, driver 592.82.

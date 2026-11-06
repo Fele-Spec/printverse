@@ -9,7 +9,13 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 > Phase 3: **PARTIAL** — 4,526 FreeCAD placements, eight real module GLBs (1,686 parts), real
 > CAD default view with part picking, module modes, transparency, explode and studio lighting;
 > the real CAD toolhead and platform follow the G-code (XY crossbeam static), and InstancedMesh
-> fasteners are not implemented. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
+> fasteners are implemented as an optional layer. See [PHASE3_COMPLETION_REPORT.md](PHASE3_COMPLETION_REPORT.md).
+>
+> Phase 4 Image-to-3D: **PARTIAL** — provider architecture, free Mock relief, explicit cost
+> authorization, frontend studio and 10-image benchmark are runnable. TripoSR install and
+> TokenHub keys are incomplete; Kimi account is suspended (HTTP 429). See
+> [IMAGE_TO_3D_PROVIDERS.md](IMAGE_TO_3D_PROVIDERS.md), [MODEL_BENCHMARK_REPORT.md](MODEL_BENCHMARK_REPORT.md)
+> and [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md).
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
 > Official CAD/BOM/docs, FreeCAD/Blender/OrcaSlicer, Python 3.12 + build123d/OCP, Node/Three.js,
@@ -45,7 +51,14 @@ npm run dev --prefix frontend
 # open http://127.0.0.1:4173/
 
 # upload an STL, watch the real G-code animation, detach, add to collection
+# top-right IMAGE → 3D opens the provider studio (free Mock provider works without keys)
 ```
+
+The built UI is `frontend/dist/`; do not double-click `index.html` — serve it with
+`npm run preview --prefix frontend` or `npm run dev --prefix frontend`.
+Sharing, owner-unlimited and guest-quota requirements are documented in
+[SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md); the current API is **not authenticated**, so do
+not expose it publicly as-is.
 
 The uploaded STL is sliced by the local OrcaSlicer 2.4.2 with the resolved Voron 300 profiles.
 The browser test can also use the built bundle:

@@ -1,4 +1,4 @@
-import type { CollectionItem, Job, Toolpath, Wallet } from '../types';
+import type { CollectionItem, Image3DJob, Image3DProvider, Job, Toolpath, Wallet } from '../types';
 
 const API_BASE = (import.meta as ImportMeta & { env?: { VITE_API_BASE?: string } }).env?.VITE_API_BASE ?? 'http://127.0.0.1:8000';
 
@@ -65,6 +65,31 @@ export async function loadToolpath(path: string): Promise<Toolpath> {
   const res = await fetch(assetUrl(path));
   if (!res.ok) throw new Error(`toolpath ${res.status}`);
   return res.json() as Promise<Toolpath>;
+}
+
+export async function getImage3DProviders(): Promise<{ providers: Image3DProvider[] }> {
+  return request('/api/image3d/providers');
+}
+
+export async function createImage3DJob(file: File, provider: string, prompt: string, authorized: boolean, budget: number): Promise<Image3DJob> {
+  const form = new FormData();
+  form.append('file', file, file.name);
+  form.append('provider', provider);
+  form.append('prompt', prompt);
+  form.append('authorized', String(authorized));
+  form.append('budget_cny', String(budget));
+  return request('/api/image3d/jobs', { method: 'POST', body: form });
+}
+
+export async function getImage3DJob(id: string): Promise<Image3DJob> {
+  return request(`/api/image3d/jobs/${id}`);
+}
+
+export async function analyzeImage(file: File, prompt: string): Promise<{ analysis?: Record<string, unknown>; raw?: string }> {
+  const form = new FormData();
+  form.append('file', file, file.name);
+  form.append('prompt', prompt);
+  return request('/api/image3d/analyze', { method: 'POST', body: form });
 }
 
 export async function loadDemo(): Promise<{ toolpath: Toolpath; modelUrl: string }> {

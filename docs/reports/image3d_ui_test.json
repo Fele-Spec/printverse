@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "panel": "BEFORE_AFTER_SCREENSHOTS/after_image3d_panel.png",
+  "result": "BEFORE_AFTER_SCREENSHOTS/after_image3d_result.png",
+  "provider": "mock_relief",
+  "status": "completed",
+  "generation_cost_cny": 0.0,
+  "geometry_status": "MOCK_RELIEF",
+  "texture_status": "NONE",
+  "errors": []
+}

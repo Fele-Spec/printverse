@@ -14,6 +14,7 @@ import {
 import { PrintScene } from './components/PrintScene';
 import { SceneControls, type PanelMode, type ViewPreset } from './components/SceneControls';
 import { PartInspector } from './components/PartInspector';
+import { Image3DPanel } from './components/Image3DPanel';
 
 type Status = 'idle' | 'slicing' | 'ready' | 'printing' | 'paused' | 'completed' | 'detached' | 'error';
 const INITIAL_TICK: PrintTick = {
@@ -67,6 +68,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [dragging, setDragging] = useState(false);
   const [collectionOpen, setCollectionOpen] = useState(false);
+  const [image3DOpen, setImage3DOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refreshAccount = useCallback(async () => {
@@ -217,6 +219,22 @@ export default function App() {
 
   return (
     <div className="app" data-testid="printverse-app">
+      {image3DOpen && (
+        <Image3DPanel
+          onClose={() => setImage3DOpen(false)}
+          onUseStl={async (url) => {
+            try {
+              const res = await fetch(url);
+              const blob = await res.blob();
+              const file = new File([blob], 'image3d-generated.stl', { type: 'model/stl' });
+              setImage3DOpen(false);
+              await handleUpload(file);
+            } catch (e) {
+              setError(e instanceof Error ? e.message : 'Generated STL could not be loaded');
+            }
+          }}
+        />
+      )}
       <header className="topbar">
         <div className="brandblock">
           <div className="eyebrow">PRINTVERSE · PHASE 03 · CAD DIGITAL TWIN</div>
@@ -229,6 +247,7 @@ export default function App() {
             <i /> {statusLabel(status)}
           </div>
         </div>
+        <button className="image3d-launch" onClick={() => setImage3DOpen(true)} data-testid="open-image3d">IMAGE → 3D</button>
         <div className="wallet-pill" data-testid="wallet-balance">
           <span>VIRTUAL FILAMENT</span>
           <b>{wallet ? `${wallet.balance_g.toFixed(2)} g` : '—'}</b>

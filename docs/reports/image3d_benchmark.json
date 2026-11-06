@@ -1,0 +1,262 @@
+{
+  "images": [
+    "01_cube.png",
+    "02_sphere.png",
+    "03_cylinder.png",
+    "04_cone.png",
+    "05_torus.png",
+    "06_mug.png",
+    "07_tree.png",
+    "08_rocket.png",
+    "09_ring.png",
+    "10_vase.png"
+  ],
+  "rows": [
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "01_cube.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 6819.399,
+      "extents_mm": [
+        80.0,
+        80.0,
+        12.678
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "02_sphere.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 8607.846,
+      "extents_mm": [
+        80.0,
+        80.0,
+        11.855
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "03_cylinder.png",
+      "seconds": 0.09,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 6549.591,
+      "extents_mm": [
+        80.0,
+        80.0,
+        13.667
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "04_cone.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 5118.846,
+      "extents_mm": [
+        80.0,
+        80.0,
+        13.227
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "05_torus.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 8647.078,
+      "extents_mm": [
+        80.0,
+        80.0,
+        11.91
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "06_mug.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 5957.947,
+      "extents_mm": [
+        80.0,
+        80.0,
+        14.6
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "07_tree.png",
+      "seconds": 0.08,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 4381.749,
+      "extents_mm": [
+        80.0,
+        80.0,
+        13.392
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "08_rocket.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 455.725,
+      "extents_mm": [
+        80.0,
+        80.0,
+        11.471
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "09_ring.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 2277.205,
+      "extents_mm": [
+        80.0,
+        80.0,
+        11.306
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    },
+    {
+      "provider": "mock_relief",
+      "model": "silhouette-heightfield-v1",
+      "image": "10_vase.png",
+      "seconds": 0.07,
+      "cost_cny": 0.0,
+      "cost_basis": "free",
+      "output_format": "stl",
+      "texture_status": "NONE",
+      "geometry_status": "MOCK_RELIEF",
+      "vertices": 10952,
+      "faces": 21900,
+      "watertight": true,
+      "volume_mm3": 3342.862,
+      "extents_mm": [
+        80.0,
+        80.0,
+        13.337
+      ],
+      "bytes": 1095084,
+      "printability": "PASS"
+    }
+  ],
+  "not_tested": [
+    {
+      "provider": "triposr_local",
+      "model": "TripoSR (stabilityai/TripoSR)",
+      "status": "NOT_TESTED",
+      "reason": "TripoSR model.ckpt missing"
+    },
+    {
+      "provider": "tripo_cloud",
+      "model": "tripo-3d-3.1",
+      "status": "NOT_TESTED",
+      "reason": "TOKENHUB_API_KEY + submit/query URL not configured; see docs."
+    },
+    {
+      "provider": "hy3d_cloud",
+      "model": "hy-3d-3.1",
+      "status": "NOT_TESTED",
+      "reason": "TOKENHUB_API_KEY + submit/query URL not configured; see docs."
+    },
+    {
+      "provider": "stable_fast_3d",
+      "model": "Stable Fast 3D",
+      "status": "NOT_TESTED",
+      "reason": "Windows-native install not attempted; upstream project is research code and the official weights/license require review before download."
+    }
+  ]
+}

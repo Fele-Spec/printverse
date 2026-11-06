@@ -12,6 +12,8 @@ from pydantic import BaseModel
 from starlette.concurrency import run_in_threadpool
 
 from . import db
+from .image3d import router as image3d_router
+from .image3d import store as image3d_store
 from .slicer import SliceError, slice_stl
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.mount("/runtime", StaticFiles(directory=RUNTIME), name="runtime")
+app.include_router(image3d_router.router)
 
 
 class CompleteRequest(BaseModel):
@@ -43,6 +46,7 @@ class CollectionRequest(BaseModel):
 @app.on_event("startup")
 def startup() -> None:
     db.init_db()
+    image3d_store.init_db()
 
 
 @app.get("/api/health")

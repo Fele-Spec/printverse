@@ -39,6 +39,23 @@ export type Job = {
   gcode_url: string;
 };
 
+export type Image3DProvider = {
+  id: string; label: string; kind: string; model: string; available: boolean;
+  reason: string; cost_class: string; requires_authorization: boolean;
+  requires_key: boolean; output_formats: string[]; supports_texture: boolean;
+  docs_url: string; license: string;
+};
+
+export type Image3DJob = {
+  id: string; provider: string; model: string; status: string;
+  task_id: string | null; output_format: string | null; output_url: string | null;
+  local_path: string | null; generation_cost: number | null;
+  cost_currency: string | null; cost_basis: string | null;
+  texture_status: string | null; geometry_status: string | null;
+  task_status: string | null; authorized: boolean; prompt: string | null;
+  error: string | null; metadata: Record<string, unknown>; created_at: string;
+};
+
 export type Wallet = {
   user: string;
   name: string;
