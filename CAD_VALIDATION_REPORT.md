@@ -75,6 +75,17 @@ Evidence: `docs/reports/freecad_stl_test.json`.
 
 Evidence: `docs/reports/freecad_step_part_test.json`.
 
+### Bed mesh — PASS
+
+The same official 300 mm bed STEP was meshed with FreeCAD `MeshPart` and loaded by the Web
+scene:
+
+- `frontend/public/models/voron_300_bed.stl` and `assets/processed/voron_300_bed.stl`
+- 57,884 bytes, 568 vertices, 1,156 faces
+- watertight = true
+- 305 × 305 × 7.76 mm, volume 721,133.06 mm³
+- real mesh replaces the procedural bed top; a support box remains underneath
+
 ### Full assembly — geometry import COMPLETE; transform audit PARTIAL
 
 The 267 MB `VORON2.4_Assembly.step` was imported with **build123d 0.13.0 / OCP 8.0.1.1.0**

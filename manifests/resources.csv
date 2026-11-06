@@ -18,3 +18,4 @@ assets-test-models-cube-stl,test-model,20 mm cube test model,assets/test-models/
 assets-test-models-cube-gcode,test-gcode,OrcaSlicer 2.4.2 sliced cube,assets/test-models/cube.gcode,301690,f0eb34444f0e84aa1423d18254d0a87fd55de3fe6588e20633eab8ea6ff5ab08,PrintVerse,bootstrap,,no-separate-license,,
 assets-test-models-cube-3mf,test-project,OrcaSlicer 2.4.2 project with G-code,assets/test-models/cube.3mf,50039,82864b1536fa8360e31d848e8deed25d37dc33439c3a067af074acb2f41f77d6,PrintVerse,bootstrap,,no-separate-license,,
 assets-processed-filament-card-glb,preview-model,Voron Filament_Card converted to GLB,assets/processed/filament_card.glb,43608,c827502cf0a5223668110485d18defc718747e520e1cfef730cf2fda594b3399,PrintVerse,bootstrap,,GPL-3.0,,
+assets-processed-voron-300-bed-stl,cad-mesh,Official 300 mm bed STEP meshed to STL,assets/processed/voron_300_bed.stl,57884,994fe9f9ef0cb6003091b78160d42ecd21914c13f501ff191dc4d65efac85695,PrintVerse,bootstrap,,GPL-3.0,,

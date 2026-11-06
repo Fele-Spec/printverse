@@ -140,6 +140,7 @@ def main() -> int:
         ("assets/test-models/cube.gcode", "test-gcode", "OrcaSlicer 2.4.2 sliced cube", "no-separate-license"),
         ("assets/test-models/cube.3mf", "test-project", "OrcaSlicer 2.4.2 project with G-code", "no-separate-license"),
         ("assets/processed/filament_card.glb", "preview-model", "Voron Filament_Card converted to GLB", "GPL-3.0"),
+        ("assets/processed/voron_300_bed.stl", "cad-mesh", "Official 300 mm bed STEP meshed to STL", "GPL-3.0"),
     ]
     for path, kind, title, lic in generated:
         p = ROOT / path
@@ -371,6 +372,7 @@ def main() -> int:
             "mechanical_table": "MECHANICAL_PARAMETERS.md",
             "xcaf_hierarchy": "docs/reports/step_xcaf_tree.json",
             "freecad_object_placements": "docs/reports/freecad_full_tree.json",
+            "bed_mesh": "frontend/public/models/voron_300_bed.stl",
             "screenshots": "assets/previews/phase2_scene_*.png",
         },
         "blocked": [

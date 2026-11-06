@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T06:15:52.780221+00:00",
+  "generated_at": "2026-11-06T06:21:03.058583+00:00",
   "resources": [
     {
       "id": "7zr-exe",
@@ -290,6 +290,18 @@
       "path": "assets/processed/filament_card.glb",
       "bytes": 43608,
       "sha256": "c827502cf0a5223668110485d18defc718747e520e1cfef730cf2fda594b3399",
+      "repository": "PrintVerse",
+      "version": "bootstrap",
+      "license": "GPL-3.0",
+      "opens": true
+    },
+    {
+      "id": "assets-processed-voron-300-bed-stl",
+      "kind": "cad-mesh",
+      "title": "Official 300 mm bed STEP meshed to STL",
+      "path": "assets/processed/voron_300_bed.stl",
+      "bytes": 57884,
+      "sha256": "994fe9f9ef0cb6003091b78160d42ecd21914c13f501ff191dc4d65efac85695",
       "repository": "PrintVerse",
       "version": "bootstrap",
       "license": "GPL-3.0",

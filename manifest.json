@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T06:15:52.780221+00:00",
+  "generated_at": "2026-11-06T06:21:03.058583+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -16,11 +16,11 @@
     "J_reports": "COMPLETE"
   },
   "counts": {
-    "resources": 19,
-    "cad_index_rows": 222,
-    "checksum_files": 3535,
-    "checksum_bytes": 3965227837,
-    "stl_files": 190,
+    "resources": 20,
+    "cad_index_rows": 223,
+    "checksum_files": 3538,
+    "checksum_bytes": 3965360072,
+    "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
     "licenses": 168
@@ -59,6 +59,7 @@
     "mechanical_table": "MECHANICAL_PARAMETERS.md",
     "xcaf_hierarchy": "docs/reports/step_xcaf_tree.json",
     "freecad_object_placements": "docs/reports/freecad_full_tree.json",
+    "bed_mesh": "frontend/public/models/voron_300_bed.stl",
     "screenshots": "assets/previews/phase2_scene_*.png"
   },
   "blocked": [

@@ -50,6 +50,10 @@ remains **PHYSICAL_PENDING**.
   **2,977 non-identity placements**. See `docs/reports/freecad_full_tree.json`.
 - **XCAF names:** 1,690 nodes / 9 top groups. `GetLocation_s` returned identity for every
   node, and `XCAFDoc_Location` binding crashes; it is not used for transforms.
+- **Real CAD mesh in the Web scene:** the official `MIC6_Bed_V2_300.step` was meshed by
+  FreeCAD (`scripts/freecad_mesh_bed.py`) to a 57,884-byte STL: 568 vertices, 1,156 faces,
+  watertight, 305 × 305 × 7.76 mm. It is loaded as the actual bed plate in
+  `frontend/public/models/voron_300_bed.stl`; the frame/toolhead remain proxies.
 - **Web scene:** uses the recovered hierarchy and nominal BOM dimensions; it does not yet
   serialize the 4,526 FreeCAD placements into glTF. See `docs/architecture/MECHANICAL_SCENE.md`.
 
@@ -147,8 +151,9 @@ Runtime artifacts are served at `/runtime/jobs/...`; source and generated files 
 1. XCAF names/hierarchy are now recovered, but exact STEP world transforms are still missing
    (location-attribute binding crash); the scene uses nominal kinematic placement. This is the
    main remaining gap to a “full CAD” claim.
-2. Toolhead and frame are simplified procedural geometry, not the full 1,677-solid mesh;
-   selected actual STL/STEP data is used for validation, not for every Web mesh.
+2. One real CAD mesh (the 305 × 305 × 7.76 mm bed plate, 1,156 faces) is integrated. The
+   toolhead and frame are still simplified procedural geometry; the 4,526 FreeCAD placements
+   are not yet serialized into glTF.
 3. Full imported STEP bbox anomaly (430×534×522) needs investigation.
 4. E2E animation uses a 300× viewer speed to finish in seconds; the real slicer estimate is
    19m52s. Speed is a UI control, not a fabricated time.

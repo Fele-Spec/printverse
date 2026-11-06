@@ -1,5 +1,8 @@
 import { Html, Line } from '@react-three/drei';
-import { useMemo, type ReactNode } from 'react';
+import { useLoader } from '@react-three/fiber';
+import { Suspense, useMemo, type ReactNode } from 'react';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'three';
 
 const FRAME = { x: 460, y: 460, z: 480, extrusion: 20 };
 const BED_BASE_Z = 300;
@@ -39,6 +42,28 @@ function Label({ position, children }: { position: [number, number, number]; chi
     <Html position={position} center distanceFactor={520} zIndexRange={[1, 0]}>
       <div className="scene-label">{children}</div>
     </Html>
+  );
+}
+
+function BedMesh() {
+  const geometry = useLoader(STLLoader, '/models/voron_300_bed.stl');
+  const placement = useMemo(() => {
+    const g = geometry.clone();
+    g.computeBoundingBox();
+    const box = g.boundingBox ?? new THREE.Box3();
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    return { geometry: g, center, maxZ: box.max.z };
+  }, [geometry]);
+  return (
+    <mesh
+      geometry={placement.geometry}
+      position={[-placement.center.x, -placement.center.y, -placement.maxZ]}
+      castShadow
+      receiveShadow
+    >
+      <meshStandardMaterial color="#aebfc3" metalness={0.3} roughness={0.58} />
+    </mesh>
   );
 }
 
@@ -165,8 +190,11 @@ export function VoronMachine({
       </group>
 
       <group name="Z_BED" position={[0, 0, bedZ]}>
-        <Part size={[305, 305, 8]} position={[0, 0, -4]} color="#94a6ab" metalness={0.25} roughness={0.7} />
-        <Part size={[250, 250, 3]} position={[0, 0, -9]} color="#9a552e" metalness={0.2} roughness={0.6} />
+        <Part size={[305, 305, 6]} position={[0, 0, -13]} color="#53656d" metalness={0.3} roughness={0.6} />
+        <Suspense fallback={<Part size={[305, 305, 8]} position={[0, 0, -4]} color="#94a6ab" metalness={0.25} roughness={0.7} />}>
+          <BedMesh />
+        </Suspense>
+        <Part size={[250, 250, 3]} position={[0, 0, -10]} color="#9a552e" metalness={0.2} roughness={0.6} />
         <Part size={[318, 318, 9]} position={[0, 0, -18]} color="#202b33" metalness={0.4} roughness={0.4} />
         {[-145, 145].map((x) =>
           [-145, 145].map((y) => (

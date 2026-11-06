@@ -102,7 +102,7 @@ moves[i] = [x0,y0,x1,y1,z,de,dt,typeIndex,isTravel,layer]
 | Build XY 300×300 | Klipper 300 + Orca printable area |
 | Z travel 280 / slicer 275 | Klipper / Orca (see `MECHANICAL_PARAMETERS.md`) |
 | Rails 350 mm, gantry 380/400, belts | BOM |
-| Bed plate 305×305×7.76 | Official `MIC6_Bed_V2_300.step` |
+| Bed plate 305×305×7.76 | Official `MIC6_Bed_V2_300.step` meshed to 1,156-face STL; loaded in scene |
 | Toolhead shape | Simplified proxy; not claimed as exact CAD |
 | Exact product transforms | Pending name-preserving XCAF import |
 
