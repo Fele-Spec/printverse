@@ -24,7 +24,7 @@
 | 中文 UI | **PASS（主流程）** | `phase5_dashboard_cn.png`、`phase5_color_glb_panel.png` |
 | 正文 ≥16px / 主按钮 ≥44px | **PASS（主流程）** | `styles.css` Phase-5 overrides |
 | 彩色 GLB 不再被 STL 替代 | **PASS** | Image3D `output_format=glb`；STL 只作为切片派生 |
-| 虚拟耗材/首件免费/admin/扣费 | **PASS（既有测试）** | `test_ledger.py` 6 项；16 passed（默认）；3 个 PostgreSQL 集成测试按环境变量跳过 |
+| 虚拟耗材/首件免费/admin/扣费 | **PASS（既有测试）** | `test_ledger.py` 6 项；17 passed（默认）；3 个 PostgreSQL 集成测试按环境变量跳过 |
 | 独立 Worker | **PASS** | `WORKER_ONCE=1` 消费队列任务完成；`docs/reports/worker_test.json` |
 | Compose 配置 | **PASS** | 独立 `docker-compose config` 退出 0；镜像构建仍 BLOCKED |
 | 真实 G-code 机械运动/逐层沉积 | **PASS（既有证据）** | `GCODE_TEST_REPORT.md`、`phase2_e2e.json` |
@@ -38,7 +38,7 @@
 | 3 | Voron 整机机械结构 | **PASS** | 既有 4,526 placements / 8 GLB |
 | 4 | 真实 G-code 驱动喷头/龙门 | **PASS** | 既有真实 Orca/G-code 证据 |
 | 5 | 逐层材料沉积 | **PASS** | PrintSimulator 使用解析后的真实 moves |
-| 6 | 虚拟耗材质量 | **PASS** | 16 passed（默认）+ 3 个 PostgreSQL 测试；3.978 g / 10.040 g 实测 |
+| 6 | 虚拟耗材质量 | **PASS** | 17 passed（默认）+ 3 个 PostgreSQL 测试；3.978 g / 10.040 g 实测 |
 | 7 | 管理员免收费 | **PASS** | `test_admin_unlimited_does_not_touch_first_print` |
 | 8 | 新用户首次免费 | **PASS** | `test_first_print_is_free_once` |
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
@@ -51,7 +51,7 @@
 1. **工程图转 CAD**：已支持封闭 DXF 轮廓拉伸为网格；尚未实现从扫描图片识别尺寸/约束并生成参数化 CAD。
 2. **精确壁厚/支撑**：mesh API 提供 ray-cast 近似壁厚与悬垂面积，不是 Orca 切片器标定结果，子项为 **PARTIAL**。
 3. **Tauri Windows 客户端**：源码 scaffolding 已写，构建 `BLOCKED`（本机无 cargo/MSVC）。
-4. **Docker Compose**：文件已提供，`BLOCKED`（本机无 docker）；容器内没有 Orca，真实切片需 Windows 工具。
+4. **Docker Compose**：`config` 已验证；镜像构建 `BLOCKED`（本机无 docker daemon）；容器内没有 Orca，真实切片需 Windows 工具。
 5. **Kimi**：账户 429 余额不足；未产生付费调用。
 6. **TokenHub**：无 Key/账号端点；未调用、未产生费用。
 7. **Stable Fast 3D**：未安装；Windows/许可证待审查。
@@ -60,7 +60,7 @@
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest backend\tests -q -p no:cacheprovider
-# 16 passed
+# 17 passed
 
 node scripts\phase5_ui_color_test.mjs
 node scripts\phase5_full_acceptance.mjs

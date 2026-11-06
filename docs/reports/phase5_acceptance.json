@@ -14,7 +14,7 @@
   },
   "acceptance": {
     "1_colour_glb": "PASS (Mock/TripoSR/3-view)",
-    "2_sliceable_stl_3mf": "PASS (STL/3MF/STEP)",
+    "2_sliceable_stl_3mf": "PASS (STL/3MF/STEP/DXF)",
     "3_voron_machine": "PASS",
     "4_real_gcode_motion": "PASS",
     "5_layer_deposition": "PASS",
@@ -42,7 +42,7 @@
     "docs/reports/tauri_build.txt"
   ],
   "tests": {
-    "pytest": "16 passed, 3 skipped (Postgres integration skipped by default)",
+    "pytest": "17 passed, 3 skipped (Postgres integration skipped by default)",
     "browser_page_errors": 0,
     "browser_console_errors": 0
   },

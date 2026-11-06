@@ -6,13 +6,16 @@ feature reconstruction. It is intentionally labelled DXF_EXTRUDE in the API.
 from __future__ import annotations
 
 from pathlib import Path
+import os
+
+ROOT = Path(__file__).resolve().parents[2]
+os.environ.setdefault("XDG_CONFIG_HOME", str(ROOT / ".cache" / "ezdxf-config"))
+(ROOT / ".cache" / "ezdxf-config").mkdir(parents=True, exist_ok=True)
 
 import ezdxf
 import trimesh
 from shapely.geometry import Point, Polygon
 from shapely.ops import unary_union
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 class DxfImportError(RuntimeError):
