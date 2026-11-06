@@ -256,7 +256,7 @@ def main() -> int:
                  "assets/models", "BEFORE_AFTER_SCREENSHOTS",
                  "docs/official-docs", "docs/architecture", "docs/research",
                  "tools/downloads", "configs", "docs/reports", "scripts", "backend", "database",
-                 "frontend/public"]:
+                 "deploy", "desktop", "frontend/public"]:
         p = ROOT / base
         if p.exists():
             checksum_files.extend([x for x in p.rglob("*") if x.is_file()])
@@ -272,6 +272,9 @@ def main() -> int:
                  "PERFORMANCE_REPORT.md", "HEIGHT_CLEARANCE_ANALYSIS.md",
                  "IMAGE_TO_3D_PROVIDERS.md", "MODEL_BENCHMARK_REPORT.md", "SHARING_AND_QUOTA.md",
                  "PHASE4_REPORT.md", "manifests/image3d.json",
+                 "PHASE5_AUDIT.md", "PHASE5_REPORT.md", "PRODUCT_ARCHITECTURE.md", "DEPLOYMENT.md",
+                 "Dockerfile", "Dockerfile.frontend", "docker-compose.yml", ".env.example",
+                 "requirements-api.txt", "desktop/package.json", "desktop/README.md",
                  "manifests/mechanical-parameters.json", "manifests/machine-hierarchy.json",
                  "manifests/placements.json", "manifests/module-parts.json",
                  "frontend/package.json", "frontend/package-lock.json", "frontend/index.html",
@@ -410,6 +413,20 @@ def main() -> int:
             "kimi": "BLOCKED_ACCOUNT_429",
             "triposr": "COMPLETE CPU / 7 pass / 3 repair",
             "tokenhub": "NOT_CONFIGURED / no cost incurred",
+        },
+        "phase5": {
+            "report": "PHASE5_REPORT.md",
+            "audit": "PHASE5_AUDIT.md",
+            "architecture": "PRODUCT_ARCHITECTURE.md",
+            "deployment": "DEPLOYMENT.md",
+            "status": "PARTIAL",
+            "colour_glb": "PASS",
+            "mesh_api": "PASS (inspect/repair/export)",
+            "chinese_ui": "PASS (main flow)",
+            "pet_browser": "PASS",
+            "tauri": "BLOCKED (no cargo)",
+            "docker": "BLOCKED (no docker)",
+            "postgres": "NOT_IMPLEMENTED (SQLite currently)",
         },
         "blocked": [
             "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded.",

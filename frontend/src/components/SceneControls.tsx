@@ -2,12 +2,12 @@ export type ViewPreset = 'product' | 'engineering' | 'interior' | 'toolhead' | '
 export type PanelMode = 'glass' | 'clear' | 'hidden';
 
 const VIEWS: Array<{ id: ViewPreset; label: string; hint: string }> = [
-  { id: 'product', label: 'PRODUCT', hint: '外观三分之四' },
-  { id: 'engineering', label: 'ENGINEERING', hint: '整机结构' },
-  { id: 'interior', label: 'INTERIOR', hint: '内部机械' },
-  { id: 'toolhead', label: 'TOOLHEAD', hint: '喷头细节' },
-  { id: 'top', label: 'TOP', hint: '顶部龙门' },
-  { id: 'exploded', label: 'EXPLODED', hint: '模块拆解' },
+  { id: 'product', label: '外观', hint: '外观三分之四' },
+  { id: 'engineering', label: '工程', hint: '整机结构' },
+  { id: 'interior', label: '内部', hint: '内部机械' },
+  { id: 'toolhead', label: '打印头', hint: '喷头细节' },
+  { id: 'top', label: '顶部', hint: '顶部龙门' },
+  { id: 'exploded', label: '爆炸', hint: '模块拆解' },
 ];
 
 const MODULES = [
@@ -43,13 +43,13 @@ export function SceneControls({
   return (
     <div className="scene-dock" data-testid="scene-controls">
       <div className="dock-head">
-        <span>VIEW</span>
+        <span>视图</span>
         <div className="dock-head-actions">
           <button className={`ortho-toggle ${cadMode ? 'cad-on' : ''}`} onClick={() => onCadMode(!cadMode)} data-testid="cad-toggle">
-            {cadMode ? 'CAD' : 'SIM'}
+            {cadMode ? 'CAD 结构' : '仿真'}
           </button>
           <button className="ortho-toggle" onClick={() => onOrthographic(!orthographic)} data-testid="ortho-toggle">
-            {orthographic ? 'ORTHO' : 'PERSP'}
+            {orthographic ? '正交' : '透视'}
           </button>
         </div>
       </div>
@@ -61,7 +61,7 @@ export function SceneControls({
         ))}
       </div>
       <div className="dock-sep" />
-      <div className="dock-head"><span>ENCLOSURE</span></div>
+      <div className="dock-head"><span>机舱</span></div>
       <div className="segmented">
         {(['glass', 'clear', 'hidden'] as PanelMode[]).map((m) => (
           <button key={m} className={panelMode === m ? 'active' : ''} onClick={() => onPanelMode(m)} data-testid={`panel-${m}`}>
@@ -70,7 +70,7 @@ export function SceneControls({
         ))}
       </div>
       <div className="dock-sep" />
-      <div className="dock-head"><span>MODULES</span><em>{Object.values(modules).filter(Boolean).length}/8</em></div>
+      <div className="dock-head"><span>模块</span><em>{Object.values(modules).filter(Boolean).length}/8</em></div>
       <div className="module-grid">
         {MODULES.map(([id, label]) => (
           <button key={id} className={modules[id] ? 'on' : ''} onClick={() => onToggleModule(id)} title={label} data-testid={`module-${id}`}>
@@ -80,11 +80,11 @@ export function SceneControls({
       </div>
       <div className="dock-sep" />
       <button className={`fastener-toggle ${showFasteners ? 'on' : ''}`} onClick={() => onShowFasteners(!showFasteners)} data-testid="fasteners-toggle">
-        FASTENERS · instanced
+        紧固件 · 实例化
       </button>
       <div className="dock-sep" />
       <label className="explode-row">
-        <span>EXPLODE</span>
+        <span>爆炸</span>
         <input type="range" min={0} max={1} step={0.01} value={explode} onChange={(e) => onExplode(Number(e.target.value))} />
         <b>{Math.round(explode * 100)}%</b>
       </label>

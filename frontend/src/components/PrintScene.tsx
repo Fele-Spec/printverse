@@ -80,6 +80,7 @@ function CameraBridge() {
 export function PrintScene({
   toolpath,
   modelUrl,
+  colorUrl,
   status,
   playing,
   speed,
@@ -101,6 +102,7 @@ export function PrintScene({
 }: {
   toolpath: Toolpath | null;
   modelUrl: string;
+  colorUrl?: string | null;
   status: string;
   playing: boolean;
   speed: number;
@@ -223,6 +225,7 @@ export function PrintScene({
         <Suspense fallback={null}>
           <FinishedObject
             modelUrl={modelUrl}
+            colorUrl={colorUrl}
             bedZ={cadMode ? tick.bedZ - 242 : tick.bedZ}
             detached={detached}
             mode={transformMode}

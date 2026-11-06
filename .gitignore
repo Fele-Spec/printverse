@@ -32,3 +32,10 @@ pytest-cache-files-*
 .env.local
 .env.*.local
 
+
+# Phase 5 runtime / desktop build artefacts
+.desktop
+desktop/node_modules
+desktop/src-tauri/target
+storage
+tmp

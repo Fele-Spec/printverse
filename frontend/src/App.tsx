@@ -35,8 +35,8 @@ function humanTime(seconds: number | null | undefined): string {
 
 function statusLabel(status: Status): string {
   return ({
-    idle: 'AWAITING STL', slicing: 'SLICING', ready: 'READY', printing: 'PRINTING',
-    paused: 'PAUSED', completed: 'COMPLETE', detached: 'DETACHED', error: 'ERROR',
+    idle: '等待导入模型', slicing: '切片中', ready: '准备打印', printing: '打印中',
+    paused: '已暂停', completed: '打印完成', detached: '已取下', error: '出错',
   } as Record<Status, string>)[status];
 }
 
@@ -45,6 +45,7 @@ export default function App() {
   const [job, setJob] = useState<Job | null>(null);
   const [toolpath, setToolpath] = useState<Toolpath | null>(null);
   const [modelUrl, setModelUrl] = useState('/demo/cube.stl');
+  const [colorUrl, setColorUrl] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [collection, setCollection] = useState<CollectionItem[]>([]);
   const [tick, setTick] = useState<PrintTick>(INITIAL_TICK);
@@ -69,6 +70,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [image3DOpen, setImage3DOpen] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refreshAccount = useCallback(async () => {
@@ -88,11 +90,12 @@ export default function App() {
       .then(({ toolpath: tp, modelUrl: url }) => {
         setToolpath(tp);
         setModelUrl(url);
+        setColorUrl(null);
         setJob(DEMO_JOB);
         setStatus('ready');
         setTick(INITIAL_TICK);
       })
-      .catch(() => setNotice('Demo toolpath missing; upload an STL to begin.'));
+      .catch(() => setNotice('演示路径缺失；请导入 STL/3MF 开始。'));
   }, [refreshAccount]);
 
   const resetToReady = useCallback(() => {
@@ -104,9 +107,9 @@ export default function App() {
     setNotice('');
   }, [toolpath]);
 
-  const handleUpload = useCallback(async (file: File) => {
-    if (!file.name.toLowerCase().endsWith('.stl')) {
-      setError('Please choose a .stl file.');
+  const handleUpload = useCallback(async (file: File, sourceColorUrl?: string | null) => {
+    if (!/\.(stl|3mf|obj|glb|gltf)$/i.test(file.name)) {
+      setError('请选择 .stl / .3mf / .obj / .glb；STEP 请先转换为网格。');
       return;
     }
     setError('');
@@ -114,19 +117,20 @@ export default function App() {
     setStatus('slicing');
     setPlaying(false);
     try {
-      const result = await uploadStl(file);
+      const result = await uploadStl(file, sourceColorUrl);
       const tp = await loadToolpath(result.toolpath_url);
       setJob(result);
       setToolpath(tp);
       setModelUrl(assetUrl(result.model_url));
+      setColorUrl(result.color_url ? assetUrl(result.color_url) : sourceColorUrl ?? null);
       setWallet(result.wallet);
       setTick(INITIAL_TICK);
       setStatus('ready');
       setResetKey((n) => n + 1);
-      setNotice(`Sliced ${file.name}: ${result.layers} layers, ${result.mass_g.toFixed(3)} g`);
+      setNotice(`切片完成 ${file.name}：${result.layers} 层，${result.mass_g.toFixed(3)} g`);
     } catch (e) {
       setStatus('error');
-      setError(e instanceof Error ? e.message : 'Slicing failed');
+      setError(e instanceof Error ? e.message : '切片失败');
     }
   }, []);
 
@@ -157,7 +161,7 @@ export default function App() {
       }
     }
     resetToReady();
-    setNotice('Print cancelled; reservation released.');
+    setNotice('打印已取消，预扣耗材已退回。');
   }, [job, resetToReady]);
 
   const handleComplete = useCallback(async () => {
@@ -168,23 +172,23 @@ export default function App() {
       try {
         const result = await completeJob(job.id);
         setWallet(result.wallet);
-        setNotice(`Print complete: ${result.mass_g.toFixed(3)} g committed.`);
+        setNotice(`打印完成：已结算 ${result.mass_g.toFixed(3)} g 虚拟耗材。`);
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Could not commit job');
+        setError(e instanceof Error ? e.message : '无法结算打印任务');
       }
     } else {
-      setNotice('Demo print complete. Upload an STL to use the virtual ledger.');
+      setNotice('演示打印完成。导入 STL 可使用虚拟耗材账本。');
     }
   }, [job]);
 
   const detach = useCallback(() => {
     setStatus('detached');
-    setNotice('Object released from the bed. Drag the gizmo to move / rotate / scale.');
+    setNotice('成品已从热床取下。拖动控制轴可移动、旋转或缩放。');
   }, []);
 
   const favorite = useCallback(async () => {
     if (!job) {
-      setError('No print to collect.');
+      setError('没有可收藏的打印成品。');
       return;
     }
     if (job.id === 'demo') {
@@ -194,7 +198,7 @@ export default function App() {
         created_at: new Date().toISOString(),
       };
       setCollection((c) => [local, ...c.filter((i) => i.job_id !== 'demo')]);
-      setNotice('Demo cube added to local collection.');
+      setNotice('演示立方体已加入本地收藏。');
       setCollectionOpen(true);
       return;
     }
@@ -203,10 +207,10 @@ export default function App() {
       setWallet(result.wallet);
       const c = await getCollection();
       setCollection(c.items);
-      setNotice('Added to your 3D collection.');
+      setNotice('已加入 3D 收藏。');
       setCollectionOpen(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Collection failed');
+      setError(e instanceof Error ? e.message : '收藏失败');
     }
   }, [job]);
 
@@ -222,36 +226,37 @@ export default function App() {
       {image3DOpen && (
         <Image3DPanel
           onClose={() => setImage3DOpen(false)}
-          onUseStl={async (url) => {
+          onUseModel={async (stlUrl, generatedColorUrl) => {
             try {
-              const res = await fetch(url);
+              const res = await fetch(stlUrl);
               const blob = await res.blob();
               const file = new File([blob], 'image3d-generated.stl', { type: 'model/stl' });
               setImage3DOpen(false);
-              await handleUpload(file);
+              await handleUpload(file, generatedColorUrl);
             } catch (e) {
-              setError(e instanceof Error ? e.message : 'Generated STL could not be loaded');
+              setError(e instanceof Error ? e.message : '生成的 STL 无法加载');
             }
           }}
         />
       )}
       <header className="topbar">
         <div className="brandblock">
-          <div className="eyebrow">PRINTVERSE · PHASE 03 · CAD DIGITAL TWIN</div>
+          <div className="eyebrow">PRINTVERSE · 精密打印机数字孪生</div>
           <h1>Voron 2.4r2 <span>/ 300 mm</span></h1>
         </div>
         <div className="machine-facts">
-          <div><b>300 × 300</b><span>X/Y travel</span></div>
-          <div><b>280 / 275</b><span>Z travel / slicer</span></div>
+          <div><b>300 × 300</b><span>X/Y 行程</span></div>
+          <div><b>280 / 275</b><span>Z 行程 / 切片高度</span></div>
           <div className={`status-chip ${status}`} data-testid="print-status">
             <i /> {statusLabel(status)}
           </div>
         </div>
-        <button className="image3d-launch" onClick={() => setImage3DOpen(true)} data-testid="open-image3d">IMAGE → 3D</button>
+        <button className="image3d-launch" onClick={() => setImage3DOpen(true)} data-testid="open-image3d">图片 → 3D</button>
+        <button className={advanced ? 'ghost active' : 'ghost'} onClick={() => setAdvanced((v) => !v)} data-testid="advanced-toggle">{advanced ? '退出高级' : '高级模式'}</button>
         <div className="wallet-pill" data-testid="wallet-balance">
-          <span>VIRTUAL FILAMENT{wallet?.role === 'admin' ? ' · OWNER' : ''}</span>
+          <span>虚拟耗材{wallet?.role === 'admin' ? ' · 所有者' : ''}</span>
           <b>{wallet ? `${wallet.balance_g.toFixed(2)} g` : '—'}</b>
-          <em>{wallet?.role === 'admin' ? 'unlimited owner' : wallet?.first_print_available ? 'first print free' : 'first print used'}</em>
+          <em>{wallet?.role === 'admin' ? '所有者 · 无限额度' : wallet?.first_print_available ? '首件免费' : '首件已使用'}</em>
         </div>
       </header>
 
@@ -271,6 +276,7 @@ export default function App() {
           <PrintScene
             toolpath={toolpath}
             modelUrl={modelUrl}
+            colorUrl={colorUrl}
             status={status}
             playing={playing}
             speed={speed}
@@ -291,7 +297,7 @@ export default function App() {
             onComplete={handleComplete}
           />
 
-          <SceneControls
+          {advanced && <SceneControls
             view={viewPreset}
             onView={setViewPreset}
             panelMode={panelMode}
@@ -306,22 +312,22 @@ export default function App() {
             onCadMode={setCadMode}
             showFasteners={showFasteners}
             onShowFasteners={setShowFasteners}
-          />
+          />}
 
-          <div className="stage-top">
+          {advanced && <div className="stage-top">
             <div className="hud-block">
-              <span className="hud-label">MACHINE</span>
+              <span className="hud-label">设备</span>
               <b>V2.4r2 / 300</b>
               <small>CoreXY · 4-point Z</small>
             </div>
             <div className="hud-block right">
-              <span className="hud-label">TOOLHEAD</span>
+              <span className="hud-label">打印头</span>
               <b className="mono">
                 X {tick.toolhead.x.toFixed(1)} · Y {tick.toolhead.y.toFixed(1)} · Z {(300 - tick.bedZ).toFixed(1)}
               </b>
               <small>bed Z {tick.bedZ.toFixed(1)} mm</small>
             </div>
-          </div>
+          </div>}
 
           {selectedPart && (
             <PartInspector
@@ -336,28 +342,28 @@ export default function App() {
             />
           )}
 
-          <div className="stage-bottom">
+          {advanced && <div className="stage-bottom">
             <div className="legend">
-              <span><i className="swatch outer" /> outer wall</span>
-              <span><i className="swatch inner" /> inner wall</span>
-              <span><i className="swatch infill" /> infill</span>
-              <span><i className="swatch top" /> top surface</span>
-              <span><i className="swatch travel" /> travel</span>
+              <span><i className="swatch outer" /> 外墙</span>
+              <span><i className="swatch inner" /> 内墙</span>
+              <span><i className="swatch infill" /> 填充</span>
+              <span><i className="swatch top" /> 顶面</span>
+              <span><i className="swatch travel" /> 空驶</span>
             </div>
             <label className="toggle compact">
               <input type="checkbox" checked={showLabels} onChange={() => setShowLabels((v) => !v)} data-testid="labels-toggle" />
-              <span>Assembly labels</span>
+              <span>装配标签</span>
             </label>
-          </div>
+          </div>}
 
-          {dragging && <div className="drop-overlay">DROP STL TO SLICE</div>}
+          {dragging && <div className="drop-overlay">松开以切片 STL</div>}
         </section>
 
         <aside className="sidebar">
           <section className="card">
             <div className="card-head">
               <span className="step">01</span>
-              <div><h2>Input STL</h2><p>Real OrcaSlicer slice, not a fake animation.</p></div>
+              <div><h2>导入模型</h2><p>使用真实 OrcaSlicer 切片，不使用假动画。</p></div>
             </div>
             <label className="dropzone" onDragOver={(e) => e.preventDefault()} onDrop={(e) => {
               e.preventDefault();
@@ -367,21 +373,21 @@ export default function App() {
               <input
                 ref={fileRef}
                 type="file"
-                accept=".stl"
+                accept=".stl,.3mf,.obj,.glb,.gltf"
                 data-testid="upload-input"
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleUpload(f); }}
               />
               <span className="drop-icon">↥</span>
-              <b>Choose or drop .stl</b>
-              <small>20 × 20 × 20 mm cube recommended for the first run</small>
+              <b>选择或拖入 .stl / .3mf / .obj / .glb</b>
+              <small>首次运行建议使用 20 × 20 × 20 mm 立方体</small>
             </label>
             <div className="row gap">
               <button className="ghost" onClick={() => { void loadDemo().then(({ toolpath: tp, modelUrl: url }) => {
                 setJob(DEMO_JOB); setToolpath(tp); setModelUrl(url); setStatus('ready'); setTick(INITIAL_TICK); setResetKey((n) => n + 1);
-              }); }} data-testid="load-demo">Load demo cube</button>
-              <button className="ghost" onClick={() => fileRef.current?.click()}>Browse files</button>
+              }); }} data-testid="load-demo">载入演示立方体</button>
+              <button className="ghost" onClick={() => fileRef.current?.click()}>浏览文件</button>
             </div>
-            {status === 'slicing' && <div className="inline-progress"><i /> Slicing with OrcaSlicer…</div>}
+            {status === 'slicing' && <div className="inline-progress"><i /> 正在用 OrcaSlicer 切片…</div>}
             {error && <div className="error-box" data-testid="error">{error}</div>}
             {notice && <div className="notice-box">{notice}</div>}
           </section>
@@ -389,27 +395,27 @@ export default function App() {
           <section className="card print-card">
             <div className="card-head">
               <span className="step">02</span>
-              <div><h2>Print simulation</h2><p>{job?.name ?? 'No job loaded'}</p></div>
+              <div><h2>虚拟打印</h2><p>{job?.name ?? '尚未载入任务'}</p></div>
             </div>
             <div className="progress-wrap">
               <div className="progress-labels">
-                <span><b data-testid="current-layer">{layerNow}</b> / {layers} layers</span>
+                <span><b data-testid="current-layer">{layerNow}</b> / {layers} 层</span>
                 <b data-testid="progress-percent">{progressPct}%</b>
               </div>
               <div className="progress-track" data-testid="progress"><i style={{ width: `${progressPct}%` }} /></div>
               <div className="progress-meta">
                 <span>{humanTime(tick.time)} / {humanTime(toolpath?.meta.time_s ?? job?.time_s)}</span>
-                <span>{tick.mass_g.toFixed(3)} g deposited</span>
+                <span>已沉积 {tick.mass_g.toFixed(3)} g</span>
               </div>
             </div>
             <div className="metric-grid">
-              <div><span>MODEL MASS</span><b>{modelMass.toFixed(3)} g</b></div>
-              <div><span>LAYERS</span><b>{layers}</b></div>
-              <div><span>FILAMENT</span><b>{((toolpath?.meta.filament_mm ?? 0) / 1000).toFixed(2)} m</b></div>
-              <div><span>EST. TIME</span><b>{humanTime(toolpath?.meta.time_s ?? job?.time_s)}</b></div>
+              <div><span>模型质量</span><b>{modelMass.toFixed(3)} g</b></div>
+              <div><span>层数</span><b>{layers}</b></div>
+              <div><span>耗材长度</span><b>{((toolpath?.meta.filament_mm ?? 0) / 1000).toFixed(2)} m</b></div>
+              <div><span>预计时间</span><b>{humanTime(toolpath?.meta.time_s ?? job?.time_s)}</b></div>
             </div>
             <div className="speed-row">
-              <span>SPEED</span>
+              <span>倍速</span>
               {[30, 60, 120, 300].map((s) => (
                 <button key={s} className={speed === s ? 'active' : ''} onClick={() => setSpeed(s)} data-testid={`speed-${s}`}>{s}×</button>
               ))}
@@ -417,47 +423,48 @@ export default function App() {
             <div className="row actions">
               {!playing && status !== 'completed' && status !== 'detached' && (
                 <button className="primary" onClick={start} disabled={!canStart} data-testid="start-print">
-                  {status === 'paused' ? 'Resume print' : 'Start print'}
+                  {status === 'paused' ? '继续打印' : '开始打印'}
                 </button>
               )}
-              {playing && <button className="primary" onClick={pause} data-testid="pause-print">Pause</button>}
+              {playing && <button className="primary" onClick={pause} data-testid="pause-print">暂停</button>}
               {(status === 'printing' || status === 'paused' || status === 'ready') && (
-                <button className="ghost danger" onClick={() => void cancel()} data-testid="cancel-print">Cancel</button>
+                <button className="ghost danger" onClick={() => void cancel()} data-testid="cancel-print">取消</button>
               )}
               {(status === 'completed' || status === 'detached') && (
-                <button className="ghost" onClick={resetToReady} data-testid="reset-print">New print</button>
+                <button className="ghost" onClick={resetToReady} data-testid="reset-print">新打印</button>
               )}
             </div>
-            {status === 'printing' && <div className="live-badge"><i /> G-CODE STREAM · CoreXY / Z synchronized</div>}
+            {status === 'printing' && <div className="live-badge"><i /> G-code 实时驱动 · CoreXY / Z 同步</div>}
           </section>
 
           <section className="card finish-card">
             <div className="card-head">
               <span className="step">03</span>
-              <div><h2>Finished object</h2><p>Release from the bed, then collect it.</p></div>
+              <div><h2>彩色成品</h2><p>从热床取下后收藏或放到桌面。</p></div>
             </div>
             <div className="row actions">
-              <button className="primary" onClick={detach} disabled={status !== 'completed'} data-testid="detach-object">Detach from bed</button>
-              <button className="ghost" onClick={() => void favorite()} disabled={!isFinished} data-testid="favorite-print">☆ Add to collection</button>
+              <button className="primary" onClick={detach} disabled={status !== 'completed'} data-testid="detach-object">从热床取下</button>
+              <button className="ghost" onClick={() => void favorite()} disabled={!isFinished} data-testid="favorite-print">☆ 加入收藏</button>
+              <button className="ghost" onClick={() => window.open('/?pet=1', 'printverse-pet', 'width=620,height=760')} disabled={!isFinished} data-testid="send-to-desktop">放到桌面</button>
             </div>
             <div className="mode-row">
-              <span>GIZMO</span>
+              <span>控制轴</span>
               {(['translate', 'rotate', 'scale'] as const).map((m) => (
-                <button key={m} className={transformMode === m ? 'active' : ''} onClick={() => setTransformMode(m)} data-testid={`mode-${m}`}>{m}</button>
+                <button key={m} className={transformMode === m ? 'active' : ''} onClick={() => setTransformMode(m)} data-testid={`mode-${m}`}>{m === 'translate' ? '移动' : m === 'rotate' ? '旋转' : '缩放'}</button>
               ))}
             </div>
-            {status === 'detached' && <div className="notice-box">Drag the colored gizmo. Orbit is disabled while dragging.</div>}
+            {status === 'detached' && <div className="notice-box">拖动彩色控制轴；拖动时轨道旋转暂停。</div>}
           </section>
 
           <section className="card collection-card">
             <button className="collection-head" onClick={() => setCollectionOpen((v) => !v)}>
               <span className="step">04</span>
-              <div><h2>3D collection</h2><p>{collection.length} object{collection.length === 1 ? '' : 's'}</p></div>
+              <div><h2>3D 收藏</h2><p>{collection.length} 件作品</p></div>
               <span className="chev">{collectionOpen ? '−' : '+'}</span>
             </button>
             {collectionOpen && (
               <div className="collection-list" data-testid="collection-list">
-                {collection.length === 0 && <div className="empty">No saved prints yet. Finish, detach, and add one.</div>}
+                {collection.length === 0 && <div className="empty">还没有收藏。完成打印、取下成品后加入收藏。</div>}
                 {collection.map((item) => (
                   <div className="collection-item" key={`${item.id}-${item.job_id}`} data-testid="collection-item">
                     <div className="mini-cube">◈</div>
@@ -469,10 +476,10 @@ export default function App() {
           </section>
 
           <section className="ledger-card">
-            <div><span>VIRTUAL WALLET</span><b>{wallet ? `${wallet.balance_g.toFixed(2)} g` : 'offline'}</b></div>
-            <div><span>FIRST PRINT</span><b>{wallet?.first_print_available ? 'FREE' : 'USED'}</b></div>
-            <div><span>RESERVED</span><b>{job ? `${job.reserved_g.toFixed(3)} g` : '—'}</b></div>
-            <p>Virtual-only accounting. No payment or real spool is touched.</p>
+            <div><span>虚拟钱包</span><b>{wallet ? `${wallet.balance_g.toFixed(2)} g` : 'offline'}</b></div>
+            <div><span>首件</span><b>{wallet?.first_print_available ? 'FREE' : 'USED'}</b></div>
+            <div><span>已预扣</span><b>{job ? `${job.reserved_g.toFixed(3)} g` : '—'}</b></div>
+            <p>仅计量虚拟耗材额度；不扣真实材料、不发起支付。</p>
           </section>
         </aside>
       </main>

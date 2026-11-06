@@ -1,0 +1,56 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PRINTVERSE_DB: /app/data/printverse.db
+      PRINTVERSE_CORS_ORIGINS: http://localhost:8080
+      PRINTVERSE_SHARE_MODE: "0"
+      KIMI_API_KEY: ${KIMI_API_KEY:-}
+      KIMI_ANALYSIS_ENABLED: "false"
+      TOKENHUB_API_KEY: ${TOKENHUB_API_KEY:-}
+    volumes:
+      - printverse-data:/app/data
+      - printverse-runtime:/app/runtime
+      - printverse-logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "backend.app.worker"]
+    environment:
+      PRINTVERSE_DB: /app/data/printverse.db
+      WORKER_POLL_S: "2"
+    volumes:
+      - printverse-data:/app/data
+      - printverse-runtime:/app/runtime
+      - printverse-logs:/app/logs
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_BASE: ""
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  printverse-data:
+  printverse-runtime:
+  printverse-logs:

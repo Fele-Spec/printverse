@@ -64,6 +64,7 @@ def init_db() -> None:
               user_id TEXT NOT NULL REFERENCES users(id),
               name TEXT NOT NULL,
               stl_path TEXT NOT NULL,
+              color_path TEXT,
               gcode_path TEXT,
               toolpath_path TEXT,
               mass_mg INTEGER NOT NULL DEFAULT 0,
@@ -88,6 +89,10 @@ def init_db() -> None:
             );
             """
         )
+        # Additive migration for jobs created before colour GLB became the primary asset.
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(jobs)")}
+        if "color_path" not in cols:
+            conn.execute("ALTER TABLE jobs ADD COLUMN color_path TEXT")
         conn.execute(
             "INSERT OR IGNORE INTO users(id,name,role,created_at) VALUES(?,?,?,?)",
             (DEMO_USER, "Demo Maker", "user", now()),
@@ -159,6 +164,11 @@ def create_job(user_id: str, name: str, stl_path: str, job_id: str | None = None
             (job_id, user_id, name, stl_path, "slicing", now()),
         )
     return job_id
+
+
+def set_job_color(job_id: str, color_path: str) -> None:
+    with closing(connect()) as conn, conn:
+        conn.execute("UPDATE jobs SET color_path=? WHERE id=?", (color_path, job_id))
 
 
 def set_job_sliced(job_id: str, gcode_path: str, toolpath_path: str, mass_mg: int,

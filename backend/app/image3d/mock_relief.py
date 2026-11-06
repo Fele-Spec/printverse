@@ -8,6 +8,7 @@ import numpy as np
 import trimesh
 from PIL import Image, ImageOps
 
+from ..mesh_prep import export_bundle, inspect_mesh
 from .base import Image3DProvider
 from .types import GenerationRequest, GenerationResult, ProviderInfo
 
@@ -21,8 +22,8 @@ class MockReliefProvider(Image3DProvider):
     def info(self) -> ProviderInfo:
         return ProviderInfo(
             id=self.id, label="Mock relief (free, printable)", kind="local", model=self.model,
-            available=True, cost_class="free", output_formats=["stl"],
-            supports_texture=False, license="PrintVerse local fallback",
+            available=True, cost_class="free", output_formats=["glb", "stl", "3mf", "obj"],
+            supports_texture=True, license="PrintVerse local fallback",
             reason="Not image-to-3D reconstruction; a heightfield/silhouette relief for pipeline testing.",
         )
 
@@ -78,13 +79,30 @@ class MockReliefProvider(Image3DProvider):
             t1, t2 = top_idx[y1, x1], top_idx[y2, x2]
             b1, b2 = bot_idx[y1, x1], bot_idx[y2, x2]
             faces += [[t1, b2, b1], [t1, t2, b2]]
-        mesh = trimesh.Trimesh(vertices=vertices, faces=np.asarray(faces, dtype=np.int64), process=True)
-        mesh.export(out)
+        mesh = trimesh.Trimesh(vertices=vertices, faces=np.asarray(faces, dtype=np.int64), process=False)
+        # Colour the top surface from the source image; the back/walls stay dark.
+        colour_img = ImageOps.exif_transpose(source).convert("RGB").resize((n, n))
+        rgb = np.asarray(colour_img, dtype=np.float32) / 255.0
+        colours = np.zeros((len(vertices), 4), dtype=np.float32)
+        colours[:, :3] = 0.12
+        colours[:, 3] = 1.0
+        colours[: n * n, :3] = rgb.reshape(-1, 3)
+        mesh.visual = trimesh.visual.ColorVisuals(vertex_colors=colours)
+        trimesh.repair.fix_winding(mesh)
+        trimesh.repair.fix_normals(mesh)
+        paths = export_bundle(mesh, job_dir, "mock_relief")
         return GenerationResult(
             provider=self.id, model=self.model, task_id=request.job_id,
-            output_format="stl", output_url=f"/runtime/image3d/{request.job_id}/mock_relief.stl",
-            local_path=str(out.relative_to(ROOT)).replace("\\", "/"),
-            generation_cost=0.0, cost_basis="free", texture_status="NONE",
+            output_format="glb", output_url=f"/runtime/image3d/{request.job_id}/mock_relief.glb",
+            local_path=paths["glb"],
+            generation_cost=0.0, cost_basis="free", texture_status="VERTEX_COLOR",
             geometry_status="MOCK_RELIEF", task_status="completed",
-            metadata={"note": "Heightfield relief, not image-to-3D reconstruction", "watertight": bool(mesh.is_watertight)},
+            metadata={
+                "note": "Heightfield colour relief, not image-to-3D reconstruction",
+                "watertight": bool(mesh.is_watertight), "mesh": inspect_mesh(mesh),
+                "stl_url": f"/runtime/image3d/{request.job_id}/mock_relief.stl" if "stl" in paths else None,
+                "three_mf_url": f"/runtime/image3d/{request.job_id}/mock_relief.3mf" if "3mf" in paths else None,
+                "obj_url": f"/runtime/image3d/{request.job_id}/mock_relief.obj" if "obj" in paths else None,
+                "asset_format": "glb",
+            },
         )

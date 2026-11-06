@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T10:38:02.655927+00:00",
+  "generated_at": "2026-11-06T11:57:23.547603+00:00",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "machine": "AMD64",
@@ -12,7 +12,6 @@
     "cpu_logical": 32
   },
   "python_lock": [
-    "\ufeffannotated-doc==0.0.5",
     "annotated-types==0.8.0",
     "anyio==4.16.0",
     "anytree==2.13.0",
@@ -33,6 +32,7 @@
     "deprecated==3.0.1",
     "executing==2.3.0",
     "ezdxf==1.4.5",
+    "fast-simplification==0.2.0",
     "fastapi==0.162.0",
     "fonttools==4.68.0",
     "h11==0.16.0",
@@ -41,8 +41,8 @@
     "httpx==0.28.1",
     "idna==3.20",
     "iniconfig==2.3.1",
-    "ipython==9.18.1",
     "ipython-pygments-lexers==1.1.1",
+    "ipython==9.18.1",
     "jedi==0.20.1",
     "joblib==1.6.0",
     "kiwisolver==1.5.1",
@@ -53,13 +53,14 @@
     "markdown-it-py==4.2.0",
     "markdownify==1.2.3",
     "marshmallow==3.26.2",
-    "matplotlib==3.11.2",
     "matplotlib-inline==0.2.2",
+    "matplotlib==3.11.2",
     "mdurl==0.1.2",
     "meshio==5.3.5",
     "mpmath==1.3.0",
     "mypy-extensions==1.2.0",
     "narwhals==2.28.0",
+    "networkx==3.7",
     "numpy==2.5.4",
     "ocp-gordon==0.3.1",
     "ocpsvg==0.7.0",
@@ -72,8 +73,8 @@
     "prompt-toolkit==3.0.53",
     "psutil==7.2.2",
     "pure-eval==0.2.4",
-    "pydantic==2.14.3",
     "pydantic-core==2.50.4",
+    "pydantic==2.14.3",
     "pygltflib==1.16.5",
     "pygments==2.21.0",
     "pyparsing==3.3.3",
@@ -112,7 +113,7 @@
     "webcolors==24.8.0",
     "websockets==17.4",
     "wrapt==2.5.2",
-    "fast-simplification==0.2.0"
+    "\ufeffannotated-doc==0.0.5"
   ],
   "python_cadquery_lock": [
     "\ufeffUsing Python 3.12.13 environment at: .venv-cadquery",
@@ -162,11 +163,6 @@
     "yarl==1.25.1"
   ],
   "python_licenses": [
-    {
-      "name": "\ufeffannotated-doc",
-      "version": "0.0.5",
-      "license": "UNKNOWN_LICENSE"
-    },
     {
       "name": "annotated-types",
       "version": "0.8.0",
@@ -263,6 +259,11 @@
       "license": "UNKNOWN_LICENSE"
     },
     {
+      "name": "fast-simplification",
+      "version": "0.2.0",
+      "license": "MIT"
+    },
+    {
       "name": "fastapi",
       "version": "0.162.0",
       "license": "MIT"
@@ -303,14 +304,14 @@
       "license": "MIT"
     },
     {
-      "name": "ipython",
-      "version": "9.18.1",
-      "license": "BSD-3-Clause"
-    },
-    {
       "name": "ipython-pygments-lexers",
       "version": "1.1.1",
       "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "ipython",
+      "version": "9.18.1",
+      "license": "BSD-3-Clause"
     },
     {
       "name": "jedi",
@@ -363,14 +364,14 @@
       "license": "UNKNOWN_LICENSE"
     },
     {
-      "name": "matplotlib",
-      "version": "3.11.2",
-      "license": "License agreement for matplotlib versions 1.3.0 and later"
-    },
-    {
       "name": "matplotlib-inline",
       "version": "0.2.2",
       "license": "BSD-3-Clause"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.2",
+      "license": "License agreement for matplotlib versions 1.3.0 and later"
     },
     {
       "name": "mdurl",
@@ -396,6 +397,11 @@
       "name": "narwhals",
       "version": "2.28.0",
       "license": "MIT"
+    },
+    {
+      "name": "networkx",
+      "version": "3.7",
+      "license": "BSD-3-Clause"
     },
     {
       "name": "numpy",
@@ -458,13 +464,13 @@
       "license": "MIT"
     },
     {
-      "name": "pydantic",
-      "version": "2.14.3",
+      "name": "pydantic-core",
+      "version": "2.50.4",
       "license": "MIT"
     },
     {
-      "name": "pydantic-core",
-      "version": "2.50.4",
+      "name": "pydantic",
+      "version": "2.14.3",
       "license": "MIT"
     },
     {
@@ -658,9 +664,9 @@
       "license": "BSD-2-Clause"
     },
     {
-      "name": "fast-simplification",
-      "version": "0.2.0",
-      "license": "MIT"
+      "name": "\ufeffannotated-doc",
+      "version": "0.0.5",
+      "license": "UNKNOWN_LICENSE"
     },
     {
       "name": "aiohappyeyeballs",

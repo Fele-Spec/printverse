@@ -1,0 +1,13 @@
+{
+  "name": "printverse-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PrintVerse transparent desktop pet shell",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0"
+  }
+}

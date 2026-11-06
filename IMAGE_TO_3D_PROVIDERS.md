@@ -21,7 +21,7 @@ The GPU meets TripoSR's published ~6 GB target. The actual run used the **CPU fa
 
 | Provider | Role | Status | Notes |
 |---|---|---|---|
-| **Mock relief** | free local fallback | **COMPLETE** | Heightfield/silhouette STL, watertight, cost 0; **not** genuine image-to-3D |
+| **Mock relief** | free local fallback | **COMPLETE** | Colour GLB primary + STL/3MF/OBJ; watertight, cost 0; **not** genuine image-to-3D |
 | **TripoSR local** | free primary local | **COMPLETE (CPU)** | 10/10 meshes generated; 7 pass quick printability, 3 repair-required; ~25 s/image; cost 0 |
 | **Stable Fast 3D** | free high-texture candidate | **NOT_INSTALLED** | Windows-native install not attempted; official weights/license need review |
 | **TokenHub Tripo** | low-cost cloud | **NOT_CONFIGURED** | adapter implemented; needs official account endpoint + key |
@@ -31,7 +31,7 @@ The GPU meets TripoSR's published ~6 GB target. The actual run used the **CPU fa
 
 ## 3. Unified contract
 
-Every generation provider returns:
+Every generation provider returns a colour GLB as the primary asset (STL/3MF/OBJ are derived):
 
 ```text
 provider
@@ -59,7 +59,7 @@ The result schema is implemented in `backend/app/image3d/types.py`.
 | GET | `/api/image3d/jobs/{id}` | status and result |
 | POST | `/api/image3d/analyze` | Kimi image understanding only |
 
-Frontend: top-right **IMAGE → 3D** opens the provider studio. It can upload, select provider, record the brief, run a free mock job, download the STL, and hand the STL to the print flow.
+Frontend: top-right **图片 → 3D** opens the provider studio. It can upload, select provider, record the brief, preview/download the colour GLB, download derived STL/3MF, and hand the STL to the print flow while preserving the GLB for the finished object.
 
 ## 5. Cost routing and authorization
 

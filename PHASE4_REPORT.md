@@ -50,7 +50,7 @@ A `triposr_local` job through the HTTP API completed on CPU in **16.95 s** (real
 `backend/tests/test_image3d.py`:
 
 - provider schema and availability;
-- Mock job produces a real STL, watertight, cost 0;
+- Mock job produces a real colour GLB + derived STL, watertight, cost 0;
 - paid provider requires authorization;
 - unavailable provider is rejected, not silently paid.
 

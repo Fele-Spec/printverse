@@ -31,9 +31,10 @@ export async function getCollection(): Promise<{ items: CollectionItem[]; wallet
   return request('/api/collection');
 }
 
-export async function uploadStl(file: File): Promise<Job & { wallet: Wallet }> {
+export async function uploadStl(file: File, colorUrl?: string | null): Promise<Job & { wallet: Wallet }> {
   const form = new FormData();
   form.append('file', file, file.name);
+  if (colorUrl) form.append('color_url', colorUrl);
   return request('/api/jobs', { method: 'POST', body: form });
 }
 

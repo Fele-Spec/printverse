@@ -14,6 +14,7 @@ from typing import Any
 
 import httpx
 
+from ..mesh_prep import export_bundle, repair_and_scale
 from . import config
 from .base import Image3DProvider
 from .types import GenerationRequest, GenerationResult, ProviderError, ProviderInfo
@@ -92,21 +93,32 @@ class TokenHubProvider(Image3DProvider):
                     raise ProviderError("completed task has no output URL", status="failed")
                 job_dir = ROOT / "runtime" / "image3d" / request.job_id
                 job_dir.mkdir(parents=True, exist_ok=True)
-                out = job_dir / "cloud.stl"
+                suffix = Path(url.split("?", 1)[0]).suffix.lower()
+                source = job_dir / f"cloud_raw{suffix if suffix in {'.glb', '.stl', '.obj'} else '.glb'}"
                 with httpx.Client(timeout=120, follow_redirects=True) as client:
                     dl = client.get(url)
                     dl.raise_for_status()
-                    out.write_bytes(dl.content)
+                    source.write_bytes(dl.content)
+                import trimesh
+                mesh = trimesh.load(source, force="mesh", process=True)
+                fixed, prep = repair_and_scale(mesh, target_mm=80.0)
+                paths = export_bundle(fixed, job_dir, "cloud")
                 cost = data.get("generation_cost", data.get("cost"))
                 return GenerationResult(
-                    provider=self.id, model=self.model, task_id=str(task_id), output_format="stl",
-                    output_url=f"/runtime/image3d/{request.job_id}/cloud.stl",
-                    local_path=str(out.relative_to(ROOT)).replace("\\", "/"),
+                    provider=self.id, model=self.model, task_id=str(task_id), output_format="glb",
+                    output_url=f"/runtime/image3d/{request.job_id}/cloud.glb",
+                    local_path=paths["glb"],
                     generation_cost=float(cost) if isinstance(cost, (int, float)) else None,
                     cost_basis="provider-reported" if isinstance(cost, (int, float)) else "unknown",
-                    texture_status="REQUESTED" if payload.get("texture") else "NONE",
-                    geometry_status="GENERATED_UNVALIDATED", task_status="completed",
-                    metadata={"raw_status": data},
+                    texture_status="VERTEX_COLOR" if getattr(fixed.visual, "kind", "") == "vertex" else "REQUESTED",
+                    geometry_status="REPAIRED" if prep["raw"] != prep["repaired"] else "GENERATED",
+                    task_status="completed",
+                    metadata={
+                        "raw_status": data, "prep": prep,
+                        "stl_url": f"/runtime/image3d/{request.job_id}/cloud.stl",
+                        "three_mf_url": f"/runtime/image3d/{request.job_id}/cloud.3mf",
+                        "asset_format": "glb",
+                    },
                 )
             if status in {"failed", "error", "cancelled"}:
                 raise ProviderError(f"TokenHub task {status}: {data}", status="failed")

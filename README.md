@@ -13,7 +13,11 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 >
 > Phase 4 Image-to-3D: **COMPLETE (architecture)** — provider architecture, free Mock relief,
 > TripoSR CPU, explicit cost authorization, frontend studio and 10-image benchmark are runnable.
-> Kimi account and TokenHub are external gates, not hidden architecture gaps. TripoSR now runs on the CPU fallback (7/10 quick printability passes);
+> Kimi account and TokenHub are external gates.
+>
+> Phase 5 full-product correction: **PARTIAL** — colour GLB primary, 3MF/OBJ/GLB import,
+> Chinese UI, browser desktop pet and colour finished object are implemented; Tauri build,
+> PostgreSQL and Docker verification remain blocked/unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md). TripoSR now runs on the CPU fallback (7/10 quick printability passes);
 > TokenHub keys are absent; Kimi account is suspended (HTTP 429). See
 > [IMAGE_TO_3D_PROVIDERS.md](IMAGE_TO_3D_PROVIDERS.md), [MODEL_BENCHMARK_REPORT.md](MODEL_BENCHMARK_REPORT.md)
 > and [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md).
@@ -55,8 +59,14 @@ npm run dev --prefix frontend
 # top-right IMAGE → 3D opens the provider studio (free Mock provider works without keys)
 ```
 
+桌面宠物：`http://127.0.0.1:4173/?pet=1`（浏览器透明视图）；Tauri 壳在 `desktop/`。
+
+图片 → 彩色 3D：右上角 **图片 → 3D**；生成后点击 **用于虚拟打印**，完成打印后 **放到桌面**。
+
 The built UI is `frontend/dist/`; do not double-click `index.html` — serve it with
 `npm run preview --prefix frontend` or `npm run dev --prefix frontend`.
+Architecture correction: [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md) · [PHASE5_AUDIT.md](PHASE5_AUDIT.md) · [DEPLOYMENT.md](DEPLOYMENT.md).
+
 Sharing is available as the opt-in `PRINTVERSE_SHARE_MODE=1` (owner loopback/admin unlimited,
 remote guest 20 g quota); see [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md). It is not password
 authentication, so use a trusted LAN/Tailscale/Cloudflare setup and do not expose uvicorn directly.

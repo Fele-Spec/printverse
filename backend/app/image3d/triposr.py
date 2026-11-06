@@ -8,6 +8,7 @@ from pathlib import Path
 
 import trimesh
 
+from ..mesh_prep import export_bundle, repair_and_scale
 from .base import Image3DProvider
 from .types import GenerationRequest, GenerationResult, ProviderError, ProviderInfo
 
@@ -79,42 +80,26 @@ class TripoSRProvider(Image3DProvider):
             "volume_mm3": round(float(mesh.volume), 3),
             "faces": int(len(mesh.faces)),
         }
-        # Explicit repair of a copy. Never present the raw mesh as printable.
-        repaired = mesh.copy()
-        # TripoSR's normalized reconstruction is about a unit cube. Normalize the
-        # longest side to 80 mm for the PrintVerse print pipeline; raw remains
-        # untouched for provenance.
-        max_extent = float(max(repaired.extents))
-        scale_to_mm = 80.0 / max_extent if max_extent > 0 else 1.0
-        repaired.apply_scale(scale_to_mm)
-        repaired.fix_normals()
-        if not repaired.is_watertight:
-            repaired.fill_holes()
-        import trimesh.repair as trimesh_repair
-        trimesh_repair.fix_winding(repaired)
-        trimesh_repair.fix_normals(repaired)
-        if repaired.volume < 0:
-            repaired.invert()
-        stl = job_dir / "triposr.stl"
-        repaired.export(stl)
-        repaired_stats = {
-            "watertight": bool(repaired.is_watertight),
-            "volume_mm3": round(float(repaired.volume), 3),
-            "faces": int(len(repaired.faces)),
-        }
-        changed = raw_stats != repaired_stats
+        # Explicit repair of a copy. GLB remains the primary colour asset.
+        repaired, prep = repair_and_scale(mesh, target_mm=80.0)
+        paths = export_bundle(repaired, job_dir, "triposr")
+        changed = prep["raw"] != prep["repaired"]
         return GenerationResult(
             provider=self.id, model=self.model, task_id=request.job_id,
-            output_format="stl", output_url=f"/runtime/image3d/{request.job_id}/triposr.stl",
-            local_path=str(stl.relative_to(ROOT)).replace("\\", "/"),
+            output_format="glb", output_url=f"/runtime/image3d/{request.job_id}/triposr.glb",
+            local_path=paths["glb"],
             generation_cost=0.0, cost_basis="free",
-            texture_status="VERTEX_COLOR" if getattr(mesh.visual, "kind", "") == "vertex" else "NONE",
+            texture_status="VERTEX_COLOR" if getattr(repaired.visual, "kind", "") == "vertex" else "NONE",
             geometry_status="REPAIRED" if changed else "GENERATED",
             task_status="completed",
             metadata={
-                "triposr": metrics, "raw": raw_stats, "repaired": repaired_stats,
+                "triposr": metrics, "raw": raw_stats, "repaired": prep["repaired"],
                 "raw_path": str(raw.relative_to(ROOT)).replace("\\", "/"),
-                "scale_to_mm": round(scale_to_mm, 6),
-                "repair_note": "scale to 80 mm longest side + normal/winding/hole repair applied only to a copy",
+                "scale_to_mm": prep["scale_to_mm"],
+                "stl_url": f"/runtime/image3d/{request.job_id}/triposr.stl" if "stl" in paths else None,
+                "three_mf_url": f"/runtime/image3d/{request.job_id}/triposr.3mf" if "3mf" in paths else None,
+                "obj_url": f"/runtime/image3d/{request.job_id}/triposr.obj" if "obj" in paths else None,
+                "asset_format": "glb",
+                "repair_note": "GLB primary; scale to 80 mm longest side + normal/winding/hole repair applied only to a copy",
             },
         )

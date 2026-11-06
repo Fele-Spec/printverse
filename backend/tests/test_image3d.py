@@ -49,13 +49,17 @@ def test_mock_job_is_real_watertight_mesh():
                 break
         assert job["status"] == "completed", job
         assert job["generation_cost"] == 0.0
-        assert job["output_url"].endswith(".stl")
+        assert job["output_url"].endswith(".glb")
+        assert job["texture_status"] == "VERTEX_COLOR"
         path = ROOT / job["local_path"]
         assert path.exists() and path.stat().st_size > 100
+        stl = ROOT / job["metadata"]["stl_url"].lstrip("/")
+        assert stl.exists() and stl.stat().st_size > 100
         import trimesh
         mesh = trimesh.load(path, force="mesh", process=True)
         assert len(mesh.faces) > 0
         assert mesh.is_watertight
+        assert mesh.visual.kind == "vertex"
 
 
 def test_paid_provider_requires_authorization():

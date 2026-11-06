@@ -36,6 +36,7 @@ export type Job = {
   warnings: string | null;
   toolpath_url: string;
   model_url: string;
+  color_url?: string | null;
   gcode_url: string;
 };
 

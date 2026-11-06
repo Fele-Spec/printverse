@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -16,6 +17,7 @@ from . import db
 from .access import public_status, resolve_user
 from .image3d import router as image3d_router
 from .image3d import store as image3d_store
+from .mesh_router import router as mesh_router
 from .slicer import SliceError, slice_stl
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -35,6 +37,7 @@ app.add_middleware(
 )
 app.mount("/runtime", StaticFiles(directory=RUNTIME), name="runtime")
 app.include_router(image3d_router.router)
+app.include_router(mesh_router)
 
 
 class CompleteRequest(BaseModel):
@@ -98,30 +101,48 @@ def _job_response(job: dict) -> dict:
         "reserved_g": round(job["reserved_mg"] / 1000, 4),
         "warnings": job["warnings"],
         "toolpath_url": f"/runtime/jobs/{job_id}/toolpath.json",
-        "model_url": f"/runtime/jobs/{job_id}/model.stl",
+        "model_url": f"/runtime/jobs/{job_id}/display.stl" if (JOBS / job_id / "display.stl").exists() else f"/runtime/jobs/{job_id}/{Path(job['stl_path']).name}",
+        "color_url": f"/runtime/jobs/{job_id}/color.glb" if job.get("color_path") else None,
         "gcode_url": f"/runtime/jobs/{job_id}/model.gcode",
     }
 
 
 @app.post("/api/jobs")
-async def create_job(request: Request, file: UploadFile = File(...)) -> dict:
+async def create_job(request: Request, file: UploadFile = File(...), color_url: str = Form("")) -> dict:
     user_id = resolve_user(request)
     name = file.filename or "upload.stl"
-    if not name.lower().endswith(".stl"):
-        raise HTTPException(415, "only STL is supported in phase 2")
+    suffix = Path(name).suffix.lower()
+    if suffix not in {".stl", ".3mf", ".obj", ".glb", ".gltf"}:
+        raise HTTPException(415, "当前支持 STL/3MF/OBJ/GLB；STEP 需先转换为网格")
     data = await file.read()
     if len(data) < 84:
-        raise HTTPException(422, "STL file is too small")
+        raise HTTPException(422, "模型文件过小")
     if len(data) > 50 * 1024 * 1024:
-        raise HTTPException(413, "STL exceeds 50 MB")
+        raise HTTPException(413, "模型超过 50 MB")
     job_id = uuid.uuid4().hex
     job_dir = JOBS / job_id
     job_dir.mkdir(parents=True, exist_ok=True)
-    stl = job_dir / "model.stl"
-    stl.write_bytes(data)
-    db.create_job(user_id, name, str(stl.relative_to(ROOT)).replace("\\", "/"), job_id)
+    model = job_dir / f"model{suffix}"
+    model.write_bytes(data)
+    if suffix in {".3mf", ".obj", ".glb", ".gltf"}:
+        try:
+            import trimesh
+            display = trimesh.load(model, force="mesh", process=True)
+            display.export(job_dir / "display.stl")
+        except Exception as exc:
+            raise HTTPException(422, f"{suffix[1:].upper()} 无法读取: {exc}")
+    db.create_job(user_id, name, str(model.relative_to(ROOT)).replace("\\", "/"), job_id)
+    # Preserve the generated colour GLB; STL remains the slicer geometry.
+    if color_url.startswith("/runtime/image3d/"):
+        source = (ROOT / color_url.lstrip("/")).resolve()
+        allowed = (RUNTIME / "image3d").resolve()
+        if source.is_file() and (source == allowed or allowed in source.parents):
+            target = job_dir / "color.glb"
+            shutil.copy2(source, target)
+            db.set_job_color(job_id, str(target.relative_to(ROOT)).replace("\\", "/"))
     try:
-        sliced = await run_in_threadpool(slice_stl, stl, job_dir, job_id)
+        slice_input = job_dir / "display.stl" if suffix in {".obj", ".glb", ".gltf"} else model
+        sliced = await run_in_threadpool(slice_stl, slice_input, job_dir, job_id)
         mass_mg = max(1, round(sliced["mass_g"] * 1000))
         job = db.set_job_sliced(
             job_id, sliced["gcode_path"], sliced["toolpath_path"], mass_mg,
@@ -188,6 +209,7 @@ def add_collection(body: CollectionRequest, request: Request) -> dict:
         raise HTTPException(404, "unknown job")
     if job["status"] != "completed":
         raise HTTPException(409, "only completed prints can be collected")
-    item = db.add_collection(user_id, body.job_id, job["name"], job["mass_mg"],
-                             str((JOBS / body.job_id / "model.stl").relative_to(ROOT)).replace("\\", "/"))
+    preferred = job.get("color_path") or str((JOBS / body.job_id / "model.stl").relative_to(ROOT)).replace("\\", "/")
+    display_name = (job["name"].rsplit(".", 1)[0] + "（彩色）") if job.get("color_path") else job["name"]
+    item = db.add_collection(user_id, body.job_id, display_name, job["mass_mg"], preferred)
     return {"item": item, "wallet": db.wallet(user_id)}

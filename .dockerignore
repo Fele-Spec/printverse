@@ -1,0 +1,12 @@
+node_modules
+.cache
+.venv
+.venv-*
+tools
+assets/source
+database
+runtime
+logs
+.git
+**/__pycache__
+**/*.pyc
