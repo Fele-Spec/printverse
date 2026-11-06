@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "engine": "PostgreSQL 17.2 portable Windows binaries",
+  "address": "127.0.0.1:55432",
+  "database": "printverse",
+  "auth": "trust (local test only)",
+  "verified": {
+    "schema": [
+      "users",
+      "wallets",
+      "ledger",
+      "jobs",
+      "collection",
+      "image3d_jobs"
+    ],
+    "wallet": "demo 100000 mg / first_print_available",
+    "ledger": "first-free reservation + commit + collection",
+    "image3d": "mock job completed and stored in PostgreSQL",
+    "driver": "psycopg 3.3.8",
+    "admin_unlimited": true,
+    "insufficient_balance_rejected": true
+  },
+  "not_verified": [
+    "Docker Compose build (docker command absent)",
+    "container healthcheck with postgres:17-alpine",
+    "production backup/restore"
+  ],
+  "note": "Local portable PostgreSQL is a verification fixture; the repository uses PRINTVERSE_DATABASE_URL and SQLite remains the zero-config default."
+}

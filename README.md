@@ -17,7 +17,7 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 >
 > Phase 5 full-product correction: **PARTIAL** — colour GLB primary, 3MF/OBJ/GLB import,
 > Chinese UI, browser desktop pet and colour finished object are implemented; Tauri build,
-> PostgreSQL and Docker verification remain blocked/unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md). TripoSR now runs on the CPU fallback (7/10 quick printability passes);
+> PostgreSQL adapter is locally verified; Docker and Tauri builds remain blocked/unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md). TripoSR now runs on the CPU fallback (7/10 quick printability passes);
 > TokenHub keys are absent; Kimi account is suspended (HTTP 429). See
 > [IMAGE_TO_3D_PROVIDERS.md](IMAGE_TO_3D_PROVIDERS.md), [MODEL_BENCHMARK_REPORT.md](MODEL_BENCHMARK_REPORT.md)
 > and [SHARING_AND_QUOTA.md](SHARING_AND_QUOTA.md).

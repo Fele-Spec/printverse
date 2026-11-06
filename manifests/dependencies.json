@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T12:01:11.468532+00:00",
+  "generated_at": "2026-11-06T12:12:35.748713+00:00",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "machine": "AMD64",
@@ -72,6 +72,8 @@
     "pluggy==1.7.0",
     "prompt-toolkit==3.0.53",
     "psutil==7.2.2",
+    "psycopg-binary==3.3.8",
+    "psycopg==3.3.8",
     "pure-eval==0.2.4",
     "pydantic-core==2.50.4",
     "pydantic==2.14.3",
@@ -457,6 +459,16 @@
       "name": "psutil",
       "version": "7.2.2",
       "license": "BSD-3-Clause"
+    },
+    {
+      "name": "psycopg-binary",
+      "version": "3.3.8",
+      "license": "LGPL-3.0-only"
+    },
+    {
+      "name": "psycopg",
+      "version": "3.3.8",
+      "license": "LGPL-3.0-only"
     },
     {
       "name": "pure-eval",

@@ -5,7 +5,7 @@
 - 当前 HEAD：`e223002`；工作区在审计开始时干净。
 - 全历史 `git log --all --diff-filter=D` 的结果为空：**没有任何文件被 Git 删除过**。
 - 因此“上一阶段删除了耗材、G-code、机械或数字孪生模块”的说法不成立；这些能力要么仍在，要么从未实现。
-- 当前仓库没有 `desktop/`、`src-tauri/`、`Dockerfile`、`docker-compose.yml`、PostgreSQL 适配器；这些不是被删除，而是**尚未实现**。
+- 审计开始时仓库没有 `desktop/`、`src-tauri/`、`Dockerfile`、`docker-compose.yml`、PostgreSQL 适配器；这些不是被删除，而是**尚未实现**，本轮已补上骨架/适配器。
 
 ## 2. 六大模块现状
 
@@ -16,7 +16,7 @@
 | C 数字孪生 | **COMPLETE（有已声明缺陷）** | 4,526 placements、8 个 GLB、真实 CAD 层级、零件选择、PBR、爆炸/模块/高速紧固件；XY 横梁仍静态，WIRING 仅 1 个实体 |
 | D G-code 虚拟打印 | **COMPLETE（有已声明限制）** | 真实 Orca 切片、G-code 解析、CoreXY/Z/E 驱动、逐层沉积、暂停/继续/取消/倍速、完成/脱离；冷却/加速度仍为估算 |
 | E 耗材计量 | **COMPLETE（虚拟边界）** | 真实 G-code 质量、首件免费、预扣/提交/退款、admin 无限、幂等；只记录虚拟额度，不碰实体 |
-| F 桌宠 / 云端 | **PARTIAL** | 浏览器透明桌宠可用；Tauri 壳/Compose/Worker 已写，但本机无 cargo/docker，PostgreSQL 未实现 |
+| F 桌宠 / 云端 | **PARTIAL** | 浏览器透明桌宠可用；PostgreSQL 适配器已用本地 17.2 验证；Tauri 壳/Compose/Worker 已写，但本机无 cargo/docker |
 
 ## 3. 关键代码审计
 
@@ -25,7 +25,7 @@
 - `collection.model_path` 固定指向 `model.stl`，没有彩色 GLB 的集合资产。
 - `Image3DPanel` 只暴露一个 `Download`，把 `output_url` 当作 STL；TripoSR 明明有 vertex colour，却没有把 GLB 作为主结果。
 - 前端全英文、8–11px 的正文/按钮非常普遍；不满足“正文 ≥16px、主按钮 ≥44px”。
-- 后端只有 SQLite；无 Postgres、任务 Worker、对象存储或独立生产部署。
+- 审计开始时后端只有 SQLite；本轮已新增 PostgreSQL 适配器、任务 Worker 和 Compose 骨架。
 
 ## 4. 本轮不删除任何既有能力
 
@@ -57,4 +57,4 @@
 - 管理员/首件免费/扣费：**PASS（既有测试）**
 - 彩色成品取出：**PASS**（成品/收藏/浏览器桌宠）
 - 添加到 Windows 桌面：**PARTIAL**（浏览器桌宠 PASS；Tauri 构建 BLOCKED）
-- 关闭 Harness 独立运行：**PARTIAL / BLOCKED**（Compose 已写；无 Docker/PostgreSQL 验证）
+- 关闭 Harness 独立运行：**PARTIAL**（PostgreSQL 已在本地 17.2 验证；Compose/Tauri 因无 docker/cargo 仍 BLOCKED）

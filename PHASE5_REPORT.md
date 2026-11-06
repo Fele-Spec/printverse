@@ -41,18 +41,19 @@
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
 | 10 | 完成后取出彩色模型 | **PASS** | 彩色 GLB 到成品/收藏；截图 |
 | 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri 壳已写，但本机无 Cargo，未构建 MSI |
-| 12 | 关闭 Harness 后独立运行 | **PARTIAL / BLOCKED** | Dockerfile/compose/worker 已写；本机无 Docker，PostgreSQL 未实现，未验证 |
+| 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL 适配器已用本地 17.2 验证；Dockerfile/compose/worker 已写；本机无 Docker，Compose/Tauri 仍 BLOCKED |
 
 ## 3. 未能宣称完成的部分
 
 1. **多视角重建、工程图转 CAD、STEP 直接导入**：未实现；现有是单图 + STL/3MF/OBJ/GLB 导入。  
 2. **壁厚/支撑**：mesh API 已提供几何近似的 ray-cast 壁厚与悬垂面积；仍不是 Orca 切片器标定的支撑/壁厚结果，因此该子项为 **PARTIAL**。  
 3. **Tauri Windows 客户端**：源码 scaffolding 已写，构建 `BLOCKED`（本机无 cargo）。  
-4. **PostgreSQL**：未实现适配器；独立数据库仍 SQLite。  
-5. **Docker Compose**：文件已提供，`BLOCKED`（本机无 docker）；容器内没有 Orca，真实切片需 Windows 工具。  
-6. **Kimi**：账户 429 余额不足；未产生付费调用。  
-7. **TokenHub**：无 Key/账号端点；未调用、未产生费用。  
-8. **Stable Fast 3D**：未安装；Windows/许可证待审查。
+4. **PostgreSQL**：适配器与真实 17.2 实例已通过账本/Image3D 测试；Docker 容器内的 Postgres 尚未验证。  
+5. **Docker Compose**：文件已提供，`BLOCKED`（本机无 docker）；容器内没有 Orca，真实切片需 Windows 工具。
+6. **PostgreSQL**：适配器与真实 17.2 实例已通过账本/Image3D 测试；Docker 容器内的 Postgres 尚未验证。  
+7. **Kimi**：账户 429 余额不足；未产生付费调用。  
+8. **TokenHub**：无 Key/账号端点；未调用、未产生费用。  
+9. **Stable Fast 3D**：未安装；Windows/许可证待审查。
 
 ## 4. 验证命令
 
@@ -74,4 +75,4 @@ node scripts\phase5_full_acceptance.mjs
 ## 5. 结论
 
 **全功能架构：PARTIAL。**  
-彩色 GLB 主链路、模型处理、虚拟打印、耗材、收藏/桌宠浏览器链路已打通；真实 Windows 桌宠构建、PostgreSQL、Docker 验证、多视角/工程图/STEP、壁厚/支撑仍是未完成项。没有把未完成项标记为完成。
+彩色 GLB 主链路、模型处理、虚拟打印、耗材、收藏/桌宠浏览器链路已打通；PostgreSQL 适配器已本地验证；真实 Windows 桌宠构建、Docker Compose 验证、多视角/工程图、精确壁厚/支撑仍是未完成项。没有把未完成项标记为完成。

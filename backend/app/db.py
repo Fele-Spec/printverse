@@ -318,3 +318,23 @@ def list_collection(user_id: str = DEMO_USER) -> list[dict]:
         ).fetchall()
     return [dict(r) for r in rows]
 
+
+
+# Optional PostgreSQL backend. SQLite remains the default and keeps the existing
+# deterministic local tests; production can set PRINTVERSE_DATABASE_URL.
+if os.environ.get("PRINTVERSE_DATABASE_URL", "").startswith("postgres"):
+    from . import db_postgres as _pg
+
+    connect = _pg.connect
+    init_db = _pg.init_db
+    wallet = _pg.wallet
+    create_job = _pg.create_job
+    set_job_color = _pg.set_job_color
+    set_job_sliced = _pg.set_job_sliced
+    get_job = _pg.get_job
+    reserve_for_job = _pg.reserve_for_job
+    complete_job = _pg.complete_job
+    cancel_job = _pg.cancel_job
+    add_collection = _pg.add_collection
+    list_collection = _pg.list_collection
+    InsufficientFilament = _pg.InsufficientFilament

@@ -24,7 +24,7 @@
     "9_subsequent_charge": "PASS",
     "10_colour_takeout": "PASS",
     "11_windows_desktop": "PARTIAL",
-    "12_independent_after_dsh": "PARTIAL_BLOCKED"
+    "12_independent_after_dsh": "PARTIAL (Postgres adapter PASS; Docker/Tauri blocked)"
   },
   "evidence": [
     "BEFORE_AFTER_SCREENSHOTS/phase5_dashboard_cn.png",
@@ -33,7 +33,8 @@
     "BEFORE_AFTER_SCREENSHOTS/phase5_pet.png",
     "docs/reports/image3d_benchmark.json",
     "docs/reports/triposr_test.json",
-    "docs/reports/phase5_step_test.json"
+    "docs/reports/phase5_step_test.json",
+    "docs/reports/postgres_test.json"
   ],
   "tests": {
     "pytest": "15 passed",
@@ -43,9 +44,9 @@
   "blocked": {
     "kimi": "HTTP 429 insufficient balance",
     "tokenhub": "no key / account endpoint",
-    "tauri": "cargo not installed; MSI not built",
-    "docker": "docker not installed; compose not built",
-    "postgres": "adapter not implemented; SQLite used",
+    "tauri": "cargo/MSVC absent; MSI not built",
+    "docker": "docker absent; compose not built",
+    "postgres": "PASS_LOCAL (portable 17.2); Docker container not verified",
     "orcaslicer_in_container": "not bundled in Linux image"
   },
   "mesh": {

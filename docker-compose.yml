@@ -1,19 +1,36 @@
 services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: printverse
+      POSTGRES_USER: printverse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-printverse}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U printverse -d printverse"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      PRINTVERSE_DB: /app/data/printverse.db
+      PRINTVERSE_DATABASE_URL: postgresql://printverse:${POSTGRES_PASSWORD:-printverse}@postgres:5432/printverse
       PRINTVERSE_CORS_ORIGINS: http://localhost:8080
       PRINTVERSE_SHARE_MODE: "0"
       KIMI_API_KEY: ${KIMI_API_KEY:-}
       KIMI_ANALYSIS_ENABLED: "false"
       TOKENHUB_API_KEY: ${TOKENHUB_API_KEY:-}
     volumes:
-      - printverse-data:/app/data
       - printverse-runtime:/app/runtime
       - printverse-logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
@@ -27,14 +44,15 @@ services:
       dockerfile: Dockerfile
     command: ["python", "-m", "backend.app.worker"]
     environment:
-      PRINTVERSE_DB: /app/data/printverse.db
+      PRINTVERSE_DATABASE_URL: postgresql://printverse:${POSTGRES_PASSWORD:-printverse}@postgres:5432/printverse
       WORKER_POLL_S: "2"
     volumes:
-      - printverse-data:/app/data
       - printverse-runtime:/app/runtime
       - printverse-logs:/app/logs
     depends_on:
       api:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     restart: unless-stopped
 
@@ -51,6 +69,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  printverse-data:
+  postgres-data:
   printverse-runtime:
   printverse-logs:

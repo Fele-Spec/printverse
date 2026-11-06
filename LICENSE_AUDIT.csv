@@ -101,6 +101,8 @@ Python: platformdirs,4.14.5,MIT,YES,YES,YES,PyPI package recorded in requirement
 Python: pluggy,1.7.0,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: prompt-toolkit,3.0.53,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: psutil,7.2.2,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: psycopg-binary,3.3.8,LGPL-3.0-only,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: psycopg,3.3.8,LGPL-3.0-only,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pure-eval,0.2.4,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pydantic-core,2.50.4,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: pydantic,2.14.3,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
