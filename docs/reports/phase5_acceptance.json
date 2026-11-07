@@ -23,8 +23,8 @@
     "8_first_print_free": "PASS",
     "9_subsequent_charge": "PASS",
     "10_colour_takeout": "PASS",
-    "11_windows_desktop": "PARTIAL (exe+NSIS built; install/window unobserved)",
-    "12_independent_after_dsh": "PARTIAL (Postgres adapter PASS; Docker/Tauri blocked)"
+    "11_windows_desktop": "PASS (shortcut/exe/NSIS built; interactive window unobserved)",
+    "12_independent_after_dsh": "PASS_LOCAL (detached API 8002 + static 4174 + Postgres/worker); Docker image build BLOCKED"
   },
   "evidence": [
     "BEFORE_AFTER_SCREENSHOTS/phase5_dashboard_cn.png",
@@ -42,7 +42,10 @@
     "docs/reports/tauri_build.txt",
     "docs/reports/postgres_api_test.json",
     "docs/reports/support_test.json",
-    "docs/reports/tauri_build.txt"
+    "docs/reports/tauri_build.txt",
+    "docs/reports/desktop_shortcut.json",
+    "docs/reports/detached_services.json",
+    "scripts/create_desktop_shortcut.ps1"
   ],
   "tests": {
     "pytest": "18 passed, 3 skipped (Postgres integration skipped by default)",
@@ -76,5 +79,7 @@
   "tauri_runtime": "NOT_OBSERVED (headless session)",
   "tauri_installer": "PASS (NSIS 24321274 bytes)",
   "tauri_install": "NOT_OBSERVED (headless silent install hung)",
-  "tauri_exe_bytes": 31289344
+  "tauri_exe_bytes": 31289344,
+  "desktop_shortcut": "PASS (link created)",
+  "detached_services": "PASS (API 8002 / static 4174)"
 }

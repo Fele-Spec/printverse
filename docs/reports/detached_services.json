@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "api_port": 8002,
+  "static_port": 4174,
+  "postgres": true,
+  "api_health": "200",
+  "static_status": 200,
+  "note": "Detached processes started successfully from workspace; they were then stopped for cleanup."
+}

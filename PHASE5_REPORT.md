@@ -46,7 +46,7 @@
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
 | 10 | 完成后取出彩色模型 | **PASS** | 彩色 GLB 到成品/收藏；截图 |
 | 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri release exe 31 MB + NSIS 安装包 23.19 MiB 已构建；窗口/安装在当前无交互桌面环境未观察 |
-| 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL-only API 8001 + Worker 已实际跑通（非 SQLite）；Docker 镜像构建与 Tauri 仍 BLOCKED |
+| 12 | 关闭 Harness 后独立运行 | **PASS_LOCAL** | 独立 API 8002 + 静态前端 4174 + PostgreSQL/Worker 已跑通；Docker 镜像构建仍 BLOCKED |
 
 ## 3. 未能宣称完成的部分
 
@@ -79,4 +79,4 @@ node scripts\phase5_full_acceptance.mjs
 ## 5. 结论
 
 **全功能架构：PARTIAL。**  
-彩色 GLB 主链路、模型处理、虚拟打印、耗材、收藏/桌宠浏览器链路已打通；PostgreSQL 适配器已本地验证；真实 Windows 桌宠构建、Docker Compose 验证、工程图转 CAD、精确壁厚/支撑仍是未完成项。没有把未完成项标记为完成。
+彩色 GLB 主链路、模型处理、虚拟打印、耗材、收藏/桌宠浏览器链路已打通；PostgreSQL 适配器已本地验证；Docker Compose 镜像构建、交互窗口观察、参数化工程图、精确壁厚仍是未完成项。没有把未完成项标记为完成。

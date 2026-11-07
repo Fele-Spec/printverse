@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "shortcut": "C:\\Users\\someb\\Desktop\\PrintVerse Desktop Pet.lnk",
+  "target": "desktop/src-tauri/target/release/printverse-desktop.exe",
+  "exists": true,
+  "note": "Shortcut creation verified; interactive window not observed in headless session."
+}
