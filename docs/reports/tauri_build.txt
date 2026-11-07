@@ -2,8 +2,8 @@ Tauri build: PASS (Rust source and native executable)
 cargo check: PASS
 cargo build --release: PASS
 executable: desktop/src-tauri/target/release/printverse-desktop.exe
-size_bytes: 31288320
+size_bytes: 31286272
 MSVC: Visual Studio Build Tools 2022 17.14 / MSVC 14.44
 WebView2 runtime: 156.0.4314.58
 runtime window: NOT_OBSERVED (headless automation session; process exits without an interactive desktop)
-MSI/NSIS: NOT_BUILT (bundle.active=false; installer intentionally not claimed)
+MSI/NSIS: BLOCKED (NSIS plugin download timed out; bundle.active=true)
