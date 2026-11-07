@@ -75,5 +75,6 @@
   "support_actual": "PASS (Orca support slice 0.8729 g / 16.18%)",
   "tauri_runtime": "NOT_OBSERVED (headless session)",
   "tauri_installer": "PASS (NSIS 24321274 bytes)",
-  "tauri_install": "NOT_OBSERVED (headless silent install hung)"
+  "tauri_install": "NOT_OBSERVED (headless silent install hung)",
+  "tauri_exe_bytes": 31289344
 }
