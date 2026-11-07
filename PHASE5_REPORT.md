@@ -45,7 +45,7 @@
 | 8 | 新用户首次免费 | **PASS** | `test_first_print_is_free_once` |
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
 | 10 | 完成后取出彩色模型 | **PASS** | 彩色 GLB 到成品/收藏；截图 |
-| 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri release exe 已构建（31 MB）；窗口在无交互桌面环境未观察，MSI 未构建 |
+| 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri release exe 31 MB + NSIS 安装包 23.19 MiB 已构建；窗口/安装在当前无交互桌面环境未观察 |
 | 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL-only API 8001 + Worker 已实际跑通（非 SQLite）；Docker 镜像构建与 Tauri 仍 BLOCKED |
 
 ## 3. 未能宣称完成的部分

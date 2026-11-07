@@ -6,4 +6,7 @@ size_bytes: 31286272
 MSVC: Visual Studio Build Tools 2022 17.14 / MSVC 14.44
 WebView2 runtime: 156.0.4314.58
 runtime window: NOT_OBSERVED (headless automation session; process exits without an interactive desktop)
-MSI/NSIS: BLOCKED (NSIS plugin download timed out; bundle.active=true)
+NSIS installer: PASS
+installer: desktop/src-tauri/target/release/bundle/nsis/PrintVerse Desktop Pet_0.1.0_x64-setup.exe
+installer_bytes: 24321274
+installer_runtime: NOT_OBSERVED (silent install hung in headless session)

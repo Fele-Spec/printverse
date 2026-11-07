@@ -23,7 +23,7 @@
     "8_first_print_free": "PASS",
     "9_subsequent_charge": "PASS",
     "10_colour_takeout": "PASS",
-    "11_windows_desktop": "PARTIAL (native exe built; window unobserved; MSI not built)",
+    "11_windows_desktop": "PARTIAL (exe+NSIS built; install/window unobserved)",
     "12_independent_after_dsh": "PARTIAL (Postgres adapter PASS; Docker/Tauri blocked)"
   },
   "evidence": [
@@ -73,5 +73,7 @@
   "postgres_api": "PASS (8001, PostgreSQL only)",
   "postgres_worker": "PASS (WORKER_ONCE)",
   "support_actual": "PASS (Orca support slice 0.8729 g / 16.18%)",
-  "tauri_runtime": "NOT_OBSERVED (headless session)"
+  "tauri_runtime": "NOT_OBSERVED (headless session)",
+  "tauri_installer": "PASS (NSIS 24321274 bytes)",
+  "tauri_install": "NOT_OBSERVED (headless silent install hung)"
 }

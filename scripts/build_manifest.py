@@ -427,7 +427,7 @@ def main() -> int:
             "mesh_api": "PASS (inspect/repair/export)",
             "chinese_ui": "PASS (main flow)",
             "pet_browser": "PASS",
-            "tauri": "BUILD_PASS (release exe); runtime window unverified",
+            "tauri": "BUILD_PASS (release exe + NSIS); install/window unverified",
             "docker": "BLOCKED (no docker)",
             "postgres": "PASS_LOCAL (portable 17.2); Docker container unverified",
             "compose_config": "PASS",
