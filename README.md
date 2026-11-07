@@ -17,8 +17,7 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 >
 > Phase 5 full-product correction: **PARTIAL** — colour GLB primary, local three-view
 > visual hull, STEP/3MF/OBJ/GLB import, Chinese UI, browser desktop pet and colour finished
-> object are implemented; PostgreSQL adapter is locally verified. Docker Compose and Tauri
-> MSI builds remain blocked; engineering-drawing-to-CAD and exact wall/support analysis remain
+> object are implemented; PostgreSQL adapter is locally verified. Docker Compose remains blocked; Tauri release exe is built (window unobserved); engineering-drawing-to-CAD and exact wall/support analysis remain
 > unfinished. See [PHASE5_REPORT.md](PHASE5_REPORT.md).
 >
 > Bootstrap status: **COMPLETE (A–J)** — see [PRINTVERSE_BOOTSTRAP_REPORT.md](PRINTVERSE_BOOTSTRAP_REPORT.md).
