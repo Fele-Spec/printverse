@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "postgres_api": {
+    "port": 8001,
+    "backend": "PostgreSQL only (PRINTVERSE_DATABASE_URL)",
+    "health": 200,
+    "wallet": "demo / 100000 mg",
+    "image3d_job": "bfb1c0126339413699de63b802ec8fa6",
+    "image3d_result": "completed / mock_relief.glb"
+  },
+  "worker": {
+    "command": "WORKER_ONCE=1 python -m backend.app.worker",
+    "job": "815dd8d1cd244a2093429d78884f48d9",
+    "result": "completed"
+  },
+  "not_verified": [
+    "Docker image build (no docker daemon)",
+    "Tauri MSI (no cargo/MSVC)"
+  ]
+}

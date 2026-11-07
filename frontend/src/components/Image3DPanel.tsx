@@ -39,6 +39,8 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
   const [prompt, setPrompt] = useState('一个轮廓清晰、适合打印的桌面摆件。');
   const [authorized, setAuthorized] = useState(false);
   const [budget, setBudget] = useState(0);
+  const [widthMm, setWidthMm] = useState(80);
+  const [heightMm, setHeightMm] = useState(3);
   const [analysis, setAnalysis] = useState<Record<string, unknown> | null>(null);
   const [job, setJob] = useState<Image3DJob | null>(null);
   const [busy, setBusy] = useState(false);
@@ -79,7 +81,7 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
     try {
       const created = (provider === 'multiview_local' || multiFiles.length > 1)
         ? await createImage3DMultiJob(multiFiles, prompt)
-        : await createImage3DJob(file, provider, prompt, authorized, budget);
+        : await createImage3DJob(file, provider, prompt, authorized, budget, widthMm, heightMm);
       setJob(created);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Image-to-3D request failed');
@@ -121,6 +123,12 @@ export function Image3DPanel({ onClose, onUseModel }: Props) {
             <label className="image3d-field"><span>模型说明</span>
               <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={3} />
             </label>
+            {provider === 'drawing_local' && (
+              <div className="image3d-auth">
+                <label>图纸宽度 mm <input type="number" min={20} max={300} step={1} value={widthMm} onChange={(e) => setWidthMm(Number(e.target.value))} /></label>
+                <label>拉伸厚度 mm <input type="number" min={0.6} max={20} step={0.2} value={heightMm} onChange={(e) => setHeightMm(Number(e.target.value))} /></label>
+              </div>
+            )}
             <div className="image3d-auth">
               <label><input type="checkbox" checked={authorized} onChange={(e) => setAuthorized(e.target.checked)} /> 授权云端付费调用</label>
               <label>预算 CNY <input type="number" min={0} step={0.01} value={budget} onChange={(e) => setBudget(Number(e.target.value))} /></label>

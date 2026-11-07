@@ -60,7 +60,7 @@ npm run dev --prefix frontend
 
 桌面宠物：`http://127.0.0.1:4173/?pet=1`（浏览器透明视图）；Tauri 壳在 `desktop/`。
 
-图片 → 彩色 3D：右上角 **图片 → 3D**；多视角请选 **正面/侧面/顶面 3 张**；生成后点击 **用于虚拟打印**，完成打印后 **放到桌面**。
+图片 → 彩色 3D：右上角 **图片 → 3D**；多视角请选 **正面/侧面/顶面 3 张**；工程图可选“工程图拉伸”并填写宽度/厚度；生成后点击 **用于虚拟打印**，完成打印后 **放到桌面**。
 
 The built UI is `frontend/dist/`; do not double-click `index.html` — serve it with
 `npm run preview --prefix frontend` or `npm run dev --prefix frontend`.

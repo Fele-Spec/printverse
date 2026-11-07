@@ -39,7 +39,8 @@
     "docs/reports/worker_test.json",
     "docs/reports/compose_config.yaml",
     "docs/reports/docker_build.txt",
-    "docs/reports/tauri_build.txt"
+    "docs/reports/tauri_build.txt",
+    "docs/reports/postgres_api_test.json"
   ],
   "tests": {
     "pytest": "18 passed, 3 skipped (Postgres integration skipped by default)",
@@ -66,5 +67,7 @@
   "compose_config": "PASS (docker-compose config exit 0)",
   "docker_build": "BLOCKED (no daemon)",
   "tauri_build": "BLOCKED (cargo/MSVC missing)",
-  "drawing": "PASS_BASIC (raster contour extrude; no parametric dimensions)"
+  "drawing": "PASS_BASIC (raster contour extrude; no parametric dimensions)",
+  "postgres_api": "PASS (8001, PostgreSQL only)",
+  "postgres_worker": "PASS (WORKER_ONCE)"
 }

@@ -60,6 +60,8 @@ async def create_job(
     prompt: str = Form(""),
     authorized: bool = Form(False),
     budget_cny: float = Form(0.0),
+    width_mm: float = Form(0.0),
+    height_mm: float = Form(3.0),
 ) -> dict:
     user_id = resolve_user(request)
     if provider != "auto":
@@ -102,7 +104,8 @@ async def create_job(
     with closing(db.connect()) as conn, conn:
         conn.execute("UPDATE image3d_jobs SET input_path=? WHERE id=?",
                      (str(input_path.relative_to(ROOT)).replace("\\", "/"), job_id))
-    background.add_task(_execute, job_id, str(input_path), prompt, authorized, budget_cny, provider)
+    options = {"width_mm": width_mm, "height_mm": height_mm} if provider == "drawing_local" and width_mm > 0 else {}
+    background.add_task(_execute, job_id, str(input_path), prompt, authorized, budget_cny, provider, options)
     return _public_job(store.get_job(job_id))
 
 
@@ -153,10 +156,10 @@ def _execute_multiview(job_id: str, image_paths: list[str], prompt: str) -> None
         store.update_job(job_id, status="failed", error=str(exc)[-4000:], task_status="failed")
 
 
-def _execute(job_id: str, image_path: str, prompt: str, authorized: bool, budget_cny: float, provider_id: str) -> None:
+def _execute(job_id: str, image_path: str, prompt: str, authorized: bool, budget_cny: float, provider_id: str, options: dict | None = None) -> None:
     store.update_job(job_id, status="running", task_status="running")
     req = GenerationRequest(job_id=job_id, image_path=image_path, prompt=prompt,
-                            authorized=authorized, budget_cny=budget_cny)
+                            authorized=authorized, budget_cny=budget_cny, options=options or {})
     try:
         result = registry.run(provider_id, req, allow_free_fallback=provider_id == "auto")
         store.update_job(job_id, status="completed", **result.to_dict())

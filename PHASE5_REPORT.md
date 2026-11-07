@@ -19,7 +19,7 @@
 | 3MF 上传并真实 Orca 切片 | **PASS** | 3MF 上传返回 200、61 层、10.04 g、display.stl |
 | STEP/DXF 工程图导入 | **PASS（基础）** | 20 mm STEP → 100 层/3.978 g；40×20 mm DXF 拉伸 → 15 层/1.934 g |
 | 三视图本地重建 | **PASS** | `multiview_local`，正面/侧面/顶面；`phase5_multiview.png` |
-| 栅格工程图拉伸 | **PASS（基础）** | `drawing_local`，深色封闭轮廓→2.5D GLB；不推断尺寸/约束 |
+| 栅格工程图拉伸 | **PASS（基础）** | `drawing_local`，宽度/厚度可调；不推断尺寸/约束 |
 | 彩色成品显示 | **PASS** | `phase5_finished_color.png`：彩色模型在热床 |
 | 成品→收藏→桌宠 | **PASS（浏览器）** | `phase5_pet.png`；零 page/console error |
 | 中文 UI | **PASS（主流程）** | `phase5_dashboard_cn.png`、`phase5_color_glb_panel.png` |
@@ -45,7 +45,7 @@
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
 | 10 | 完成后取出彩色模型 | **PASS** | 彩色 GLB 到成品/收藏；截图 |
 | 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri 壳已写，但本机无 Cargo，未构建 MSI |
-| 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL 适配器已用本地 17.2 验证；Dockerfile/compose/worker 已写；本机无 Docker，Compose/Tauri 仍 BLOCKED |
+| 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL-only API 8001 + Worker 已实际跑通（非 SQLite）；Docker 镜像构建与 Tauri 仍 BLOCKED |
 
 ## 3. 未能宣称完成的部分
 

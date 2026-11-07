@@ -72,13 +72,15 @@ export async function getImage3DProviders(): Promise<{ providers: Image3DProvide
   return request('/api/image3d/providers');
 }
 
-export async function createImage3DJob(file: File, provider: string, prompt: string, authorized: boolean, budget: number): Promise<Image3DJob> {
+export async function createImage3DJob(file: File, provider: string, prompt: string, authorized: boolean, budget: number, widthMm = 0, heightMm = 3): Promise<Image3DJob> {
   const form = new FormData();
   form.append('file', file, file.name);
   form.append('provider', provider);
   form.append('prompt', prompt);
   form.append('authorized', String(authorized));
   form.append('budget_cny', String(budget));
+  form.append('width_mm', String(widthMm));
+  form.append('height_mm', String(heightMm));
   return request('/api/image3d/jobs', { method: 'POST', body: form });
 }
 
