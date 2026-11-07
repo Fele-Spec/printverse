@@ -5,6 +5,7 @@ import { AssetPreview } from './AssetPreview';
 
 
 const PROVIDER_ZH: Record<string, string> = {
+  drawing_local: '工程图拉伸（本地）',
   mock_relief: 'Mock 浮雕（免费）',
   triposr_local: 'TripoSR 本地',
   stable_fast_3d: 'Stable Fast 3D（候选）',
@@ -13,6 +14,7 @@ const PROVIDER_ZH: Record<string, string> = {
   kimi_analysis: 'Kimi 图片理解',
 };
 const REASON_ZH: Record<string, string> = {
+  drawing_local: '识别深色封闭轮廓并拉伸；不推断尺寸、约束或孔，不是参数化 CAD。',
   mock_relief: '并非真正的图片转三维；是用于测试打印链路的彩色高度场浮雕。',
   triposr_local: '本地 CPU 可用；生成后需检查修复。',
   stable_fast_3d: '尚未在 Windows 安装；权重与许可证需要审查。',

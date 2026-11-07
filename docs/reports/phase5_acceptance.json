@@ -13,7 +13,7 @@
     }
   },
   "acceptance": {
-    "1_colour_glb": "PASS (Mock/TripoSR/3-view)",
+    "1_colour_glb": "PASS (Mock/TripoSR/3-view/drawing)",
     "2_sliceable_stl_3mf": "PASS (STL/3MF/STEP/DXF)",
     "3_voron_machine": "PASS",
     "4_real_gcode_motion": "PASS",
@@ -42,7 +42,7 @@
     "docs/reports/tauri_build.txt"
   ],
   "tests": {
-    "pytest": "17 passed, 3 skipped (Postgres integration skipped by default)",
+    "pytest": "18 passed, 3 skipped (Postgres integration skipped by default)",
     "browser_page_errors": 0,
     "browser_console_errors": 0
   },
@@ -65,5 +65,6 @@
   "worker": "PASS (WORKER_ONCE consumed queued job)",
   "compose_config": "PASS (docker-compose config exit 0)",
   "docker_build": "BLOCKED (no daemon)",
-  "tauri_build": "BLOCKED (cargo/MSVC missing)"
+  "tauri_build": "BLOCKED (cargo/MSVC missing)",
+  "drawing": "PASS_BASIC (raster contour extrude; no parametric dimensions)"
 }

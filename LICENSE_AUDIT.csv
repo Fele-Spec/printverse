@@ -93,6 +93,7 @@ Python: networkx,3.7,BSD-3-Clause,YES,YES,YES,PyPI package recorded in requireme
 Python: numpy,2.5.4,BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: ocp-gordon,0.3.1,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: ocpsvg,0.7.0,UNKNOWN_LICENSE,UNKNOWN_LICENSE,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
+Python: opencv-python-headless,5.0.0.93,Apache 2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: opentelemetry-api,1.45.2,Apache-2.0,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: packaging,26.3,Apache-2.0 OR BSD-2-Clause,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.
 Python: parso,0.8.7,MIT,YES,YES,YES,PyPI package recorded in requirements.lock,License string from installed package metadata; review UNKNOWN values.

@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .base import Image3DProvider
 from .kimi import KimiClient
+from .drawing import DrawingProvider
 from .mock_relief import MockReliefProvider
 from .multiview import MultiViewProvider
 from .stablefast3d import StableFast3DProvider
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 KIMI = KimiClient()
 
 _PROVIDERS: dict[str, Image3DProvider] = {
+    "drawing_local": DrawingProvider(),
     "mock_relief": MockReliefProvider(),
     "multiview_local": MultiViewProvider(),
     "triposr_local": TripoSRProvider(),

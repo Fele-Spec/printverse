@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-06T17:45:49.951582+00:00",
+  "generated_at": "2026-11-07T01:28:55.011100+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,12 +18,12 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3839,
-    "checksum_bytes": 4145214270,
+    "checksum_files": 3843,
+    "checksum_bytes": 4145319194,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
-    "licenses": 172
+    "licenses": 173
   },
   "evidence": {
     "bom": "BOM_300MM.csv",
@@ -98,6 +98,7 @@
     "status": "PARTIAL",
     "colour_glb": "PASS",
     "multiview": "PASS_LOCAL_VISUAL_HULL",
+    "drawing": "PASS_BASIC_RASTER_EXTRUDE",
     "mesh_api": "PASS (inspect/repair/export)",
     "chinese_ui": "PASS (main flow)",
     "pet_browser": "PASS",

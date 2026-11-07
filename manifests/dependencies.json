@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T17:45:49.951582+00:00",
+  "generated_at": "2026-11-07T01:28:55.011100+00:00",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "machine": "AMD64",
@@ -64,6 +64,7 @@
     "numpy==2.5.4",
     "ocp-gordon==0.3.1",
     "ocpsvg==0.7.0",
+    "opencv-python-headless==5.0.0.93",
     "opentelemetry-api==1.45.2",
     "packaging==26.3",
     "parso==0.8.7",
@@ -419,6 +420,11 @@
       "name": "ocpsvg",
       "version": "0.7.0",
       "license": "UNKNOWN_LICENSE"
+    },
+    {
+      "name": "opencv-python-headless",
+      "version": "5.0.0.93",
+      "license": "Apache 2.0"
     },
     {
       "name": "opentelemetry-api",

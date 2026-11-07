@@ -23,6 +23,7 @@ The GPU meets TripoSR's published ~6 GB target. The actual run used the **CPU fa
 |---|---|---|---|
 | **Mock relief** | free local fallback | **COMPLETE** | Colour GLB primary + STL/3MF/OBJ; watertight, cost 0; **not** genuine image-to-3D |
 | **Multi-view local** | deterministic 3-view hull | **COMPLETE (local)** | Front/side/top silhouettes; visual hull, not AI; colour GLB |
+| **Drawing local** | raster contour extrusion | **COMPLETE (basic)** | Dark closed contours → 2.5D GLB; dimensions/constraints NOT inferred |
 | **TripoSR local** | free primary local | **COMPLETE (CPU)** | 10/10 meshes generated; 7 pass quick printability, 3 repair-required; ~25 s/image; cost 0 |
 | **Stable Fast 3D** | free high-texture candidate | **NOT_INSTALLED** | Windows-native install not attempted; official weights/license need review |
 | **TokenHub Tripo** | low-cost cloud | **NOT_CONFIGURED** | adapter implemented; needs official account endpoint + key |
