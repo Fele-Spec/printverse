@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "model": "runtime/torus-support.stl",
+  "support_mass_g": 0.8729,
+  "total_mass_g": 5.3937,
+  "support_percent": 16.18,
+  "support_required": true,
+  "method": "OrcaSlicer support profile + parsed G-code",
+  "types": [
+    "Support",
+    "Support interface"
+  ]
+}

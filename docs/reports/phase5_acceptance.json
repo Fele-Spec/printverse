@@ -40,7 +40,8 @@
     "docs/reports/compose_config.yaml",
     "docs/reports/docker_build.txt",
     "docs/reports/tauri_build.txt",
-    "docs/reports/postgres_api_test.json"
+    "docs/reports/postgres_api_test.json",
+    "docs/reports/support_test.json"
   ],
   "tests": {
     "pytest": "18 passed, 3 skipped (Postgres integration skipped by default)",
@@ -69,5 +70,6 @@
   "tauri_build": "BLOCKED (cargo/MSVC missing)",
   "drawing": "PASS_BASIC (raster contour extrude; no parametric dimensions)",
   "postgres_api": "PASS (8001, PostgreSQL only)",
-  "postgres_worker": "PASS (WORKER_ONCE)"
+  "postgres_worker": "PASS (WORKER_ONCE)",
+  "support_actual": "PASS (Orca support slice 0.8729 g / 16.18%)"
 }

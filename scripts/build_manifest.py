@@ -423,6 +423,7 @@ def main() -> int:
             "colour_glb": "PASS",
             "multiview": "PASS_LOCAL_VISUAL_HULL",
             "drawing": "PASS_BASIC_RASTER_EXTRUDE",
+            "support_actual": "PASS (Orca support slice)",
             "mesh_api": "PASS (inspect/repair/export)",
             "chinese_ui": "PASS (main flow)",
             "pet_browser": "PASS",

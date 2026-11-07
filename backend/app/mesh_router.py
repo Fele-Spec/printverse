@@ -9,6 +9,7 @@ import trimesh
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from .mesh_prep import export_bundle, inspect_mesh, repair_and_scale
+from .support_analysis import SupportAnalysisError, analyze_supports
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "runtime" / "mesh"
@@ -43,6 +44,16 @@ async def analyze(file: UploadFile = File(...)) -> dict:
     work, src = _load(file, data)
     mesh = trimesh.load(src, force="mesh", process=True)
     return {"name": file.filename, "inspection": inspect_mesh(mesh), "input": str(src.relative_to(ROOT)).replace("\\", "/")}
+
+
+@router.post("/supports")
+async def supports(file: UploadFile = File(...)) -> dict:
+    data = await file.read()
+    work, src = _load(file, data)
+    try:
+        return analyze_supports(src)
+    except SupportAnalysisError as exc:
+        raise HTTPException(422, f"支撑分析失败: {exc}")
 
 
 @router.post("/repair")

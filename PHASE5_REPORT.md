@@ -20,6 +20,7 @@
 | STEP/DXF 工程图导入 | **PASS（基础）** | 20 mm STEP → 100 层/3.978 g；40×20 mm DXF 拉伸 → 15 层/1.934 g |
 | 三视图本地重建 | **PASS** | `multiview_local`，正面/侧面/顶面；`phase5_multiview.png` |
 | 栅格工程图拉伸 | **PASS（基础）** | `drawing_local`，宽度/厚度可调；不推断尺寸/约束 |
+| 真实支撑材料分析 | **PASS** | Orca 支撑切片 + G-code 质量：0.8727 g / 16.18% |
 | 彩色成品显示 | **PASS** | `phase5_finished_color.png`：彩色模型在热床 |
 | 成品→收藏→桌宠 | **PASS（浏览器）** | `phase5_pet.png`；零 page/console error |
 | 中文 UI | **PASS（主流程）** | `phase5_dashboard_cn.png`、`phase5_color_glb_panel.png` |
@@ -50,7 +51,7 @@
 ## 3. 未能宣称完成的部分
 
 1. **工程图转 CAD**：已支持 DXF 轮廓拉伸与栅格工程图轮廓拉伸（2.5D）；尚未实现从扫描图识别尺寸/约束并生成参数化 CAD。
-2. **精确壁厚/支撑**：mesh API 提供 ray-cast 近似壁厚与悬垂面积，不是 Orca 切片器标定结果，子项为 **PARTIAL**。
+2. **精确壁厚/支撑**：壁厚仍为 ray-cast 近似；支撑已有 Orca 实际切片质量（0.8727 g / 16.18%），壁厚子项仍为 **PARTIAL**。
 3. **Tauri Windows 客户端**：源码 scaffolding 已写，构建 `BLOCKED`（本机无 cargo/MSVC）。
 4. **Docker Compose**：`config` 已验证；镜像构建 `BLOCKED`（本机无 docker daemon）；容器内没有 Orca，真实切片需 Windows 工具。
 5. **Kimi**：账户 429 余额不足；未产生付费调用。

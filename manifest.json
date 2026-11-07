@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-07T01:32:09.709499+00:00",
+  "generated_at": "2026-11-07T01:34:04.511978+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3846,
-    "checksum_bytes": 4145427911,
+    "checksum_files": 3850,
+    "checksum_bytes": 4145522527,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -99,6 +99,7 @@
     "colour_glb": "PASS",
     "multiview": "PASS_LOCAL_VISUAL_HULL",
     "drawing": "PASS_BASIC_RASTER_EXTRUDE",
+    "support_actual": "PASS (Orca support slice)",
     "mesh_api": "PASS (inspect/repair/export)",
     "chinese_ui": "PASS (main flow)",
     "pet_browser": "PASS",
