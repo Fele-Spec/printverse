@@ -45,14 +45,14 @@
 | 8 | 新用户首次免费 | **PASS** | `test_first_print_is_free_once` |
 | 9 | 后续打印扣费 | **PASS** | `test_first_print_is_free_once` 第二次扣 3.978 g |
 | 10 | 完成后取出彩色模型 | **PASS** | 彩色 GLB 到成品/收藏；截图 |
-| 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri 壳已写，但本机无 Cargo，未构建 MSI |
+| 11 | 添加到 Windows 桌面 | **PARTIAL** | 浏览器透明桌宠 PASS；Tauri release exe 已构建（31 MB）；窗口在无交互桌面环境未观察，MSI 未构建 |
 | 12 | 关闭 Harness 后独立运行 | **PARTIAL** | PostgreSQL-only API 8001 + Worker 已实际跑通（非 SQLite）；Docker 镜像构建与 Tauri 仍 BLOCKED |
 
 ## 3. 未能宣称完成的部分
 
 1. **工程图转 CAD**：已支持 DXF 轮廓拉伸与栅格工程图轮廓拉伸（2.5D）；尚未实现从扫描图识别尺寸/约束并生成参数化 CAD。
 2. **精确壁厚/支撑**：壁厚仍为 ray-cast 近似；支撑已有 Orca 实际切片质量（0.8727 g / 16.18%），壁厚子项仍为 **PARTIAL**。
-3. **Tauri Windows 客户端**：源码 scaffolding 已写，构建 `BLOCKED`（本机无 cargo/MSVC）。
+3. **Tauri Windows 客户端**：Rust/MSVC 已安装，release exe 构建 PASS；当前自动化会话无法观察交互窗口，MSI/NSIS 未构建。
 4. **Docker Compose**：`config` 已验证；镜像构建 `BLOCKED`（本机无 docker daemon）；容器内没有 Orca，真实切片需 Windows 工具。
 5. **Kimi**：账户 429 余额不足；未产生付费调用。
 6. **TokenHub**：无 Key/账号端点；未调用、未产生费用。

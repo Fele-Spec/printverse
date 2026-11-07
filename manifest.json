@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-07T01:34:04.511978+00:00",
+  "generated_at": "2026-11-07T01:58:48.104440+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3850,
-    "checksum_bytes": 4145522527,
+    "checksum_files": 3858,
+    "checksum_bytes": 4145757166,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -103,7 +103,7 @@
     "mesh_api": "PASS (inspect/repair/export)",
     "chinese_ui": "PASS (main flow)",
     "pet_browser": "PASS",
-    "tauri": "BLOCKED (no cargo)",
+    "tauri": "BUILD_PASS (release exe); runtime window unverified",
     "docker": "BLOCKED (no docker)",
     "postgres": "PASS_LOCAL (portable 17.2); Docker container unverified",
     "compose_config": "PASS",

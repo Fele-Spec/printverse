@@ -285,7 +285,7 @@ def main() -> int:
     checksum_files.extend([x for x in (ROOT / "frontend/src").rglob("*") if x.is_file()])
     checksum_files = sorted(set(
         p for p in checksum_files
-        if "__pycache__" not in p.parts and p.suffix.lower() not in {".pyc", ".tsbuildinfo"}
+        if "__pycache__" not in p.parts and "target" not in p.parts and "node_modules" not in p.parts and p.suffix.lower() not in {".pyc", ".tsbuildinfo"}
     ))
     lines = []
     total_bytes = 0
@@ -427,7 +427,7 @@ def main() -> int:
             "mesh_api": "PASS (inspect/repair/export)",
             "chinese_ui": "PASS (main flow)",
             "pet_browser": "PASS",
-            "tauri": "BLOCKED (no cargo)",
+            "tauri": "BUILD_PASS (release exe); runtime window unverified",
             "docker": "BLOCKED (no docker)",
             "postgres": "PASS_LOCAL (portable 17.2); Docker container unverified",
             "compose_config": "PASS",
