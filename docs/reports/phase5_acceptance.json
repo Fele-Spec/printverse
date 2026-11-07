@@ -24,7 +24,7 @@
     "9_subsequent_charge": "PASS",
     "10_colour_takeout": "PASS",
     "11_windows_desktop": "PASS (shortcut/exe/NSIS built; interactive window unobserved)",
-    "12_independent_after_dsh": "PASS_LOCAL (detached API 8002 + static 4174 + Postgres/worker); Docker image build BLOCKED"
+    "12_independent_after_dsh": "PASS (Docker Compose: postgres/api/worker/web healthy; web 200; container Image3D completed)"
   },
   "evidence": [
     "BEFORE_AFTER_SCREENSHOTS/phase5_dashboard_cn.png",
@@ -45,7 +45,12 @@
     "docs/reports/tauri_build.txt",
     "docs/reports/desktop_shortcut.json",
     "docs/reports/detached_services.json",
-    "scripts/create_desktop_shortcut.ps1"
+    "scripts/create_desktop_shortcut.ps1",
+    "docs/reports/docker_e2e.json",
+    "BEFORE_AFTER_SCREENSHOTS/phase5_docker_web.png",
+    "scripts/docker_e2e_check.sh",
+    "scripts/wsl_network_test.sh",
+    "scripts/wsl_daemon.json"
   ],
   "tests": {
     "pytest": "18 passed, 3 skipped (Postgres integration skipped by default)",
@@ -70,7 +75,7 @@
   "multi_view": "PASS_LOCAL_VISUAL_HULL",
   "worker": "PASS (WORKER_ONCE consumed queued job)",
   "compose_config": "PASS (docker-compose config exit 0)",
-  "docker_build": "BLOCKED (no daemon)",
+  "docker_build": "PASS (Compose build api/web/worker)",
   "tauri_build": "PASS (release exe 31288320 bytes)",
   "drawing": "PASS_BASIC (raster contour extrude; no parametric dimensions)",
   "postgres_api": "PASS (8001, PostgreSQL only)",
@@ -81,5 +86,6 @@
   "tauri_install": "NOT_OBSERVED (headless silent install hung)",
   "tauri_exe_bytes": 31289344,
   "desktop_shortcut": "PASS (link created)",
-  "detached_services": "PASS (API 8002 / static 4174)"
+  "detached_services": "PASS (API 8002 / static 4174)",
+  "docker_runtime": "PASS (WSL2 Docker Engine; 8080 web; PostgreSQL + Worker)"
 }

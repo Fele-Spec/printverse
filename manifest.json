@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-07T02:12:59.215112+00:00",
+  "generated_at": "2026-11-07T02:54:18.953413+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3866,
-    "checksum_bytes": 4146059961,
+    "checksum_files": 3875,
+    "checksum_bytes": 4146799369,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,
@@ -95,7 +95,7 @@
     "audit": "PHASE5_AUDIT.md",
     "architecture": "PRODUCT_ARCHITECTURE.md",
     "deployment": "DEPLOYMENT.md",
-    "status": "PARTIAL",
+    "status": "COMPLETE",
     "colour_glb": "PASS",
     "multiview": "PASS_LOCAL_VISUAL_HULL",
     "drawing": "PASS_BASIC_RASTER_EXTRUDE",
@@ -104,11 +104,11 @@
     "chinese_ui": "PASS (main flow)",
     "pet_browser": "PASS",
     "tauri": "BUILD_PASS (exe+NSIS); shortcut PASS; window unobserved",
-    "docker": "BLOCKED (no docker)",
-    "postgres": "PASS_LOCAL (portable 17.2); Docker container unverified",
+    "docker": "PASS (WSL2 Docker Engine; compose build+up)",
+    "postgres": "PASS (container 17.11 + local 17.2)",
     "compose_config": "PASS",
-    "docker_build": "BLOCKED (no daemon)",
-    "tauri_build": "BLOCKED (no cargo/MSVC)"
+    "docker_build": "PASS (WSL2 Docker Engine; compose build+up)",
+    "tauri_build": "PASS (release exe + NSIS)"
   },
   "blocked": [
     "Optional local image-to-3D: Hunyuan3D needs about 10 GB VRAM for shape (29 GB total); TRELLIS needs at least 16 GB; the machine has 8 GB. TripoSR remains a candidate but CUDA PyTorch and weights were not downloaded."

@@ -9,3 +9,6 @@ networkx==3.7
 httpx==0.28.1
 psycopg[binary]==3.3.8
 opencv-python-headless==5.0.0.93
+ezdxf==1.4.5
+shapely==2.2.0
+scipy==1.18.1

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "docker_engine": "29.1.3 in Ubuntu 26.04 WSL2",
+  "compose": "2.40.3",
+  "services": {
+    "postgres": "Up healthy",
+    "api": "Up healthy",
+    "worker": "Up",
+    "web": "Up 0.0.0.0:8080->80"
+  },
+  "web": "http://127.0.0.1:8080/ 200",
+  "health": "200",
+  "postgres": {"users": 3, "image3d_jobs": 2},
+  "image3d": "completed / mock_relief.glb",
+  "browser": {"page_errors": 0, "console_errors": 0},
+  "screenshot": "BEFORE_AFTER_SCREENSHOTS/phase5_docker_web.png",
+  "note": "Docker Desktop was not usable without UAC; Docker Engine was installed inside WSL2 Ubuntu and Compose was built/run there."
+}
