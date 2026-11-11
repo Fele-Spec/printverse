@@ -29,7 +29,7 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 
 ## Public deployment
 
-Current public demo: https://troubleshooting-idea-jacket-sleeve.trycloudflare.com
+Current public demo: https://beach-webmasters-eternal-several.trycloudflare.com
 
 Source repository: https://github.com/Fele-Spec/printverse
 

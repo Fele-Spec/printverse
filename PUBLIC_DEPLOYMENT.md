@@ -2,7 +2,7 @@
 
 ## Current public URL
 
-**https://troubleshooting-idea-jacket-sleeve.trycloudflare.com**
+**https://beach-webmasters-eternal-several.trycloudflare.com**
 
 This is a **Cloudflare Quick Tunnel** to the Docker Compose stack:
 
