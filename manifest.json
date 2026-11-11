@@ -1,6 +1,6 @@
 {
   "project": "PrintVerse",
-  "generated_at": "2026-11-07T02:54:18.953413+00:00",
+  "generated_at": "2026-11-11T12:51:39.315132+00:00",
   "root": "C:\\Users\\someb\\Desktop\\printverse",
   "bootstrap_status": "COMPLETE",
   "criteria": {
@@ -18,8 +18,8 @@
   "counts": {
     "resources": 22,
     "cad_index_rows": 223,
-    "checksum_files": 3875,
-    "checksum_bytes": 4146799369,
+    "checksum_files": 3881,
+    "checksum_bytes": 4147551394,
     "stl_files": 191,
     "dxf_files": 12,
     "step_files": 6,

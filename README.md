@@ -27,6 +27,14 @@ AI 3D design platform, Voron V2.4r2 300 mm digital twin, G-code-driven virtual p
 > visual hull / Mock); Hunyuan3D/TRELLIS remain blocked by the 8 GB GPU.
 > Kimi is additionally blocked by account balance (HTTP 429), documented rather than hidden.
 
+## Public deployment
+
+Current public demo: https://troubleshooting-idea-jacket-sleeve.trycloudflare.com
+
+Source repository: https://github.com/Fele-Spec/printverse
+
+See [PUBLIC_DEPLOYMENT.md](PUBLIC_DEPLOYMENT.md) for the tunnel architecture and restart commands.
+
 ## What is already available
 
 | Area | Evidence |
